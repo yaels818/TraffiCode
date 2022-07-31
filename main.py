@@ -1,17 +1,26 @@
 import pygame
-import time
 import math
 from utils import scale_image, blit_rotate_center, blit_text_center
+
+pygame.init()
+pygame.mixer.init()
+pygame.font.init()
 
 # Load up a basic window
 WIDTH, HEIGHT = 960, 600
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("TraffiCode")
 
-pygame.font.init()
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLUE = (0, 0, 255)
+
 MAIN_FONT = pygame.font.SysFont("centurygothic", 36)
 SMALL_FONT = pygame.font.SysFont("centurygothic", 26)
 
+BACKGROUND = scale_image(pygame.image.load("Assets\Images/background0.png"),0.76)
 SCENE = scale_image(pygame.image.load("Assets\Images\Scenes\Mishmar HaGvul.png"),1.7)
 SCENE_BORDER = scale_image(pygame.image.load("Assets\Images\Borders\Mishmar HaGvul_Border_Monocrome.png"),1.7)
 RED_CAR = scale_image(pygame.image.load("Assets\Images\Cars/Audi.png"), 0.5)
@@ -22,7 +31,7 @@ SCENE_MASK = pygame.mask.from_surface(SCENE_BORDER)
 FPS = 60    # Frame per second
 clock = pygame.time.Clock()
 
-
+path = []
 
 class AbstractCar:
     def __init__(self, max_vel, rotation_vel):
@@ -96,7 +105,6 @@ class PlayerCar(AbstractCar): # Inherit from AbstractCar
     def reset(self):
         super().reset()
 
-
 def draw(win, images, player_car):
     for img, pos in images:
         # Draw this img in this position
@@ -104,6 +112,9 @@ def draw(win, images, player_car):
     
     player_car.draw(win)
     
+    draw_points(path, win)
+    #draw_scene_borders(win)
+
     # Update the window with everything we have drawn
     pygame.display.update() 
 
@@ -131,14 +142,47 @@ def handle_collision(player_car):
     if player_car.collide(SCENE_MASK) != None:
         player_car.bounce()
 
+# Function for drawing path points
+def draw_points(path, win):
+    for point in path:
+        # Draw a red point of radius 5 in the path
+        pygame.draw.circle(win, RED, point, 5)
 
+def draw_scene_borders(win):
+    sidewalk_borders = [(("Top_Hori_Sidewalk"), (0, 185), (SCENE.get_width(), 5)),
+                        (("Bot_Hori_Sidewalk_Left"), (0, 380), (243, 5)),
+                        (("Bot_Hori_Sidewalk_Right"), (437, 380), (SCENE.get_width()-437, 5)),
+                        (("Vert_Sidewalk_Left"), (SCENE.get_width()-440, 380), (5, HEIGHT)),
+                        (("Vert_Sidewalk_Right"), (437, 380), (5, HEIGHT))]
+
+
+    lane_borders = [(("Hori_Lane"), (0, 285), (SCENE.get_width(), 5)),
+                    (("Vert_Lane"), ((int(SCENE.get_width()/2)), 285), (5, HEIGHT))]
+
+    island_borders = [(("Left_Island"), (135,273), (218-135,298-273)),
+                    (("Bot_Island"), (300,381), (380-300,463-381))]
+
+    for kind, top_left, bottom_right in sidewalk_borders:
+        # Draw this kind in this position
+        pygame.draw.rect(win, GREEN, (*top_left, *bottom_right))
+    
+    for kind, top_left, bottom_right in lane_borders:
+        # Draw this kind in this position
+        pygame.draw.rect(win, BLUE, (*top_left, *bottom_right))
+
+    for kind, top_left, bottom_right in island_borders:
+        # Draw this kind in this position
+        pygame.draw.rect(win, RED, (*top_left, *bottom_right))
+
+
+    pygame.display.update() 
+    
 running = True
-images = [(SCENE, (0,0))]
+images = [(BACKGROUND, (0,0)), (SCENE, (0,0))]
 
 player_car = PlayerCar(2,2)
 
-
-# Main event loop - keeps the game alive
+# Game Loop
 while running:
     # Limit our window to this max speed
     clock.tick(FPS)   
@@ -151,7 +195,17 @@ while running:
             running = False
             break  
 
+        # Create the path for computer car
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            pos = pygame.mouse.get_pos()
+            path.append(pos)
+        
+
     move_player(player_car)
     handle_collision(player_car)
+
+    pygame.display.update()
+
+print(path)
 
 pygame.quit()   # Close the game cleanly
