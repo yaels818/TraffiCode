@@ -1,5 +1,6 @@
 import pygame
 import math
+from random import randint, choice
 from utils import scale_image, blit_rotate_center, blit_text_center
 
 pygame.init()
@@ -16,9 +17,6 @@ BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
-
-MAIN_FONT = pygame.font.SysFont("centurygothic", 36)
-SMALL_FONT = pygame.font.SysFont("centurygothic", 26)
 
 BACKGROUND = scale_image(pygame.image.load("Assets\Images/background0.png"),0.76)
 SCENE = scale_image(pygame.image.load("Assets\Images\Scenes\Mishmar HaGvul.png"),1.7)
@@ -105,6 +103,30 @@ class PlayerCar(AbstractCar): # Inherit from AbstractCar
     def reset(self):
         super().reset()
 
+# Class for all borders in the scene (sidewalk, island, lane)
+class Border(pygame.sprite.Sprite):
+    
+    def __init__(self ,type ,x ,y ,width ,height):
+        # Call the parent class's constructor
+        super().__init__()
+        
+        self.type = type
+
+        # Make a border, of the type and size specified in the parameters
+        self.image = pygame.Surface([width,height])
+        
+        # (x,y) == top_left of rect
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+        if type == 'sidewalk':
+            self.image.fill(RED)
+        elif type == 'island':
+            self.image.fill(WHITE)
+        elif type == 'lane':
+            self.image.fill(GREEN)
+
 def draw(win, images, player_car):
     for img, pos in images:
         # Draw this img in this position
@@ -177,10 +199,35 @@ def draw_scene_borders(win):
 
     pygame.display.update() 
     
+def create_scene_borders(borders_list, all_sprite_list):
+
+    """
+    top_hori_sidewalk = Border('sidewalk',0, 185, SCENE.get_width(), 5)
+    borders_list.add(top_hori_sidewalk)
+    all_sprite_list.add(top_hori_sidewalk)
+
+    bot_hori_sidewalk_left = Border('sidewalk',0, 380, 243, 5)
+    borders_list.add(bot_hori_sidewalk_left)
+    all_sprite_list.add(bot_hori_sidewalk_left)    
+    """
+
+    hori_lane = Border('lane', 0, 285, SCENE.get_width(), 5)
+    borders_list.add(hori_lane)
+    all_sprite_list.add(hori_lane) 
+
+    vert_lane = Border('lane', int(SCENE.get_width()/2), 285, 5, HEIGHT)
+    borders_list.add(vert_lane)
+    all_sprite_list.add(vert_lane) 
+
 running = True
 images = [(BACKGROUND, (0,0)), (SCENE, (0,0))]
 
+borders_list = pygame.sprite.Group()
+all_sprite_list = pygame.sprite.Group()
+
 player_car = PlayerCar(2,2)
+
+create_scene_borders(borders_list, all_sprite_list)
 
 # Game Loop
 while running:
@@ -188,6 +235,7 @@ while running:
     clock.tick(FPS)   
 
     draw(WIN, images, player_car)
+    all_sprite_list.draw(WIN)
 
     for event in pygame.event.get():
         # If player clicked X on the window
