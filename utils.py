@@ -1,4 +1,3 @@
-from tkinter import CENTER
 import pygame
 
 """
@@ -7,7 +6,6 @@ Function for scaling an image by a factor (either makes the image smaller or big
 def scale_image(img, factor):
     size = round(img.get_width() * factor), round(img.get_height() * factor)
     return pygame.transform.scale(img, size)
-
 
 """
 Function for rotating an image in pygame without distortions

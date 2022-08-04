@@ -29,7 +29,11 @@ SCENE_MASK = pygame.mask.from_surface(SCENE_BORDER)
 FPS = 60    # Frame per second
 clock = pygame.time.Clock()
 
+score = 0
+
 path = []
+
+#-------------------------------------------------------------
 
 class AbstractCar:
     def __init__(self, max_vel, rotation_vel):
@@ -86,6 +90,31 @@ class AbstractCar:
         self.angle = 0
         self.vel = 0
 
+class Player(AbstractCar, pygame.sprite.Sprite):
+
+    IMG = RED_CAR
+    START_POS = (150,150)
+
+    def __init__(self):
+        # Call the parent class's constructor
+        pygame.sprite.Sprite.__init__(self)
+        AbstractCar.__init__(self,2,2)
+        self.image = RED_CAR
+        self.rect = self.image.get_rect(center = self.START_POS)
+
+    def reduce_speed(self):
+        # Reduce the velocity by half the acceleration, if negative then just stop moving 
+        self.vel = max(self.vel - self.acceleration / 2, 0)
+        self.move()
+
+    def bounce(self):
+        # Bounce back from a wall
+        self.vel = -self.vel/2
+        self.move()
+
+    def reset(self):
+         AbstractCar().reset()
+
 class PlayerCar(AbstractCar): # Inherit from AbstractCar
     IMG = RED_CAR
     START_POS = (400, 450)
@@ -127,6 +156,8 @@ class Border(pygame.sprite.Sprite):
         elif type == 'lane':
             self.image.fill(GREEN)
 
+#-------------------------------------------------------------
+
 def draw(win, images, player_car):
     for img, pos in images:
         # Draw this img in this position
@@ -134,7 +165,7 @@ def draw(win, images, player_car):
     
     player_car.draw(win)
     
-    draw_points(path, win)
+    #draw_points(path, win)
     #draw_scene_borders(win)
 
     # Update the window with everything we have drawn
@@ -159,10 +190,11 @@ def move_player(player_car):
     if not moved:
         player_car.reduce_speed()
 
-def handle_collision(player_car):
+def handle_collision_with_mask(player_car):
     # Check if the player car is colliding with the track walls
     if player_car.collide(SCENE_MASK) != None:
         player_car.bounce()
+
 
 # Function for drawing path points
 def draw_points(path, win):
@@ -219,11 +251,24 @@ def create_scene_borders(borders_list, all_sprite_list):
     borders_list.add(vert_lane)
     all_sprite_list.add(vert_lane) 
 
+def handle_collision_with_borders():
+
+    # Did the player moving caused collision with a border?
+    borders_hit_list = pygame.sprite.spritecollide(player.sprite,borders_list,False)
+
+    print(borders_hit_list)
+#-------------------------------------------------------------
+
 running = True
 images = [(BACKGROUND, (0,0)), (SCENE, (0,0))]
 
+# Groups
+player = pygame.sprite.GroupSingle()
+player.add(Player())
+
 borders_list = pygame.sprite.Group()
 all_sprite_list = pygame.sprite.Group()
+all_sprite_list.add(player)
 
 player_car = PlayerCar(2,2)
 
@@ -249,11 +294,14 @@ while running:
             path.append(pos)
         
 
-    move_player(player_car)
-    handle_collision(player_car)
+    # move_player(player_car)
+    #move_player(player)
+    #handle_collision_with_mask(player_car)
+    handle_collision_with_borders()
 
     pygame.display.update()
 
 print(path)
+print(score)
 
 pygame.quit()   # Close the game cleanly
