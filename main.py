@@ -4,6 +4,7 @@ import math
 from random import randint, choice
 from utils import *
 
+
 pygame.init()
 #pygame.mixer.init()
 #pygame.font.init()
@@ -165,34 +166,26 @@ class Border(pygame.sprite.Sprite):
 
 class DashboardButton(pygame.sprite.Sprite):
     
-    def __init__(self, image, scale, x_pos, y_pos):
+    def __init__(self, image_off, image_on, scale, x_pos, y_pos):
         super(DashboardButton,self).__init__()
 
-        self.image = scale_image(image,scale)
+        self.image = scale_image(image_off,scale)
         self.scale = scale
         self.rect = self.image.get_rect()
         self.rect.x = x_pos
         self.rect.y = y_pos
         self.pressed = False
+        self.switch_image = scale_image(image_on,scale)
 
-    def update_image(self,new_image):
-        self.image = scale_image(new_image,self.scale)
+    def button_pressed(self):
+        self.pressed = (not self.pressed)
+        self.update_image()
 
-"""
-    def draw_button(self, win):
-        action_needed = False
-        mouse_pos = pygame.mouse.get_pos()
-        if self.rect.collidepoint(mouse_pos):
-            if pygame.mouse.get_pressed()[0] and not self.pressed:
-                action_needed = True
-                self.pressed = True
+    def update_image(self):
+        temp = self.image
+        self.image = self.switch_image
+        self.switch_image = temp
 
-            if not pygame.mouse.get_pressed()[0]:
-                self.pressed = False
-
-        win.blit(self.image, self.rect)
-        return action_needed
-"""
 #-------------------------------------------------------------
 
 def draw(win, images, player_car):
@@ -339,18 +332,22 @@ for i in range(1,7):
 
 menu_btn_img = pygame.image.load("Assets\Images\Dashboard\Buttons/menu_btn.png")
 
-lights_btn = DashboardButton(button_images_off[0], 0.55, 20, 500)
-left_blinker_btn = DashboardButton(button_images_off[1], 0.65, 130, 500)
-right_blinker_btn = DashboardButton(button_images_off[2], 0.65, 505, 500)
-wipers_btn = DashboardButton(button_images_off[3], 0.55, 620, 500)
-ac_btn = DashboardButton(button_images_off[4], 0.55, 740, 500)
-music_btn = DashboardButton(button_images_off[5], 0.55, 860, 500)
-menu_btn = DashboardButton(menu_btn_img, 0.55, 980, 480)
+lights_btn = DashboardButton(button_images_off[0], button_images_on[0], 0.55, 20, 500)
+left_blinker_btn = DashboardButton(button_images_off[1], button_images_on[1], 0.65, 110, 480)
+right_blinker_btn = DashboardButton(button_images_off[2], button_images_on[2],0.65, 485, 480)
+wipers_btn = DashboardButton(button_images_off[3], button_images_on[3], 0.55, 620, 500)
+ac_btn = DashboardButton(button_images_off[4], button_images_on[4], 0.55, 740, 500)
+music_btn = DashboardButton(button_images_off[5], button_images_on[5], 0.55, 860, 500)
+menu_btn = DashboardButton(menu_btn_img, menu_btn_img, 0.55, 980, 480)
 
-buttons_list = pygame.sprite.Group()
-buttons_list.add(lights_btn, left_blinker_btn, right_blinker_btn, wipers_btn, 
+buttons_group = pygame.sprite.Group()
+buttons_group.add(lights_btn, left_blinker_btn, right_blinker_btn, wipers_btn, 
                 ac_btn, music_btn, menu_btn)
+RADIUS = 45
 
+buttons_list = []
+for button in buttons_group:
+    buttons_list.append(button)
 #-------------------------------------------------------------------------
 # Game Loop
 while running:
@@ -359,46 +356,32 @@ while running:
 
     draw(WIN, images, player_car)
     
-    buttons_list.draw(WIN)
-
+    buttons_group.draw(WIN)
+    
     #all_sprite_list.draw(WIN)
 
     for event in pygame.event.get():
         # If player clicked X on the window
         if event.type == pygame.QUIT:   
             running = False
-            break  
+            break 
+        # If player clicked with left mouse button 
         if event.type == pygame.MOUSEBUTTONDOWN:
+            # Get current mouse position
             m_x, m_y = pygame.mouse.get_pos()
+            # Check if one of the dashboard buttons was pressed
+            for button in buttons_list:
+                dis = math.sqrt((button.rect.centerx-m_x)**2 + (button.rect.centery-m_y)**2)
+                #pygame.draw.circle(WIN, RED, (button.rect.centerx, button.rect.centery), RADIUS)
+                if (dis < RADIUS):
+                    button.button_pressed()
 
         """
         # Create the path for computer car
         if event.type == pygame.MOUSEBUTTONDOWN:
             pos = pygame.mouse.get_pos()
             path.append(pos)
-          
-    
-    if lights_btn.draw_button(WIN):
-        lights = not lights
-
-        if lights:
-            lights_btn.update_image(LIGHTS_ON_IMG)
-        else:
-            lights_btn.update_image(LIGHTS_OFF_IMG)
-    
-    for btn, pressed, img_off, img_on in buttons:
-        if btn.draw_button(WIN):
-            pressed = not pressed
-
-            if pressed:
-                btn.update_image(img_off)
-            else:
-                btn.update_image(img_on)
-    """
-        
-    
-    
-
+        """
 
     # move_player(player_car)
     #move_player(player)
