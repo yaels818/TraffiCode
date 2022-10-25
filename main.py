@@ -6,8 +6,8 @@ from utils import *
 
 
 pygame.init()
+pygame.font.init()
 #pygame.mixer.init()
-#pygame.font.init()
 
 # Load up a basic window
 WIDTH, HEIGHT = 1100, 600
@@ -19,6 +19,9 @@ pygame.display.set_caption("TraffiCode")
 pygame.display.set_icon(scale_image(pygame.image.load("Assets\Images\gameIcon.png"),0.2))
 
 #main_font = pygame.font.SysFont("Eras Bold ITC", 20)
+MAIN_FONT = pygame.font.SysFont("centurygothic", 36)
+SMALL_FONT = pygame.font.SysFont("erasdemiitc", 26)
+
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -204,6 +207,7 @@ def draw(win, images, player_car):
     pygame.display.update() 
 
 def draw_dashboard_init(win):
+    
     path = "Assets\Images\Dashboard/"
     DASHBOARD = scale_image(pygame.image.load(path + "dashboard.png"),0.8)
     SPEEDOMETER = scale_image(pygame.image.load(path + "speedometer.png"),0.35)
@@ -216,6 +220,15 @@ def draw_dashboard_init(win):
         # Draw this img in this position
         win.blit(img, pos)
 
+    countdown_text = SMALL_FONT.render(f"00:00:00", 1, RED)
+    win.blit(countdown_text, (WIDTH/2-120,30))
+
+    level_text = SMALL_FONT.render(f"Level 1", 1, RED)
+    win.blit(level_text, (860, 60))
+
+    # round to the first significant digit, units are px/sec
+    velocity_text = SMALL_FONT.render(f"{round(player_car.vel, 1)}", 1, (255, 255, 255))
+    win.blit(velocity_text, (360, HEIGHT - velocity_text.get_height() - 50))
 #--------------------------------------------------------------
 
 def move_player(player_car):
@@ -392,5 +405,7 @@ while running:
 
 #print(path)
 #print(score)
+
+#print(*pygame.font.get_fonts(), sep = "\n")
 
 pygame.quit()   # Close the game cleanly
