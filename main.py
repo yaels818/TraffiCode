@@ -1,7 +1,12 @@
+# Outsource imports
 import pygame
 import os
 import math
 from random import randint, choice
+
+# Local imports
+import constants
+from Cars import PlayerCar, PlayerSprite
 from utils import *
 
 
@@ -18,26 +23,6 @@ os.environ['SDL_VIDEO_CENTERED'] = '1'
 pygame.display.set_caption("TraffiCode")
 pygame.display.set_icon(scale_image(pygame.image.load("Assets\Images\gameIcon.png"),0.2))
 
-#main_font = pygame.font.SysFont("Eras Bold ITC", 20)
-MAIN_FONT = pygame.font.SysFont("centurygothic", 36)
-SMALL_FONT = pygame.font.SysFont("erasdemiitc", 26)
-
-
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-RED = (255, 0, 0)
-GREEN = (0, 255, 0)
-BLUE = (0, 0, 255)
-
-BACKGROUND = scale_image(pygame.image.load("Assets\Images\Backgrounds/background0.png"),0.76)
-SCENE = scale_image(pygame.image.load("Assets\Images\Scenes\Mishmar HaGvul.png"),1.7)
-SCENE_BORDER = scale_image(pygame.image.load("Assets\Images\Borders\Mishmar HaGvul_Border_Monocrome.png"),1.7)
-RED_CAR = scale_image(pygame.image.load("Assets\Images\Cars/red_car.png"), 0.5)
-
-# Create a mask from track border
-SCENE_MASK = pygame.mask.from_surface(SCENE_BORDER)
-
-FPS = 60    # Frame per second
 clock = pygame.time.Clock()
 
 score = 0
@@ -45,104 +30,6 @@ score = 0
 path = []
 
 #-------------------------------------------------------------
-
-class AbstractCar:
-    def __init__(self, max_vel, rotation_vel):
-        self.img = self.IMG
-        self.max_vel = max_vel
-        self.vel = 0
-        self.rotation_vel = rotation_vel
-        self.angle = 0
-        self.x, self.y = self.START_POS
-        self.acceleration = 0.08 
-
-    def rotate(self, left = False, right = False):
-        if left:
-            self.angle += self.rotation_vel
-        elif right:
-            self.angle -= self.rotation_vel
-
-    def draw(self, win):
-        blit_rotate_center(win,self.img, (self.x, self.y), self.angle)
-
-    def move_forward(self):
-        # Increase velocity without going over maximum velocity
-        self.vel = min(self.vel + self.acceleration, self.max_vel)
-        self.move()
-
-    def move_backward(self):
-        # We want the max velocity backwards to be half of the max velocity forward
-        # (Reverse gear cant reach top speed like forward gears)
-        self.vel = max(self.vel - self.acceleration, -self.max_vel / 2)
-        self.move()
-
-    def move(self):
-        # Using basic Trigonometry, calculate vertical and horizontal movement 
-        radians = math.radians(self.angle)
-        vertical = math.cos(radians) * self.vel
-        horizontal = math.sin(radians) * self.vel
-
-        # Move the car in whatever direction it is facing
-        self.y -= vertical
-        self.x -= horizontal
-
-    def collide(self, mask, x = 0, y = 0):
-        car_mask = pygame.mask.from_surface(self.img)
-
-        # Calculate displacement between the 2 masks
-        offset = (int(self.x - x), int(self.y - y))
-
-        # Point of intersection - if there was poi, the objects did collide
-        poi = mask.overlap(car_mask, offset) 
-        return poi
-
-    def reset(self):
-        self.x, self.y = self.START_POS
-        self.angle = 0
-        self.vel = 0
-
-class Player(AbstractCar, pygame.sprite.Sprite):
-
-    IMG = RED_CAR
-    START_POS = (150,150)
-
-    def __init__(self):
-        # Call the parent class's constructor
-        pygame.sprite.Sprite.__init__(self)
-        AbstractCar.__init__(self,2,2)
-        self.image = RED_CAR
-        self.rect = self.image.get_rect(center = self.START_POS)
-
-    def reduce_speed(self):
-        # Reduce the velocity by half the acceleration, if negative then just stop moving 
-        self.vel = max(self.vel - self.acceleration / 2, 0)
-        self.move()
-
-    def bounce(self):
-        # Bounce back from a wall
-        self.vel = -self.vel/2
-        self.move()
-
-    def reset(self):
-         AbstractCar().reset()
-
-class PlayerCar(AbstractCar): # Inherit from AbstractCar
-    IMG = RED_CAR
-    START_POS = (400, 450)
-
-    def reduce_speed(self):
-        # Reduce the velocity by half the acceleration, if negative then just stop moving 
-        self.vel = max(self.vel - self.acceleration / 2, 0)
-        self.move()
-
-    def bounce(self):
-        # Bounce back from a wall
-        self.vel = -self.vel/2
-        self.move()
-
-    def reset(self):
-        super().reset()
-
 # Class for all borders in the scene (sidewalk, island, lane)
 class Border(pygame.sprite.Sprite):
     
@@ -161,11 +48,11 @@ class Border(pygame.sprite.Sprite):
         self.rect.y = y
 
         if type == 'sidewalk':
-            self.image.fill(RED)
+            self.image.fill(constants.RED)
         elif type == 'island':
-            self.image.fill(WHITE)
+            self.image.fill(constants.WHITE)
         elif type == 'lane':
-            self.image.fill(GREEN)
+            self.image.fill(constants.GREEN)
 
 class DashboardButton(pygame.sprite.Sprite):
     
@@ -203,8 +90,6 @@ def draw(win, images, player_car):
     #draw_scene_borders(win)
     draw_dashboard_init(win)
 
-    # Update the window with everything we have drawn
-    pygame.display.update() 
 
 def draw_dashboard_init(win):
     
@@ -220,14 +105,14 @@ def draw_dashboard_init(win):
         # Draw this img in this position
         win.blit(img, pos)
 
-    countdown_text = SMALL_FONT.render(f"00:00:00", 1, RED)
+    countdown_text = constants.SMALL_FONT.render(f"00:00:00", 1, constants.RED)
     win.blit(countdown_text, (WIDTH/2-120,30))
 
-    level_text = SMALL_FONT.render(f"Level 1", 1, RED)
+    level_text = constants.SMALL_FONT.render(f"Level 1", 1, constants.RED)
     win.blit(level_text, (860, 60))
 
     # round to the first significant digit, units are px/sec
-    velocity_text = SMALL_FONT.render(f"{round(player_car.vel, 1)}", 1, (255, 255, 255))
+    velocity_text = constants.SMALL_FONT.render(f"{round(player_car.vel, 1)}", 1, (255, 255, 255))
     win.blit(velocity_text, (360, HEIGHT - velocity_text.get_height() - 50))
 #--------------------------------------------------------------
 
@@ -252,7 +137,7 @@ def move_player(player_car):
 
 def handle_collision_with_mask(player_car):
     # Check if the player car is colliding with the track walls
-    if player_car.collide(SCENE_MASK) != None:
+    if player_car.collide(constants.SCENE_MASK) != None:
         player_car.bounce()
 
 
@@ -260,34 +145,34 @@ def handle_collision_with_mask(player_car):
 def draw_points(path, win):
     for point in path:
         # Draw a red point of radius 5 in the path
-        pygame.draw.circle(win, RED, point, 5)
+        pygame.draw.circle(win, constants.RED, point, 5)
 
 def draw_scene_borders(win):
-    sidewalk_borders = [(("Top_Hori_Sidewalk"), (0, 185), (SCENE.get_width(), 5)),
+    sidewalk_borders = [(("Top_Hori_Sidewalk"), (0, 185), (constants.SCENE.get_width(), 5)),
                         (("Bot_Hori_Sidewalk_Left"), (0, 380), (243, 5)),
-                        (("Bot_Hori_Sidewalk_Right"), (437, 380), (SCENE.get_width()-437, 5)),
-                        (("Vert_Sidewalk_Left"), (SCENE.get_width()-440, 380), (5, HEIGHT)),
+                        (("Bot_Hori_Sidewalk_Right"), (437, 380), (constants.SCENE.get_width()-437, 5)),
+                        (("Vert_Sidewalk_Left"), (constants.SCENE.get_width()-440, 380), (5, HEIGHT)),
                         (("Vert_Sidewalk_Right"), (437, 380), (5, HEIGHT))]
 
 
-    lane_borders = [(("Hori_Lane"), (0, 285), (SCENE.get_width(), 5)),
-                    (("Vert_Lane"), ((int(SCENE.get_width()/2)), 285), (5, HEIGHT))]
+    lane_borders = [(("Hori_Lane"), (0, 285), (constants.SCENE.get_width(), 5)),
+                    (("Vert_Lane"), ((int(constants.SCENE.get_width()/2)), 285), (5, HEIGHT))]
 
     island_borders = [(("Left_Island"), (135,273), (218-135,298-273)),
                     (("Bot_Island"), (300,381), (380-300,463-381))]
 
     for kind, top_left, bottom_right in sidewalk_borders:
         # Draw this kind in this position
-        pygame.draw.rect(win, GREEN, (*top_left, *bottom_right))
+        pygame.draw.rect(win, constants.GREEN, (*top_left, *bottom_right))
     
     for kind, top_left, bottom_right in lane_borders:
         # Draw this kind in this position
-        pygame.draw.rect(win, BLUE, (*top_left, *bottom_right))
+        pygame.draw.rect(win, constants.BLUE, (*top_left, *bottom_right))
 
     for kind, top_left, bottom_right in island_borders:
         # Draw this kind in this position
-        pygame.draw.rect(win, RED, (*top_left, *bottom_right))
-    #pygame.display.update() 
+        pygame.draw.rect(win, constants.RED, (*top_left, *bottom_right))
+    
     
 def create_scene_borders(borders_list, all_sprite_list):
 
@@ -301,11 +186,11 @@ def create_scene_borders(borders_list, all_sprite_list):
     all_sprite_list.add(bot_hori_sidewalk_left)    
     """
 
-    hori_lane = Border('lane', 0, 285, SCENE.get_width(), 5)
+    hori_lane = Border('lane', 0, 285, constants.SCENE.get_width(), 5)
     borders_list.add(hori_lane)
     all_sprite_list.add(hori_lane) 
 
-    vert_lane = Border('lane', int(SCENE.get_width()/2), 285, 5, HEIGHT)
+    vert_lane = Border('lane', int(constants.SCENE.get_width()/2), 285, 5, HEIGHT)
     borders_list.add(vert_lane)
     all_sprite_list.add(vert_lane) 
 
@@ -318,17 +203,17 @@ def handle_collision_with_borders():
 #-------------------------------------------------------------
 
 running = True
-images = [(BACKGROUND, (0,0)), (SCENE, (0,0))]
+images = [(constants.BACKGROUND, (0,0)), (constants.SCENE, (0,0))]
 
 # Groups
 player = pygame.sprite.GroupSingle()
-player.add(Player())
+player.add(PlayerSprite())
 
 borders_list = pygame.sprite.Group()
 all_sprite_list = pygame.sprite.Group()
 all_sprite_list.add(player)
 
-player_car = PlayerCar(2,2)
+player_car = PlayerCar(5,3)
 
 create_scene_borders(borders_list, all_sprite_list)
 
@@ -365,12 +250,13 @@ for button in buttons_group:
 # Game Loop
 while running:
     # Limit our window to this max speed
-    clock.tick(FPS)   
+    clock.tick(constants.FPS)   
 
     draw(WIN, images, player_car)
     
     buttons_group.draw(WIN)
     
+    #pygame.draw.rect(WIN, GREEN, (0,0,850,490))
     #all_sprite_list.draw(WIN)
 
     for event in pygame.event.get():
@@ -396,11 +282,12 @@ while running:
             path.append(pos)
         """
 
-    # move_player(player_car)
+    move_player(player_car)
     #move_player(player)
     #handle_collision_with_mask(player_car)
     #handle_collision_with_borders()
 
+    # Update the window with everything we have drawn
     pygame.display.update()
 
 #print(path)
