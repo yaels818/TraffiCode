@@ -1,6 +1,6 @@
 import pygame
 
-from Cars import AbstractCar
+from RoadUsers import AbstractCar
 import constants
 
 class PlayerSprite(AbstractCar, pygame.sprite.Sprite):

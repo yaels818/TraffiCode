@@ -6,7 +6,7 @@ from random import randint, choice
 
 # Local imports
 import constants
-from Cars import PlayerCar, PlayerSprite
+from RoadUsers import PlayerCar, PlayerSprite
 from utils import *
 
 pygame.init()
@@ -104,10 +104,10 @@ def draw_dashboard_init(win):
         win.blit(img, pos)
 
     countdown_text = constants.SMALL_FONT.render(f"00:00:00", 1, constants.RED)
-    win.blit(countdown_text, (WIDTH/2-120,30))
+    #win.blit(countdown_text, (WIDTH/2-120,30))
 
     level_text = constants.SMALL_FONT.render(f"Level 1", 1, constants.RED)
-    win.blit(level_text, (860, 60))
+    #win.blit(level_text, (860, 60))
 
     # round to the first significant digit, units are px/sec
     velocity_text = constants.SMALL_FONT.render(f"{round(player_car.vel, 1)}", 1, (255, 255, 255))
@@ -204,8 +204,9 @@ running = True
 images = [(constants.BACKGROUND, (0,0)), (constants.SCENE, (0,HEIGHT/10))]
 
 # Groups
-player = pygame.sprite.GroupSingle()
-player.add(PlayerSprite())
+player = PlayerSprite()
+playerGroup = pygame.sprite.GroupSingle()
+playerGroup.add(player)
 
 borders_list = pygame.sprite.Group()
 all_sprite_list = pygame.sprite.Group()
