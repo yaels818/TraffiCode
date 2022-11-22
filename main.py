@@ -9,13 +9,11 @@ import constants
 from Cars import PlayerCar, PlayerSprite
 from utils import *
 
-
 pygame.init()
 pygame.font.init()
-#pygame.mixer.init()
 
 # Load up a basic window
-WIDTH, HEIGHT = 1100, 600
+WIDTH, HEIGHT = 1200, 600
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
@@ -96,10 +94,10 @@ def draw_dashboard_init(win):
     path = "Assets\Images\Dashboard/"
     DASHBOARD = scale_image(pygame.image.load(path + "dashboard.png"),0.8)
     SPEEDOMETER = scale_image(pygame.image.load(path + "speedometer.png"),0.35)
-    MIRROR = scale_image(pygame.image.load(path + "rear_view_mirror.png"),0.3)
-    PHONE = scale_image(pygame.image.load(path + "phone.png"),0.53)
+    MIRROR = scale_image(pygame.image.load(path + "rear_view_mirror.png"),0.27)
+    PHONE = scale_image(pygame.image.load(path + "phone.png"),0.55)
     
-    elements = [(DASHBOARD, (-70,460)), (SPEEDOMETER, (225,400)), (MIRROR, (WIDTH/2-200,-65)),(PHONE, (840,10))]
+    elements = [(DASHBOARD, (-70,460)), (SPEEDOMETER, (225,400)), (MIRROR, (WIDTH/2-200,-65)),(PHONE, (940,10))]
     
     for img, pos in elements:
         # Draw this img in this position
@@ -203,7 +201,7 @@ def handle_collision_with_borders():
 #-------------------------------------------------------------
 
 running = True
-images = [(constants.BACKGROUND, (0,0)), (constants.SCENE, (0,0))]
+images = [(constants.BACKGROUND, (0,0)), (constants.SCENE, (0,HEIGHT/10))]
 
 # Groups
 player = pygame.sprite.GroupSingle()
