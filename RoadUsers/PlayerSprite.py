@@ -17,7 +17,7 @@ class PlayerSprite(AbstractCar, pygame.sprite.Sprite):
 
     def reduce_speed(self):
         # Reduce the velocity by half the acceleration, if negative then just stop moving 
-        self.vel = max(self.vel - self.acceleration / 2, 0)
+        self.vel = max(self.vel - 2 * self.acceleration, 0)
         self.move()
 
     def bounce(self):

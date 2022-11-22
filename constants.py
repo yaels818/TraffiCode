@@ -18,10 +18,13 @@ BLUE = (0, 0, 255)
 
 BACKGROUND = scale_image(pygame.image.load("Assets\Images\Backgrounds/background0.png"),1)
 SCENE = scale_image(pygame.image.load("Assets\Images\Scenes\scene_1.png"),1.4)
-SCENE_BORDER = scale_image(pygame.image.load("Assets\Images\Borders\Mishmar HaGvul_Border_Monocrome.png"),1.7)
+
 RED_CAR = scale_image(pygame.image.load("Assets\Images\Cars/red_car.png"), 0.3)
 
 # Create a mask from track border
+"""
+SCENE_BORDER = scale_image(pygame.image.load("Assets\Images\Borders\Mishmar HaGvul_Border_Monocrome.png"),1.7)
 SCENE_MASK = pygame.mask.from_surface(SCENE_BORDER)
+"""
 
 FPS = 60    # Frame per second

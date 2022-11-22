@@ -110,7 +110,7 @@ def draw_dashboard_init(win):
     #win.blit(level_text, (860, 60))
 
     # round to the first significant digit, units are px/sec
-    velocity_text = constants.SMALL_FONT.render(f"{round(player_car.vel, 1)}", 1, (255, 255, 255))
+    velocity_text = constants.SMALL_FONT.render(f"{round(player.vel, 1)}", 1, (255, 255, 255))
     win.blit(velocity_text, (360, HEIGHT - velocity_text.get_height() - 50))
 #--------------------------------------------------------------
 
@@ -200,7 +200,7 @@ def handle_collision_with_borders():
     print(borders_hit_list)
 #-------------------------------------------------------------
 
-running = True
+
 images = [(constants.BACKGROUND, (0,0)), (constants.SCENE, (0,HEIGHT/10))]
 
 # Groups
@@ -215,7 +215,7 @@ other_cars_list.add(player)
 
 player_car = PlayerCar(5,3)
 
-create_scene_borders(borders_list, all_sprite_list)
+create_scene_borders(borders_list, playerGroup)
 
 #---------------------------------------------------------------
 
@@ -247,6 +247,7 @@ buttons_list = []
 for button in buttons_group:
     buttons_list.append(button)
 #-------------------------------------------------------------------------
+running = True
 # Game Loop
 while running:
     # Limit our window to this max speed
