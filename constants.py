@@ -28,3 +28,5 @@ SCENE_MASK = pygame.mask.from_surface(SCENE_BORDER)
 """
 
 FPS = 60    # Frame per second
+
+RADIUS = 45
