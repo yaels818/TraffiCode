@@ -204,13 +204,14 @@ running = True
 images = [(constants.BACKGROUND, (0,0)), (constants.SCENE, (0,HEIGHT/10))]
 
 # Groups
-player = PlayerSprite()
+player = PlayerSprite(3,2)
+
 playerGroup = pygame.sprite.GroupSingle()
 playerGroup.add(player)
 
 borders_list = pygame.sprite.Group()
-all_sprite_list = pygame.sprite.Group()
-all_sprite_list.add(player)
+other_cars_list = pygame.sprite.Group()
+other_cars_list.add(player)
 
 player_car = PlayerCar(5,3)
 
@@ -251,8 +252,8 @@ while running:
     # Limit our window to this max speed
     clock.tick(constants.FPS)   
 
-    draw(WIN, images, player_car)
-    
+    #draw(WIN, images, player_car)
+    draw(WIN,images,player)
     buttons_group.draw(WIN)
     
     #pygame.draw.rect(WIN, GREEN, (0,0,850,490))
@@ -281,8 +282,8 @@ while running:
             path.append(pos)
         """
 
-    move_player(player_car)
-    #move_player(player)
+    #move_player(player_car)
+    move_player(player)
     #handle_collision_with_mask(player_car)
     #handle_collision_with_borders()
 
