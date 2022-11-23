@@ -1,6 +1,5 @@
 # Outsource imports
 import pygame
-import os
 import math
 from random import randint, choice
 
@@ -14,13 +13,8 @@ pygame.init()
 pygame.font.init()
 
 # Load up a basic window
-WIDTH, HEIGHT = 1200, 600
-WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 
-os.environ['SDL_VIDEO_CENTERED'] = '1'
 
-pygame.display.set_caption("TraffiCode")
-pygame.display.set_icon(scale_image(pygame.image.load("Assets\Images\gameIcon.png"),0.2))
 
 clock = pygame.time.Clock()
 
@@ -65,20 +59,11 @@ def draw(win, images, player_car):
     
     #draw_points(path, win)
     #draw_scene_borders(win)
-    draw_dashboard_init(win)
+    draw_dashboard_elements(win)
 
-
-def draw_dashboard_init(win):
+def draw_dashboard_elements(win):
     
-    path = "Assets\Images\Dashboard/"
-    DASHBOARD = scale_image(pygame.image.load(path + "dashboard.png"),0.8)
-    SPEEDOMETER = scale_image(pygame.image.load(path + "speedometer.png"),0.35)
-    MIRROR = scale_image(pygame.image.load(path + "rear_view_mirror.png"),0.27)
-    PHONE = scale_image(pygame.image.load(path + "phone.png"),0.55)
-    
-    elements = [(DASHBOARD, (-70,460)), (SPEEDOMETER, (225,400)), (MIRROR, (WIDTH/2-200,-65)),(PHONE, (940,10))]
-    
-    for img, pos in elements:
+    for img, pos in constants.DASH_IMGS:
         # Draw this img in this position
         win.blit(img, pos)
 
@@ -90,7 +75,7 @@ def draw_dashboard_init(win):
 
     # round to the first significant digit, units are px/sec
     velocity_text = constants.SMALL_FONT.render(f"{round(player.vel, 1)}", 1, (255, 255, 255))
-    win.blit(velocity_text, (360, HEIGHT - velocity_text.get_height() - 50))
+    win.blit(velocity_text, (360, constants.HEIGHT - velocity_text.get_height() - 50))
 #--------------------------------------------------------------
 
 def move_player(player_car):
@@ -128,12 +113,12 @@ def draw_scene_borders(win):
     sidewalk_borders = [(("Top_Hori_Sidewalk"), (0, 185), (constants.SCENE.get_width(), 5)),
                         (("Bot_Hori_Sidewalk_Left"), (0, 380), (243, 5)),
                         (("Bot_Hori_Sidewalk_Right"), (437, 380), (constants.SCENE.get_width()-437, 5)),
-                        (("Vert_Sidewalk_Left"), (constants.SCENE.get_width()-440, 380), (5, HEIGHT)),
-                        (("Vert_Sidewalk_Right"), (437, 380), (5, HEIGHT))]
+                        (("Vert_Sidewalk_Left"), (constants.SCENE.get_width()-440, 380), (5, constants.HEIGHT)),
+                        (("Vert_Sidewalk_Right"), (437, 380), (5, constants.HEIGHT))]
 
 
     lane_borders = [(("Hori_Lane"), (0, 285), (constants.SCENE.get_width(), 5)),
-                    (("Vert_Lane"), ((int(constants.SCENE.get_width()/2)), 285), (5, HEIGHT))]
+                    (("Vert_Lane"), ((int(constants.SCENE.get_width()/2)), 285), (5, constants.HEIGHT))]
 
     island_borders = [(("Left_Island"), (135,273), (218-135,298-273)),
                     (("Bot_Island"), (300,381), (380-300,463-381))]
@@ -167,7 +152,7 @@ def create_scene_borders(borders_list, all_sprite_list):
     borders_list.add(hori_lane)
     all_sprite_list.add(hori_lane) 
 
-    vert_lane = Border('lane', int(constants.SCENE.get_width()/2), 285, 5, HEIGHT)
+    vert_lane = Border('lane', int(constants.SCENE.get_width()/2), 285, 5, constants.HEIGHT)
     borders_list.add(vert_lane)
     all_sprite_list.add(vert_lane) 
 
@@ -179,31 +164,22 @@ def handle_collision_with_borders():
     print(borders_hit_list)
 #-------------------------------------------------------------
 
-
-images = [(constants.BACKGROUND, (0,0)), (constants.SCENE, (0,HEIGHT/10))]
-
 # Groups
 player = PlayerSprite(3,2)
-
-
 playerGroup = pygame.sprite.GroupSingle()
 playerGroup.add(player)
-
-borders_list = pygame.sprite.Group()
-other_cars_list = pygame.sprite.Group()
-other_cars_list.add(player)
-
-player_car = PlayerCar(5,3)
-
-create_scene_borders(borders_list, playerGroup)
-
-#---------------------------------------------------------------
-
 
 buttons_list = DashboardButton.load_button_images()
 buttons_group = pygame.sprite.Group()
 buttons_group.add(buttons_list)
 
+borders_list = pygame.sprite.Group()
+other_cars_list = pygame.sprite.Group()
+other_cars_list.add(player)
+
+#player_car = PlayerCar(5,3)
+
+create_scene_borders(borders_list, playerGroup)
 #-------------------------------------------------------------------------
 running = True
 # Game Loop
@@ -212,8 +188,8 @@ while running:
     clock.tick(constants.FPS)   
 
     #draw(WIN, images, player_car)
-    draw(WIN,images,player)
-    buttons_group.draw(WIN)
+    draw(constants.WIN,constants.LEVEL_IMGS,player)
+    buttons_group.draw(constants.WIN)
     
     #pygame.draw.rect(WIN, GREEN, (0,0,850,490))
     #all_sprite_list.draw(WIN)
