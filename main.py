@@ -12,10 +12,6 @@ from utils import *
 pygame.init()
 pygame.font.init()
 
-# Load up a basic window
-
-
-
 clock = pygame.time.Clock()
 
 score = 0
@@ -49,24 +45,28 @@ class Border(pygame.sprite.Sprite):
 
 #-------------------------------------------------------------
 
-def draw(win, images, player_car):
+def draw(win, player_car):
     
-    for img, pos in images:
+    for img, pos in constants.LEVEL_IMGS:
         # Draw this img in this position
         win.blit(img, pos)  
     
     player_car.draw(win)
-    
+
     #draw_points(path, win)
     #draw_scene_borders(win)
-    draw_dashboard_elements(win)
 
-def draw_dashboard_elements(win):
+    pygame.draw.rect(constants.WIN, constants.GRAY, constants.DASHBOARD_RECT_HOR)
+    pygame.draw.rect(constants.WIN, constants.GRAY, constants.DASHBOARD_RECT_VER)
     
     for img, pos in constants.DASH_IMGS:
         # Draw this img in this position
         win.blit(img, pos)
 
+    draw_dashboard_elements(win)
+
+def draw_dashboard_elements(win):
+    
     countdown_text = constants.SMALL_FONT.render(f"00:00:00", 1, constants.RED)
     #win.blit(countdown_text, (WIDTH/2-120,30))
 
@@ -75,7 +75,7 @@ def draw_dashboard_elements(win):
 
     # round to the first significant digit, units are px/sec
     velocity_text = constants.SMALL_FONT.render(f"{round(player.vel, 1)}", 1, (255, 255, 255))
-    win.blit(velocity_text, (360, constants.HEIGHT - velocity_text.get_height() - 50))
+    win.blit(velocity_text, (constants.SPEEDOMETER_POS))
 #--------------------------------------------------------------
 
 def move_player(player_car):
@@ -188,8 +188,9 @@ while running:
     clock.tick(constants.FPS)   
 
     #draw(WIN, images, player_car)
-    draw(constants.WIN,constants.LEVEL_IMGS,player)
+    draw(constants.WIN,player)
     buttons_group.draw(constants.WIN)
+    constants.draw_screen_positions()
     
     #pygame.draw.rect(WIN, GREEN, (0,0,850,490))
     #all_sprite_list.draw(WIN)
