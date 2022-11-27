@@ -63,9 +63,9 @@ def draw(win, player_car):
         # Draw this img in this position
         win.blit(img, pos)
 
-    draw_dashboard_elements(win)
+    draw_dashboard_texts(win)
 
-def draw_dashboard_elements(win):
+def draw_dashboard_texts(win):
     
     countdown_text = constants.SMALL_FONT.render(f"00:00:00", 1, constants.RED)
     #win.blit(countdown_text, (WIDTH/2-120,30))
@@ -74,8 +74,9 @@ def draw_dashboard_elements(win):
     #win.blit(level_text, (860, 60))
 
     # round to the first significant digit, units are px/sec
-    velocity_text = constants.SMALL_FONT.render(f"{round(player.vel, 1)}", 1, (255, 255, 255))
-    win.blit(velocity_text, (constants.SPEEDOMETER_POS))
+    velocity_text = constants.SMALL_FONT.render(f"{round(player.vel,1)}", 1, (255, 255, 255))
+    velocity_text_pos = (constants.SPEEDOMETER_TEXT_POS[0]-velocity_text.get_rect().centerx,constants.SPEEDOMETER_TEXT_POS[1]-velocity_text.get_rect().centery)
+    win.blit(velocity_text, velocity_text_pos)
 #--------------------------------------------------------------
 
 def move_player(player_car):
