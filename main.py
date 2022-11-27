@@ -74,7 +74,7 @@ def draw_dashboard_texts(win):
     #win.blit(level_text, (860, 60))
 
     # round to the first significant digit, units are px/sec
-    velocity_text = constants.SMALL_FONT.render(f"{round(player.vel,1)}", 1, (255, 255, 255))
+    velocity_text = constants.SMALL_FONT.render(f"{round(round(player.vel,1)*10.0)}", 1, (255, 255, 255))
     velocity_text_pos = (constants.SPEEDOMETER_TEXT_POS[0]-velocity_text.get_rect().centerx,constants.SPEEDOMETER_TEXT_POS[1]-velocity_text.get_rect().centery)
     win.blit(velocity_text, velocity_text_pos)
 #--------------------------------------------------------------
@@ -191,7 +191,7 @@ while running:
     #draw(WIN, images, player_car)
     draw(constants.WIN,player)
     buttons_group.draw(constants.WIN)
-    constants.draw_screen_positions()
+    #constants.draw_screen_positions()
     
     #pygame.draw.rect(WIN, GREEN, (0,0,850,490))
     #all_sprite_list.draw(WIN)
