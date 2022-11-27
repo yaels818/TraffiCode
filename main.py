@@ -169,7 +169,7 @@ player = PlayerSprite(3,2)
 playerGroup = pygame.sprite.GroupSingle()
 playerGroup.add(player)
 
-buttons_list = DashboardButton.load_button_images()
+buttons_list = DashboardButton.create_buttons_list()
 buttons_group = pygame.sprite.Group()
 buttons_group.add(buttons_list)
 
