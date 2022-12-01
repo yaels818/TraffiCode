@@ -1,9 +1,9 @@
 import pygame
 
-from RoadUsers import AbstractCar
+from RoadUsers import RoadUser
 import constants
 
-class PlayerSprite(AbstractCar, pygame.sprite.Sprite):
+class PlayerSprite(RoadUser, pygame.sprite.Sprite):
 
     IMG = constants.RED_CAR
     START_POS = (150,150)
@@ -11,7 +11,7 @@ class PlayerSprite(AbstractCar, pygame.sprite.Sprite):
     def __init__(self,max_vel, rotation_vel):
         # Call the parent class's constructor
         pygame.sprite.Sprite.__init__(self)
-        AbstractCar.__init__(self,max_vel, rotation_vel)
+        RoadUser.__init__(self,max_vel, rotation_vel)
         self.image = constants.RED_CAR
         self.rect = self.image.get_rect(center = self.START_POS)
 
@@ -26,5 +26,5 @@ class PlayerSprite(AbstractCar, pygame.sprite.Sprite):
         self.move()
 
     def reset(self):
-         AbstractCar().reset()
+         RoadUser().reset()
 

@@ -1,7 +1,7 @@
 import RoadUsers
 import constants
 
-class PlayerCar(RoadUsers.AbstractCar): # Inherit from AbstractCar
+class PlayerCar(RoadUsers.RoadUser): # Inherit from RoadUser class
     IMG = constants.RED_CAR
     START_POS = (400, 450)
 
