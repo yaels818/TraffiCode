@@ -3,8 +3,12 @@ import pygame
 
 from utils import blit_rotate_center
 
-class RoadUser:
+class RoadUser(pygame.sprite.Sprite):
+
     def __init__(self, max_vel, rotation_vel):
+        # Call the parent class's constructor
+        pygame.sprite.Sprite.__init__(self)
+        
         self.img = self.IMG
         self.max_vel = max_vel
         self.vel = 0
