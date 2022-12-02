@@ -6,7 +6,7 @@ from random import randint, choice
 # Local imports
 import constants
 import DashboardButton
-from RoadUsers import PlayerCar, PlayerSprite
+from RoadUsers import PlayerSprite
 from utils import *
 
 pygame.init()
@@ -98,10 +98,12 @@ def move_player(player_car):
     if not moved:
         player_car.reduce_speed()
 
-def handle_collision_with_mask(player_car):
-    # Check if the player car is colliding with the track walls
-    if player_car.collide(constants.SCENE_MASK) != None:
-        player_car.bounce()
+def handle_collision_with_screen_borders(player_car):
+    # Check if the player car is colliding with the screen boundaries
+    if player_car.rect.right >= constants.WIDTH or player_car.rect.left <= 0:
+        print("collision width")
+    if player_car.rect.bottom >= constants.DASHBOARD_HOR_TOP or player_car.rect.top <= 0:
+        print("collision height")
 
 
 # Function for drawing path points
@@ -166,7 +168,7 @@ def handle_collision_with_borders():
 #-------------------------------------------------------------
 
 # Groups
-player = PlayerSprite(3,2)
+player = PlayerSprite((constants.MIRROR_CENTER,constants.HEIGHT/2))
 playerGroup = pygame.sprite.GroupSingle()
 playerGroup.add(player)
 
@@ -221,8 +223,11 @@ while running:
 
     #move_player(player_car)
     move_player(player)
+    print(player.rect.right)
+    print(player.rect.bottom)
     #handle_collision_with_mask(player_car)
     #handle_collision_with_borders()
+    handle_collision_with_screen_borders(player)
 
     # Update the window with everything we have drawn
     pygame.display.update()
