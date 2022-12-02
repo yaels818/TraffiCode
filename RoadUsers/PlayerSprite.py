@@ -6,14 +6,9 @@ import constants
 class PlayerSprite(RoadUser):
 
     IMG = constants.RED_CAR
-    START_POS = (150,150)
 
-    def __init__(self,max_vel, rotation_vel):
-        
-        
-        RoadUser.__init__(self,max_vel, rotation_vel)
-        self.image = constants.RED_CAR
-        self.rect = self.image.get_rect(topleft = self.START_POS)
+    def __init__(self,start_pos):
+        RoadUser.__init__(self,start_pos)
 
     def reduce_speed(self):
         # Reduce the velocity by half the acceleration, if negative then just stop moving 

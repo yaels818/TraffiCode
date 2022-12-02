@@ -5,17 +5,22 @@ from utils import blit_rotate_center
 
 class RoadUser(pygame.sprite.Sprite):
 
-    def __init__(self, max_vel, rotation_vel):
+    def __init__(self, start_pos):
         # Call the parent class's constructor
         pygame.sprite.Sprite.__init__(self)
-        
-        self.img = self.IMG
-        self.max_vel = max_vel
+
+        self.image = self.IMG
+        self.start_pos = start_pos
+        self.rect = self.image.get_rect(topleft = start_pos)
+
+        self.max_vel = 3
+        self.acceleration = 0.02
+        self.rotation_vel = 2
+
         self.vel = 0
-        self.rotation_vel = rotation_vel
         self.angle = 0
-        self.x, self.y = self.START_POS
-        self.acceleration = 0.02 
+        self.x, self.y = start_pos
+        
 
     def rotate(self, left = False, right = False):
         if left:
@@ -24,7 +29,7 @@ class RoadUser(pygame.sprite.Sprite):
             self.angle -= self.rotation_vel
 
     def draw(self, win):
-        blit_rotate_center(win,self.img, (self.x, self.y), self.angle)
+        blit_rotate_center(win,self.image, (self.x, self.y), self.angle)
 
     def move_forward(self):
         # Increase velocity without going over maximum velocity
@@ -47,6 +52,8 @@ class RoadUser(pygame.sprite.Sprite):
         self.y -= vertical
         self.x -= horizontal
 
+        self.rect.topleft = (self.x,self.y)
+
     def collide(self, mask, x = 0, y = 0):
         car_mask = pygame.mask.from_surface(self.img)
 
@@ -58,6 +65,6 @@ class RoadUser(pygame.sprite.Sprite):
         return poi
 
     def reset(self):
-        self.x, self.y = self.START_POS
+        self.x, self.y = self.start_pos
         self.angle = 0
         self.vel = 0
