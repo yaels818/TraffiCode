@@ -171,7 +171,7 @@ def handle_collision_with_borders():
 #-------------------------------------------------------------
 
 # Groups
-player = PlayerSprite((constants.MIRROR_CENTER,constants.HEIGHT/2))
+player = PlayerSprite((constants.RIGHT_ROUNDABOUT_CENTER[0],constants.LEFT_ROUNDABOUT_CENTER[1]+2.5*constants.LANE_WIDTH))
 playerGroup = pygame.sprite.GroupSingle()
 playerGroup.add(player)
 
