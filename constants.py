@@ -3,7 +3,7 @@ import pygame
 import os
 
 # Local Imports
-from utils import scale_image
+from utils import blit_rotate_center, scale_image
 
 def load_button_images():
     
@@ -26,6 +26,7 @@ pygame.display.set_icon(scale_image(pygame.image.load(PATH + "gameIcon.png"),0.2
 pygame.font.init()
 MAIN_FONT = pygame.font.SysFont("centurygothic", 36)
 SMALL_FONT = pygame.font.SysFont("erasdemiitc", 26)
+STREETS_FONT = pygame.font.SysFont("erasdemiitc", 12)
 
 # Other Definitions
 FPS = 60    # Frame per second
@@ -40,6 +41,7 @@ GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 GRAY = (59, 56, 56)
 PINK = (255, 174, 201)
+ORANGE = (255,127,39)
 
 # Position Markers - center x
 SCENE_HEIGHT_START = HEIGHT/12
@@ -106,8 +108,129 @@ SPEEDOMETER_TEXT_POS = (MIRROR_CENTER,SPEEDOMETER_POS[1]+SPEEDOMETER.get_rect().
 # Road Users Definitions 
 RED_CAR = scale_image(pygame.image.load(PATH + "Cars/red_car.png"), 0.3)
 
+# Borders Definitions
+LANE_WIDTH = 22 #px
+    
+TOP_LEFT_SIDEWALK_RIGHT_POS = MIRROR_CENTER/3
+
+MAIN_ROAD_LEFT_POS = LEFT_BLINK_POS[0] + BTN_IMGS_OFF[1].get_rect().centerx/2
+MAIN_ROAD_RIGHT_POS = MAIN_ROAD_LEFT_POS + 4.2*LANE_WIDTH
+
+MAIN_SIDEWALK_RIGHT_POS = MAIN_ROAD_RIGHT_POS+6*LANE_WIDTH
+MAIN_SIDEWALK_TOP_POS = HEIGHT/6.2 + 2*LANE_WIDTH
+MAIN_SIDEWALK_BOTTOM_POS = HEIGHT/2 - 2.2*LANE_WIDTH
+
+LEFT_ROUNDABOUT_CENTER = (MIRROR_CENTER/2+LANE_WIDTH,MAIN_SIDEWALK_BOTTOM_POS+LANE_WIDTH)
+RIGHT_ROUNDABOUT_CENTER = (MIRROR_CENTER*1.5-LANE_WIDTH*2,MAIN_SIDEWALK_TOP_POS+LANE_WIDTH)
+
+def draw_borders():
+
+    LANE_WIDTH = 22 #px
+    
+    TOP_LEFT_SIDEWALK_RIGHT_POS = MIRROR_CENTER/3
+    
+    MAIN_ROAD_LEFT_POS = LEFT_BLINK_POS[0] + BTN_IMGS_OFF[1].get_rect().centerx/2
+    MAIN_ROAD_RIGHT_POS = MAIN_ROAD_LEFT_POS + 4.2*LANE_WIDTH
+    
+    MAIN_SIDEWALK_RIGHT_POS = MAIN_ROAD_RIGHT_POS+6*LANE_WIDTH
+    MAIN_SIDEWALK_TOP_POS = HEIGHT/6.2 + 2*LANE_WIDTH
+    MAIN_SIDEWALK_BOTTOM_POS = HEIGHT/2 - 2.2*LANE_WIDTH
+
+    LEFT_ROUNDABOUT_CENTER = (MIRROR_CENTER/2+LANE_WIDTH,MAIN_SIDEWALK_BOTTOM_POS+LANE_WIDTH)
+    RIGHT_ROUNDABOUT_CENTER = (MIRROR_CENTER*1.5-LANE_WIDTH*2,MAIN_SIDEWALK_TOP_POS+LANE_WIDTH)
+
+    # Road Borders
+        # Top Road - Horizontal
+            # Top (border with sky)
+    pygame.draw.line(WIN, RED, (MIRROR_CENTER/3, HEIGHT/6.2), (MAIN_SIDEWALK_RIGHT_POS+2*LANE_WIDTH, HEIGHT/6.2), 1)
+            # Bottom - Roundabout till crosswalk
+    pygame.draw.line(WIN, RED, (MIRROR_CENTER/3+LANE_WIDTH, MAIN_SIDEWALK_TOP_POS), (MIRROR_CENTER/2, MAIN_SIDEWALK_TOP_POS), 1)
+            # Bottom - left crosswalk till right crosswalk
+    pygame.draw.line(WIN, RED, (MIRROR_CENTER/2+2*LANE_WIDTH+2, MAIN_SIDEWALK_TOP_POS), (MAIN_ROAD_LEFT_POS, MAIN_SIDEWALK_TOP_POS), 1)
+            # Bottom - right crosswalk till end of main sidewalk
+    pygame.draw.line(WIN, RED, (MAIN_ROAD_RIGHT_POS, MAIN_SIDEWALK_TOP_POS), (MAIN_SIDEWALK_RIGHT_POS, MAIN_SIDEWALK_TOP_POS), 1)
+    
+        # Main Road
+            # Vertical - Left
+    pygame.draw.line(WIN, RED, (MAIN_ROAD_LEFT_POS, MAIN_SIDEWALK_TOP_POS), (MAIN_ROAD_LEFT_POS, DASHBOARD_HOR_TOP), 1)
+            # Verical - Right
+    pygame.draw.line(WIN, RED, (MAIN_ROAD_RIGHT_POS, MAIN_SIDEWALK_TOP_POS), (MAIN_ROAD_RIGHT_POS, DASHBOARD_HOR_TOP), 1)
+            # Horizontal
+    pygame.draw.line(WIN, RED, (0, MAIN_SIDEWALK_BOTTOM_POS), (TOP_LEFT_SIDEWALK_RIGHT_POS, MAIN_SIDEWALK_BOTTOM_POS), 1)
+    
+    
+    #pygame.draw.line(WIN, RED, (MIRROR_CENTER/3+LANE_WIDTH, HEIGHT/6.2 + 2*LANE_WIDTH), (RIGHT_BLINK_POS[0]+2*LANE_WIDTH+3, HEIGHT/6.2 + 2*LANE_WIDTH), 1)
+
+    # Lane Borders
+        # Top Road - Horizontal
+    pygame.draw.line(WIN, GREEN, (MIRROR_CENTER/3+LANE_WIDTH, HEIGHT/5.1), (MAIN_SIDEWALK_RIGHT_POS+LANE_WIDTH, HEIGHT/5.1), 1) # Top Road
+        # Bottom - main sidewalk till right roundabout
+    pygame.draw.line(WIN, GREEN, (MAIN_SIDEWALK_RIGHT_POS+LANE_WIDTH, MAIN_SIDEWALK_TOP_POS+LANE_WIDTH), (WIDTH, MAIN_SIDEWALK_TOP_POS+LANE_WIDTH), 1)
+
+        # Main Road - Vertical - Left Lane Line
+    pygame.draw.line(WIN, GREEN, (MAIN_ROAD_LEFT_POS+1.1*LANE_WIDTH, HEIGHT/5.1), (MAIN_ROAD_LEFT_POS+1.1*LANE_WIDTH, HEIGHT-HEIGHT/4+2), 1)
+        # Main Road - Vertical - Continuous Lane Line
+    pygame.draw.line(WIN, GREEN, (MAIN_ROAD_LEFT_POS+2.2*LANE_WIDTH, HEIGHT/5.1), (MAIN_ROAD_LEFT_POS+2.2*LANE_WIDTH, HEIGHT-HEIGHT/4+2), 1)
+        # Main Road - Vertical - Right Lane Line
+    pygame.draw.line(WIN, GREEN, (MAIN_ROAD_RIGHT_POS-LANE_WIDTH, HEIGHT/5.1), (MAIN_ROAD_RIGHT_POS-LANE_WIDTH, HEIGHT-HEIGHT/4+2), 1)
+    
+    
+    # Roundabouts
+        # Left 
+    pygame.draw.circle(WIN,ORANGE,LEFT_ROUNDABOUT_CENTER,RADIUS,1)
+        # Right
+    pygame.draw.circle(WIN,ORANGE,RIGHT_ROUNDABOUT_CENTER,RADIUS,1)
+    
+    # Crosswalks
+
+    # Parking lots
+        # Left PL
+            # Vertical - Top Entry
+    pygame.draw.line(WIN, BLUE, (WIDTH-PHONE_CENTER-LANE_WIDTH,HEIGHT/2-5), (WIDTH-PHONE_CENTER-LANE_WIDTH, HEIGHT-HEIGHT/3+5), 1) # Left
+    pygame.draw.line(WIN, BLUE, (WIDTH-PHONE_CENTER,HEIGHT/2-5), (WIDTH-PHONE_CENTER, HEIGHT-HEIGHT/3+5), 1)    # Right
+
+            # Horizontal - Right Entry
+    #pygame.draw.line(WIN, BLUE, (0,HEIGHT/2), (MIRROR_CENTER/3, HEIGHT/2), 1)   # Top        
+    pygame.draw.line(WIN, BLUE, (0,HEIGHT/2+HEIGHT/10), (MIRROR_CENTER/3, HEIGHT/2+HEIGHT/10), 1)    # Bottom
+
+    #pygame.draw.line(WIN, BLUE, (MIRROR_CENTER/3+LANE_WIDTH,0), (MIRROR_CENTER/3+LANE_WIDTH, HEIGHT), 1)
+
+            # Horizontal - Above Bottom
+    pygame.draw.line(WIN, BLUE, (0,HEIGHT/2+HEIGHT/7.8), (MIRROR_CENTER/3, HEIGHT/2+HEIGHT/7.8), 1)
+
+def draw_street_names():
+
+    STREETS = [ ("HaEshel", (LEFT_ROUNDABOUT_CENTER[0]-2*LANE_WIDTH,MAIN_SIDEWALK_TOP_POS-2*LANE_WIDTH)),
+                ("HaEshel", (MAIN_ROAD_RIGHT_POS,MAIN_SIDEWALK_TOP_POS-LANE_WIDTH)),
+                ("HaAlmog", (LEFT_ROUNDABOUT_CENTER[0]-2.5*LANE_WIDTH,MAIN_SIDEWALK_TOP_POS+3*LANE_WIDTH)), 
+                ("HaRotem", (RIGHT_ROUNDABOUT_CENTER[0]-2.5*LANE_WIDTH,MAIN_SIDEWALK_TOP_POS+3*LANE_WIDTH)),
+                ("HaRotem", (MAIN_SIDEWALK_RIGHT_POS+1.5*LANE_WIDTH,LEFT_ROUNDABOUT_CENTER[1])),
+                ("HaSade", (MAIN_ROAD_RIGHT_POS-4*LANE_WIDTH,LEFT_ROUNDABOUT_CENTER[1]-LANE_WIDTH)),
+                ("HaElla", (TOP_LEFT_SIDEWALK_RIGHT_POS,MAIN_SIDEWALK_BOTTOM_POS-2.5*LANE_WIDTH)),
+                ("HaElla", (TOP_LEFT_SIDEWALK_RIGHT_POS,MAIN_SIDEWALK_BOTTOM_POS+LANE_WIDTH)),
+                ("HaMarva",(0,LEFT_ROUNDABOUT_CENTER[1])),
+                ("HaErez", (TOP_LEFT_SIDEWALK_RIGHT_POS-2*LANE_WIDTH,DASHBOARD_HOR_TOP-4*LANE_WIDTH))]
+    
+    for streetName, pos in STREETS:
+        street_text = STREETS_FONT.render(streetName,1,PINK)
+        if streetName == "HaElla":
+            street_text = pygame.transform.rotate(street_text,90)
+            
+        street_text_pos = (pos[0]+street_text.get_rect().centerx, pos[1]+street_text.get_rect().centery)
+        WIN.blit(street_text, street_text_pos)  
+
+
+    #pygame.draw.line(WIN,ORANGE,(),(),1)
+    
+
+    # Parallel Parking Spots
+        # Bottom Left PS - Horizontal
+    #pygame.draw.line(WIN, PINK, (0,HEIGHT-HEIGHT/4+2), (MIRROR_CENTER/3, HEIGHT-HEIGHT/4+2), 1) 
+    #pygame.draw.line(WIN, PINK, (MIRROR_CENTER/2,0), (MIRROR_CENTER/2, HEIGHT), 1)    # Left Roundabout left line
+
 
 def draw_screen_positions():
+
     # Vertical
     pygame.draw.line(WIN, RED, (WIDTH/2, 0), (WIDTH/2, HEIGHT), 1)  # Half screen
     pygame.draw.line(WIN, BLUE, (WIDTH - WIDTH/9, 0), (WIDTH - WIDTH/9, HEIGHT), 1) # Phone center
@@ -124,9 +247,7 @@ def draw_screen_positions():
     pygame.draw.line(WIN, GREEN, (WIPERS_BTN_POS[0],0), (WIPERS_BTN_POS[0], HEIGHT), 1)
     pygame.draw.line(WIN, GREEN, (AC_BTN_POS[0],0), (AC_BTN_POS[0], HEIGHT), 1)
 
-    pygame.draw.line(WIN, PINK, (WIDTH-PHONE_CENTER,0), (WIDTH-PHONE_CENTER, HEIGHT), 1)    # Left Parking Lot entry right
-    pygame.draw.line(WIN, PINK, (MIRROR_CENTER/3,0), (MIRROR_CENTER/3, HEIGHT), 1)    # Left Parking Lot right boundary
-    pygame.draw.line(WIN, PINK, (MIRROR_CENTER/2,0), (MIRROR_CENTER/2, HEIGHT), 1)    # Left Roundabout left line
+    
     pygame.draw.line(WIN, PINK, (MIRROR_CENTER - (MIRROR_CENTER/2 - MIRROR_CENTER/4),0), (MIRROR_CENTER - (MIRROR_CENTER/2 - MIRROR_CENTER/4), HEIGHT), 1)    # Left Roundabout left line
 
     # Horizontal

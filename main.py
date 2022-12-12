@@ -51,6 +51,8 @@ def draw(win, player_car):
         # Draw this img in this position
         win.blit(img, pos)  
     
+    constants.draw_street_names()
+
     player_car.draw(win)
 
     #draw_points(path, win)
@@ -77,6 +79,7 @@ def draw_dashboard_texts(win):
     velocity_text = constants.SMALL_FONT.render(f"{round(round(player.vel,1)*10.0)}", 1, (255, 255, 255))
     velocity_text_pos = (constants.SPEEDOMETER_TEXT_POS[0]-velocity_text.get_rect().centerx,constants.SPEEDOMETER_TEXT_POS[1]-velocity_text.get_rect().centery)
     win.blit(velocity_text, velocity_text_pos)
+
 #--------------------------------------------------------------
 
 def move_player(player_car):
@@ -192,8 +195,11 @@ while running:
 
     #draw(WIN, images, player_car)
     draw(constants.WIN,player)
+    
     buttons_group.draw(constants.WIN)
+    
     #constants.draw_screen_positions()
+    #constants.draw_borders()
     
     #pygame.draw.rect(WIN, GREEN, (0,0,850,490))
     #all_sprite_list.draw(WIN)
@@ -223,8 +229,7 @@ while running:
 
     #move_player(player_car)
     move_player(player)
-    print(player.rect.right)
-    print(player.rect.bottom)
+    
     #handle_collision_with_mask(player_car)
     #handle_collision_with_borders()
     handle_collision_with_screen_borders(player)
