@@ -199,7 +199,7 @@ while running:
     buttons_group.draw(constants.WIN)
     
     #constants.draw_screen_positions()
-    #constants.draw_borders()
+    constants.draw_borders()
     
     #pygame.draw.rect(WIN, GREEN, (0,0,850,490))
     #all_sprite_list.draw(WIN)
