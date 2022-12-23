@@ -27,7 +27,7 @@ class RoadUser(pygame.sprite.Sprite):
 
     
     def rotate(self, left = False, right = False):
-
+        
         if left:
             self.angle += self.rotation_vel
             # Bind angle to stay within 0 and 360

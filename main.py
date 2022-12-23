@@ -84,34 +84,30 @@ def draw_dashboard_texts(win):
 def move_player(player_car):
     keys = pygame.key.get_pressed()
     gas_pressed = False
-    forward_motion = False
-
-    # Car is only able to rotate while driving forward or backward
-    def rotate_player(forward_motion):
-        if forward_motion:
-            if keys[pygame.K_a] or keys[pygame.K_LEFT]:
-                player_car.rotate(left = True)
-            if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
-                player_car.rotate(right = True)
-        else:
-            # Rotating in reverse is reversed - left is right, right is left
-            if keys[pygame.K_a] or keys[pygame.K_LEFT]:
-                player_car.rotate(right = True)
-            if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
-                player_car.rotate(left = True)
-
+    reverse_gear = False
 
     if keys[pygame.K_w] or keys[pygame.K_UP]:
         gas_pressed = True 
-        forward_motion = True
+        reverse_gear = False
         player_car.move_forward()
-        rotate_player(forward_motion)
 
     if keys[pygame.K_s] or keys[pygame.K_DOWN]:
         gas_pressed = True 
-        player_car.move_backward()
-        rotate_player(forward_motion)
+        reverse_gear = True
+        player_car.move_backward() 
 
+    if keys[pygame.K_a] or keys[pygame.K_LEFT]:
+        if not reverse_gear:
+            player_car.rotate(left = True)
+        else:
+            player_car.rotate(right = True)
+
+    if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
+        if not reverse_gear:
+            player_car.rotate(right = True)
+        else:
+            player_car.rotate(left = True)
+        
     if not gas_pressed:
         player_car.reduce_speed()
 
