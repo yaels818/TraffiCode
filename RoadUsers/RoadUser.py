@@ -21,18 +21,28 @@ class RoadUser(pygame.sprite.Sprite):
         self.angle = 0
         self.x, self.y = start_pos
         
-
-    def rotate(self, left = False, right = False):
-        if left:
-            self.angle += self.rotation_vel
-        elif right:
-            self.angle -= self.rotation_vel
-
     def draw(self, win):
         blit_rotate_center(win,self.image, (self.x, self.y), self.angle)
         pygame.draw.rect(win,BLUE,self.rect,2)
 
-    def stay_within_screen_borders(self, new_x, new_y):
+    
+    def rotate(self, left = False, right = False):
+
+        if left:
+            self.angle += self.rotation_vel
+
+            # Bind angle to stay within 0 and 360
+            if self.angle >= 360:
+                self.angle = self.angle - 360   
+
+        elif right:
+            self.angle -= self.rotation_vel
+
+            # Bind angle to stay within 0 and -360
+            if self.angle <= -360:
+                self.angle = self.angle + 360
+
+    def stay_within_scene_borders(self, new_x, new_y):
         
         # Check if the new position for player car is colliding with the screen boundaries
 
@@ -54,7 +64,6 @@ class RoadUser(pygame.sprite.Sprite):
         else:
             self.x = new_x
         
-
     def move_forward(self):
         # Increase velocity without going over maximum velocity
         self.vel = min(self.vel + self.acceleration, self.max_vel)
@@ -72,12 +81,14 @@ class RoadUser(pygame.sprite.Sprite):
         vertical = math.cos(radians) * self.vel
         horizontal = math.sin(radians) * self.vel
 
-        # Move the car in whatever direction it is facing
+        # Calculate the new position for the car in the direction it is facing
         new_y = self.y - vertical
         new_x = self.x - horizontal
 
-        self.stay_within_screen_borders(new_x,new_y)
+        # Make sure the new position can't be beyond scene borders
+        self.stay_within_scene_borders(new_x,new_y)
 
+        # Update the car bounding rect
         self.rect.topleft = (self.x,self.y)
 
     def collide(self, mask, x = 0, y = 0):
