@@ -198,7 +198,7 @@ running = True
 while running:
     # Limit our window to this max speed
     clock.tick(constants.FPS)   
-
+    
     #draw(WIN, images, player_car)
     draw(constants.WIN,player)
     
@@ -215,6 +215,14 @@ while running:
         if event.type == pygame.QUIT:   
             running = False
             break 
+
+        if event.type == pygame.KEYDOWN:
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_q]:
+                buttons_list[1].button_pressed() # left blinker
+            if keys[pygame.K_e]:
+                buttons_list[2].button_pressed() # right blinker
+
         # If player clicked with left mouse button 
         if event.type == pygame.MOUSEBUTTONDOWN:
             # Get current mouse position
@@ -226,6 +234,7 @@ while running:
                 if (dis < constants.RADIUS):
                     button.button_pressed()
 
+        
         """
         # Create the path for computer car
         if event.type == pygame.MOUSEBUTTONDOWN:
