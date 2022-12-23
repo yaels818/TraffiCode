@@ -2,7 +2,7 @@ import math
 import pygame
 
 from utils import blit_rotate_center
-
+from constants import BLUE, ELLA_ROAD_TOP_L, DASHBOARD_HOR_TOP, DASHBOARD_VERT_LEFT
 class RoadUser(pygame.sprite.Sprite):
 
     def __init__(self, start_pos):
@@ -30,6 +30,30 @@ class RoadUser(pygame.sprite.Sprite):
 
     def draw(self, win):
         blit_rotate_center(win,self.image, (self.x, self.y), self.angle)
+        pygame.draw.rect(win,BLUE,self.rect,2)
+
+    def stay_within_screen_borders(self, new_x, new_y):
+        
+        # Check if the new position for player car is colliding with the screen boundaries
+
+        if new_y <= ELLA_ROAD_TOP_L[1] - self.rect.height:
+            self.y = ELLA_ROAD_TOP_L[1] - self.rect.height
+            self.vel = 0
+        elif new_y >= DASHBOARD_HOR_TOP - self.rect.height:
+            self.y = DASHBOARD_HOR_TOP - self.rect.height
+            self.vel = 0
+        else:
+            self.y = new_y
+
+        if new_x <= 0:
+            self.x = 0
+            self.vel = 0
+        elif new_x >= DASHBOARD_VERT_LEFT - self.rect.height:
+            self.x = DASHBOARD_VERT_LEFT - self.rect.height
+            self.vel = 0
+        else:
+            self.x = new_x
+        
 
     def move_forward(self):
         # Increase velocity without going over maximum velocity
@@ -49,8 +73,10 @@ class RoadUser(pygame.sprite.Sprite):
         horizontal = math.sin(radians) * self.vel
 
         # Move the car in whatever direction it is facing
-        self.y -= vertical
-        self.x -= horizontal
+        new_y = self.y - vertical
+        new_x = self.x - horizontal
+
+        self.stay_within_screen_borders(new_x,new_y)
 
         self.rect.topleft = (self.x,self.y)
 
@@ -68,3 +94,5 @@ class RoadUser(pygame.sprite.Sprite):
         self.x, self.y = self.start_pos
         self.angle = 0
         self.vel = 0
+
+    
