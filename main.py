@@ -81,7 +81,6 @@ def draw_dashboard_texts(win):
     win.blit(velocity_text, velocity_text_pos)
 
 #--------------------------------------------------------------
-
 def move_player(player_car):
     keys = pygame.key.get_pressed()
     gas_pressed = False
@@ -116,15 +115,7 @@ def move_player(player_car):
     if not gas_pressed:
         player_car.reduce_speed()
 
-def handle_collision_with_screen_borders(player_car):
-    
-    # Check if the player car is colliding with the screen boundaries
-    if player_car.rect.right >= constants.WIDTH or player_car.rect.left <= 0:
-        print("collision width")
-    if player_car.rect.bottom >= constants.DASHBOARD_HOR_TOP or player_car.rect.top <= 0:
-        print("collision height")
-
-
+#--------------------------------------------------------------
 # Function for drawing path points
 def draw_points(path, win):
     for point in path:
@@ -248,7 +239,6 @@ while running:
     
     #handle_collision_with_mask(player_car)
     #handle_collision_with_borders()
-    handle_collision_with_screen_borders(player)
 
     # Update the window with everything we have drawn
     pygame.display.update()
