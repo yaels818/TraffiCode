@@ -25,7 +25,12 @@ class RoadUser(pygame.sprite.Sprite):
         blit_rotate_center(win,self.image, (self.x, self.y), self.angle)
         pygame.draw.rect(win,BLUE,self.rect,2)
 
-    
+    def original_rotate(self, left = False, right = False):
+        if left:
+            self.angle += self.rotation_vel
+        elif right:
+            self.angle -= self.rotation_vel
+        
     def rotate(self, left = False, right = False):
 
         if left:
@@ -34,13 +39,17 @@ class RoadUser(pygame.sprite.Sprite):
             # Bind angle to stay within 0 and 360
             if self.angle >= 360:
                 self.angle = self.angle - 360   
+            print(f"Left: angle = {self.angle}")
 
         elif right:
             self.angle -= self.rotation_vel
 
             # Bind angle to stay within 0 and -360
-            if self.angle <= -360:
+            #if self.angle <= -360:
+            if self.angle <= 0:
                 self.angle = self.angle + 360
+                
+            print(f"Right: angle = {self.angle}")
 
     def stay_within_scene_borders(self, new_x, new_y):
         
