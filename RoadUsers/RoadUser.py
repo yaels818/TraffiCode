@@ -14,7 +14,7 @@ class RoadUser(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft = start_pos)
 
         self.max_vel = 3
-        self.acceleration = 0.02
+        self.acceleration = 0.01
         self.rotation_vel = 2
 
         self.vel = 0
@@ -22,49 +22,61 @@ class RoadUser(pygame.sprite.Sprite):
         self.x, self.y = start_pos
         
     def draw(self, win):
-        blit_rotate_center(win,self.image, (self.x, self.y), self.angle)
-        pygame.draw.rect(win,BLUE,self.rect,2)
+        """
+        Draw the sprite image of the car in its current position and current angle.
+        Update the bounding rectangle of the car accordingly.
+        """
+        self.rect = blit_rotate_center(win,self.image, (self.x, self.y), self.angle)
+        pygame.draw.rect(win,BLUE,self.rect,1)
 
-    
     def rotate(self, left = False, right = False):
-        
+        """
+        Rotate the car between 0 and 360 degrees. 
+        0/360 ==> car is facing up  ^
+        90 ==> car is facing left   <
+        180 ==> car is facing down  V
+        270 ==> car is facing right >
+        """
         if left:
             self.angle += self.rotation_vel
             # Bind angle to stay within 0 and 360
             if self.angle >= 360:
                 self.angle = self.angle - 360   
             
-            print(f"Left: angle = {self.angle}")
-
         elif right:
             self.angle -= self.rotation_vel
             # Bind angle to stay within 0 and 360
             if self.angle <= 0:
                 self.angle = self.angle + 360
     
-            print(f"Right: angle = {self.angle}")
 
     def stay_within_scene_borders(self, new_x, new_y):
-        
-        # Check if the new position for player car is colliding with the screen boundaries
+        """
+        Check if the new position for player car is colliding with the screen boundaries
+        """
 
+        # Check collision with top border of the scene
         if new_y <= ELLA_ROAD_TOP_L[1] - self.rect.height:
             self.y = ELLA_ROAD_TOP_L[1] - self.rect.height
             self.vel = 0
+        # Check collision with bottom border of the scene
         elif new_y >= DASHBOARD_HOR_TOP - self.rect.height:
             self.y = DASHBOARD_HOR_TOP - self.rect.height
             self.vel = 0
         else:
             self.y = new_y
 
-        if new_x <= 0:
+        # Check collision with left border of the scene
+        if new_x <= 0:  
             self.x = 0
             self.vel = 0
+        # Check collision with left border of the scene
         elif new_x >= DASHBOARD_VERT_LEFT - self.rect.height:
             self.x = DASHBOARD_VERT_LEFT - self.rect.height
             self.vel = 0
         else:
             self.x = new_x
+            
         
     def move_forward(self):
         # Increase velocity without going over maximum velocity
