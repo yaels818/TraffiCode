@@ -86,15 +86,15 @@ def move_player(player_car):
     keys = pygame.key.get_pressed()
     moved = False
 
-    if keys[pygame.K_a]:
+    if keys[pygame.K_a] or keys[pygame.K_LEFT]:
         player_car.rotate(left = True)
-    if keys[pygame.K_d]:
+    if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
         player_car.rotate(right = True)
-    if keys[pygame.K_w]:
+    if keys[pygame.K_w] or keys[pygame.K_UP]:
         # While pressing Gas we do not want to slow
         moved = True 
         player_car.move_forward()
-    if keys[pygame.K_s]:
+    if keys[pygame.K_s] or keys[pygame.K_DOWN]:
         moved = True 
         player_car.move_backward()
 
@@ -102,6 +102,7 @@ def move_player(player_car):
         player_car.reduce_speed()
 
 def handle_collision_with_screen_borders(player_car):
+    
     # Check if the player car is colliding with the screen boundaries
     if player_car.rect.right >= constants.WIDTH or player_car.rect.left <= 0:
         print("collision width")
