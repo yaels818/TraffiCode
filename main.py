@@ -86,6 +86,9 @@ def move_player(player_car):
     gas_pressed = False
     reverse_gear = False
 
+    if keys[pygame.K_SPACE]:
+        player_car.reduce_speed(emergency_brake = True)
+
     if keys[pygame.K_w] or keys[pygame.K_UP]:
         gas_pressed = True 
         reverse_gear = False
@@ -109,7 +112,7 @@ def move_player(player_car):
             player_car.rotate(left = True)
         
     if not gas_pressed:
-        player_car.reduce_speed()
+        player_car.reduce_speed(emergency_brake = False)
 
 #--------------------------------------------------------------
 # Function for drawing path points
