@@ -49,7 +49,6 @@ class RoadUser(pygame.sprite.Sprite):
             if self.angle <= 0:
                 self.angle = self.angle + 360
     
-
     def stay_within_scene_borders(self, new_x, new_y):
         """
         Check if the new position for player car is colliding with the screen boundaries
@@ -67,17 +66,16 @@ class RoadUser(pygame.sprite.Sprite):
             self.y = new_y
 
         # Check collision with left border of the scene
-        if new_x <= 0:  
-            self.x = 0
+        if new_x <= 0 + self.rect.height/2:  
+            self.x = 0 + self.rect.height/2
             self.vel = 0
-        # Check collision with left border of the scene
-        elif new_x >= DASHBOARD_VERT_LEFT - self.rect.height:
-            self.x = DASHBOARD_VERT_LEFT - self.rect.height
+        # Check collision with right border of the scene
+        elif new_x >= DASHBOARD_VERT_LEFT - self.rect.height/2:
+            self.x = DASHBOARD_VERT_LEFT - self.rect.height/2
             self.vel = 0
         else:
             self.x = new_x
             
-        
     def move_forward(self):
         # Increase velocity without going over maximum velocity
         self.vel = min(self.vel + self.acceleration, self.max_vel)
