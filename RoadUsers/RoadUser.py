@@ -13,7 +13,7 @@ class RoadUser(pygame.sprite.Sprite):
         self.start_pos = start_pos
         self.rect = self.image.get_rect(topleft = start_pos)
 
-        self.max_vel = 3
+        self.max_vel = 2
         self.acceleration = 0.01
         self.rotation_vel = 2
 
