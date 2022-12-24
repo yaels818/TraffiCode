@@ -103,16 +103,6 @@ class RoadUser(pygame.sprite.Sprite):
         # Update the car bounding rect
         self.rect.topleft = (self.x,self.y)
 
-    def collide(self, mask, x = 0, y = 0):
-        car_mask = pygame.mask.from_surface(self.img)
-
-        # Calculate displacement between the 2 masks
-        offset = (int(self.x - x), int(self.y - y))
-
-        # Point of intersection - if there was poi, the objects did collide
-        poi = mask.overlap(car_mask, offset) 
-        return poi
-
     def reset(self):
         self.x, self.y = self.start_pos
         self.angle = 0
