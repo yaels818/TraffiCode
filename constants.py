@@ -3,7 +3,7 @@ import pygame
 import os
 
 # Local Imports
-from utils import blit_rotate_center, scale_image
+from utils import scale_image
 
 def load_button_images():
     
@@ -13,21 +13,20 @@ def load_button_images():
         BTN_IMGS_OFF.append(image_off)
         BTN_IMGS_ON.append(image_on)
 
-PATH = "Assets\Images/"
-
+#-------------------------------------------------------------------------
 # Screen Definitions
 WIDTH, HEIGHT = 1200, 600
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 pygame.display.set_caption("TraffiCode")
-pygame.display.set_icon(scale_image(pygame.image.load(PATH + "gameIcon.png"),0.2))
-
+pygame.display.set_icon(scale_image(pygame.image.load("Assets\Images\gameIcon.png"),0.2))
+#-------------------------------------------------------------------------
 # Font Definitions
 pygame.font.init()
 MAIN_FONT = pygame.font.SysFont("centurygothic", 36)
 SMALL_FONT = pygame.font.SysFont("erasdemiitc", 26)
 STREETS_FONT = pygame.font.SysFont("erasdemiitc", 12)
-
+#-------------------------------------------------------------------------
 # Other Definitions
 FPS = 60    # Frame per second
 
@@ -42,7 +41,7 @@ BLUE = (0, 0, 255)
 GRAY = (59, 56, 56)
 PINK = (255, 174, 201)
 ORANGE = (255,127,39)
-
+#-------------------------------------------------------------------------
 # Position Markers - center x
 SCENE_HEIGHT_START = HEIGHT/12
 SCENE_CENTER = (WIDTH - WIDTH/4.7)/2
@@ -52,8 +51,11 @@ DASHBOARD_VERT_LEFT = WIDTH - WIDTH/4.5
 PHONE_CENTER = WIDTH - WIDTH/9
 PHONE_LEFT = WIDTH - WIDTH/4.7
 LIGHTS_BTN_CENTER = WIDTH-PHONE_CENTER
+#-------------------------------------------------------------------------
 
-# Asset Definitions
+PATH = "Assets\Images/"
+
+# Asset Definitions - Scene
 SKY_DAY = scale_image(pygame.image.load(PATH + "Backgrounds/day_sky.jpg"),0.25)
 SKY_NIGHT = scale_image(pygame.image.load(PATH + "Backgrounds/night_sky.jpg"),0.5)
 SKY_RAINY = scale_image(pygame.image.load(PATH + "Backgrounds/rainy_sky.jpg"),0.3)
@@ -63,6 +65,18 @@ SCENE = scale_image(pygame.image.load(PATH + "Scenes\scene_1.png"),1.4)
 SCENE_DARK = scale_image(pygame.image.load(PATH + "Scenes\scene_1_dark.png"),1.4)
 LEVEL_IMGS = [(SKY_DAY, (0,0)), (SCENE, (0, SCENE_HEIGHT_START))]
 
+# Asset Definitions - Scene Masks
+BORDER_LEFT_PL = scale_image(pygame.image.load(PATH + "Borders\scene_1_mask_left_pl.png"),1.4)
+BORDER_RIGHT_PL = scale_image(pygame.image.load(PATH + "Borders\scene_1_mask_right_pl.png"),1.4)
+BORDER_LEFT_RBT = scale_image(pygame.image.load(PATH + "Borders\scene_1_mask_left_rbt.png"),1.4)
+BORDER_RIGHT_RBT = scale_image(pygame.image.load(PATH + "Borders\scene_1_mask_right_rbt.png"),1.4)
+
+MASK_LEFT_PL = pygame.mask.from_surface(BORDER_LEFT_PL)
+MASK_RIGHT_PL = pygame.mask.from_surface(BORDER_RIGHT_PL)
+MASK_LEFT_RBT = pygame.mask.from_surface(BORDER_LEFT_RBT)
+MASK_RIGHT_RBT = pygame.mask.from_surface(BORDER_RIGHT_RBT)
+
+#-------------------------------------------------------------------------
 DASHBOARD_RECT_HOR = pygame.Rect(0, DASHBOARD_HOR_TOP, WIDTH,HEIGHT/4)
 DASHBOARD_RECT_VER = pygame.Rect(WIDTH - WIDTH/4.5, 0, WIDTH/4, HEIGHT) 
 SPEEDOMETER = scale_image(pygame.image.load(PATH + "Dashboard/speedometer.png"),0.3)
@@ -75,6 +89,7 @@ MIRROR_POS = (MIRROR_CENTER-MIRROR.get_rect().centerx, MIRROR.get_rect().centery
 PHONE_POS = (PHONE_CENTER-PHONE.get_rect().centerx,HEIGHT-DASHBOARD_HOR_TOP-PHONE.get_rect().centery/4)
 DASH_IMGS = [(SPEEDOMETER, SPEEDOMETER_POS), (MIRROR, MIRROR_POS),(PHONE, PHONE_POS)]
 
+#-------------------------------------------------------------------------
 # Dashboard Buttons Definitions
 BTN_SCALE = 0.45
 BLINKER_SCALE = 0.5
@@ -105,10 +120,11 @@ AC_BTN_BLP = [BTN_IMGS_OFF[4],BTN_IMGS_ON[4],BTN_SCALE,*AC_BTN_POS]
 MUSIC_BTN_BLP = [BTN_IMGS_OFF[5],BTN_IMGS_ON[5],BTN_SCALE,*MUSIC_BTN_POS]
 
 SPEEDOMETER_TEXT_POS = (MIRROR_CENTER,SPEEDOMETER_POS[1]+SPEEDOMETER.get_rect().centery)
+#-------------------------------------------------------------------------
 
 # Road Users Definitions 
 RED_CAR = scale_image(pygame.image.load(PATH + "Cars/red_car.png"), 0.3)
-
+#-------------------------------------------------------------------------
 # Road Definitions
 LANE_W = 22 # Lane Width in px
 
@@ -216,10 +232,7 @@ def draw_street_names():
         street_text_pos = (pos[0]+street_text.get_rect().centerx, pos[1]+street_text.get_rect().centery)
         WIN.blit(street_text, street_text_pos)  
 
-
-    #pygame.draw.line(WIN,ORANGE,(),(),1)
     
-
     # Parallel Parking Spots
         # Bottom Left PS - Horizontal
     #pygame.draw.line(WIN, PINK, (0,HEIGHT-HEIGHT/4+2), (MIRROR_CENTER/3, HEIGHT-HEIGHT/4+2), 1) 
