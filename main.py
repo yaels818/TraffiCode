@@ -114,6 +114,20 @@ def move_player(player_car):
     if not gas_pressed:
         player_car.reduce_speed(emergency_brake = False)
 
+def handle_static_collisions(player_car):
+    """
+    Check if player_car is colliding with any of the masks defined for this level.
+    Because using masks is heavy on the CPU (due to pixel-by-pixel comparison),
+    run the check on them only when the player is in their area.
+    """
+
+    # Check if the player car is colliding with the track walls
+    poi = player_car.check_collision_with_mask(constants.MASK_LEFT_RBT)
+    if poi != None:
+        player_car.bounce()
+        #player_car.vel = 0
+        pygame.draw.circle(constants.WIN, constants.GREEN, poi, 3)
+
 #--------------------------------------------------------------
 # Function for drawing path points
 def draw_points(path, win):
@@ -198,8 +212,7 @@ running = True
 while running:
     # Limit our window to this max speed
     clock.tick(constants.FPS)   
-    
-    #draw(WIN, images, player_car)
+
     draw(constants.WIN,player)
     
     buttons_group.draw(constants.WIN)
@@ -245,6 +258,7 @@ while running:
     #move_player(player_car)
     move_player(player)
     
+    handle_static_collisions(player)
     #handle_collision_with_mask(player_car)
     #handle_collision_with_borders()
 
