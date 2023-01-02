@@ -75,6 +75,10 @@ def draw_dashboard_texts(win):
     level_text = constants.SMALL_FONT.render(f"Level 1", 1, constants.RED)
     #win.blit(level_text, (860, 60))
 
+    score_text = constants.SMALL_FONT.render(f"Score: {score}", 1, constants.RED)
+    score_text_pos = (constants.PHONE_CENTER-score_text.get_rect().centerx,constants.RIGHT_ROUNDABOUT_CENTER[1]-score_text.get_rect().centery)
+    win.blit(score_text, score_text_pos)
+
     # round to the first significant digit, units are px/sec
     velocity_text = constants.SMALL_FONT.render(f"{round(round(player.vel,1)*10.0)}", 1, (255, 255, 255))
     velocity_text_pos = (constants.SPEEDOMETER_TEXT_POS[0]-velocity_text.get_rect().centerx,constants.SPEEDOMETER_TEXT_POS[1]-velocity_text.get_rect().centery)
@@ -120,8 +124,14 @@ def handle_static_collisions(player_car):
     Because using masks is heavy on the CPU (due to pixel-by-pixel comparison),
     run the check on them only when the player is in their area.
     """
+    global score
+    pos = (player_car.x,player_car.y)
 
-    # Check if the player car is colliding with the track walls
+    # Check if the player car is within this road
+    if pos < constants.ELLA_ROAD_TOP_L:
+        score += 10
+
+    # Check if the player car is colliding any of the masks
     poi = player_car.check_collision_with_mask(constants.MASK_LEFT_RBT)
     if poi != None:
         player_car.bounce()
