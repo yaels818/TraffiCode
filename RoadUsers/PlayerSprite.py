@@ -1,7 +1,7 @@
 import pygame
 
 from RoadUsers import RoadUser
-from constants import RED_CAR
+from constants import RED_CAR, SCENE_HEIGHT_START
 
 class PlayerSprite(RoadUser):
 
@@ -21,10 +21,11 @@ class PlayerSprite(RoadUser):
 
     def bounce(self):
         # Bounce back from a wall
-        self.vel = -self.vel/2
+        self.vel = -self.vel/3
+        #self.vel = 0
         self.move()
 
-    def check_collision_with_mask(self, mask, x = 0, y = 0):
+    def check_collision_with_mask(self, mask, x = 0, y = SCENE_HEIGHT_START):
         car_mask = pygame.mask.from_surface(self.image)
 
         # Calculate displacement between the 2 masks
