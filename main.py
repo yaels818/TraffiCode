@@ -15,6 +15,7 @@ pygame.font.init()
 clock = pygame.time.Clock()
 
 score = 0
+level = 1
 
 path = []
 
@@ -70,15 +71,16 @@ def draw(win, player_car):
 
     draw_dashboard_texts(win)
     
-    win.blit(constants.BORDER_LEFT_PL, (0, constants.SCENE_HEIGHT_START))
 
 def draw_dashboard_texts(win):
     
-    countdown_text = constants.SMALL_FONT.render(f"00:00:00", 1, constants.RED)
-    #win.blit(countdown_text, (WIDTH/2-120,30))
+    timer_text = constants.SMALL_FONT.render(f"00:00:00", 1, constants.BLACK)
+    timer_text_pos = (constants.MIRROR_CENTER-timer_text.get_rect().centerx,constants.MIRROR_POS[1]+timer_text.get_rect().centery)
+    win.blit(timer_text, timer_text_pos)
 
-    level_text = constants.SMALL_FONT.render(f"Level 1", 1, constants.RED)
-    #win.blit(level_text, (860, 60))
+    level_text = constants.SMALL_FONT.render(f"Level {level}", 1, constants.WHITE)
+    level_text_pos = (constants.PHONE_LEFT+0.5*level_text.get_rect().centerx,constants.MIRROR_POS[1]+4*level_text.get_rect().centery)
+    win.blit(level_text, level_text_pos)
 
     score_text = constants.SMALL_FONT.render(f"Score: {score}", 1, constants.RED)
     score_text_pos = (constants.PHONE_CENTER-score_text.get_rect().centerx,constants.RIGHT_ROUNDABOUT_CENTER[1]-score_text.get_rect().centery)
@@ -135,17 +137,16 @@ def handle_static_collisions(player_car):
 
     dis_right_rbt = math.sqrt((constants.RIGHT_ROUNDABOUT_CENTER[0]-player_car.x)**2 + (constants.RIGHT_ROUNDABOUT_CENTER[1]-player_car.y)**2)
     dis_left_rbt = math.sqrt((constants.LEFT_ROUNDABOUT_CENTER[0]-player_car.x)**2 + (constants.LEFT_ROUNDABOUT_CENTER[1]-player_car.y)**2)
-    rbt_outer_radius = constants.RADIUS+1.7*constants.LANE_W
 
     if player_car.x > constants.EREZ_ROTEM_SIDEWK_TOP_R[0] and player_car.y > constants.ROTEM_ROAD_BOT_R[1]:
         # player is within right parking lot
         relevant_mask = constants.MASK_RIGHT_PL
 
-    elif dis_right_rbt < rbt_outer_radius:
+    elif dis_right_rbt < constants.RBT_OUTER_RAD:
         # player is within right roundabout
         relevant_mask = constants.MASK_RIGHT_RBT
     
-    elif dis_left_rbt < rbt_outer_radius:
+    elif dis_left_rbt < constants.RBT_OUTER_RAD:
         # player is within left roundabout
         relevant_mask = constants.MASK_LEFT_RBT
 
