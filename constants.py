@@ -333,8 +333,8 @@ def draw_borders():
         pygame.draw.line(WIN, ORANGE, (6.1*LANE_W,ESHEL_ROAD_BOT_R[1]), (6.1*LANE_W, ESHEL_ROAD_BOT_R[1]+LANE_W), 1) 
 
 
-    #draw_road_borders()
-    #draw_lane_borders()
+    draw_road_borders()
+    draw_lane_borders()
     draw_parallel_parking_borders()
 
 def draw_street_names():
@@ -357,32 +357,3 @@ def draw_street_names():
             
         street_text_pos = (pos[0]+street_text.get_rect().centerx, pos[1]+street_text.get_rect().centery)
         WIN.blit(street_text, street_text_pos)  
-
-
-def draw_screen_positions():
-
-    # Vertical
-    pygame.draw.line(WIN, RED, (WIDTH/2, 0), (WIDTH/2, HEIGHT), 1)  # Half screen
-    pygame.draw.line(WIN, BLUE, (WIDTH - WIDTH/9, 0), (WIDTH - WIDTH/9, HEIGHT), 1) # Phone center
-    pygame.draw.line(WIN, BLUE, (WIDTH - WIDTH/4.7, 0), (WIDTH - WIDTH/4.7, HEIGHT), 1) # Phone Left
-    pygame.draw.line(WIN, BLUE, (MIRROR_CENTER, 0), (MIRROR_CENTER, HEIGHT), 1) # Mirror center
-    pygame.draw.line(WIN, RED, (SCENE_CENTER, 0), (SCENE_CENTER, HEIGHT), 1) # Scene center
-    
-    pygame.draw.line(WIN, GREEN, (MENU_BTN_POS[0],0), (MENU_BTN_POS[0], HEIGHT), 1)
-    pygame.draw.line(WIN, GREEN, (LIGHTS_BTN_POS[0],0), (LIGHTS_BTN_POS[0], HEIGHT), 1)
-    pygame.draw.line(WIN, GREEN, (LEFT_BLINK_POS[0],0), (LEFT_BLINK_POS[0], HEIGHT), 1)
-    pygame.draw.line(WIN, GREEN, (SPEEDOMETER_POS[0],0), (SPEEDOMETER_POS[0], HEIGHT), 1)    
-    pygame.draw.line(WIN, GREEN, (SPEEDOMETER_RIGHT,0), (SPEEDOMETER_RIGHT, HEIGHT), 1)
-    pygame.draw.line(WIN, GREEN, (RIGHT_BLINK_POS[0],0), (RIGHT_BLINK_POS[0], HEIGHT), 1)
-    pygame.draw.line(WIN, GREEN, (WIPERS_BTN_POS[0],0), (WIPERS_BTN_POS[0], HEIGHT), 1)
-    pygame.draw.line(WIN, GREEN, (AC_BTN_POS[0],0), (AC_BTN_POS[0], HEIGHT), 1)
-
-    
-    pygame.draw.line(WIN, PINK, (MIRROR_CENTER - (MIRROR_CENTER/2 - MIRROR_CENTER/4),0), (MIRROR_CENTER - (MIRROR_CENTER/2 - MIRROR_CENTER/4), HEIGHT), 1)    # Left Roundabout left line
-
-    # Horizontal
-    pygame.draw.line(WIN, RED, (0, HEIGHT/2), (WIDTH, HEIGHT/2), 1)
-    pygame.draw.line(WIN, BLUE, (0, HEIGHT/3), (WIDTH, HEIGHT/3), 1)
-    pygame.draw.line(WIN, GREEN, (0, HEIGHT/2 + HEIGHT/4), (WIDTH, HEIGHT/2 + HEIGHT/4), 1)
-    pygame.draw.line(WIN, RED, (0, HEIGHT/2 - HEIGHT/4), (WIDTH, HEIGHT/2 - HEIGHT/4), 1)
-    
