@@ -53,6 +53,9 @@ def draw(win, player_car):
     
     constants.draw_street_names()
 
+    #for img, pos in constants.FINISH_LINE_IMGS:
+    #    win.blit(img, pos)
+
     player_car.draw(win)
 
     #draw_points(path, win)
@@ -66,6 +69,8 @@ def draw(win, player_car):
         win.blit(img, pos)
 
     draw_dashboard_texts(win)
+    
+    win.blit(constants.BORDER_LEFT_PL, (0, constants.SCENE_HEIGHT_START))
 
 def draw_dashboard_texts(win):
     
@@ -122,21 +127,38 @@ def handle_static_collisions(player_car):
     """
     Check if player_car is colliding with any of the masks defined for this level.
     Because using masks is heavy on the CPU (due to pixel-by-pixel comparison),
-    run the check on them only when the player is in their area.
+    run the check on them only when the player is within their area.
     """
     global score
-    pos = (player_car.x,player_car.y)
+    player_pos = (player_car.x,player_car.y)
+    relevant_mask = None
 
-    # Check if the player car is within this road
-    if pos < constants.ELLA_ROAD_TOP_L:
-        score += 10
+    dis_right_rbt = math.sqrt((constants.RIGHT_ROUNDABOUT_CENTER[0]-player_car.x)**2 + (constants.RIGHT_ROUNDABOUT_CENTER[1]-player_car.y)**2)
+    dis_left_rbt = math.sqrt((constants.LEFT_ROUNDABOUT_CENTER[0]-player_car.x)**2 + (constants.LEFT_ROUNDABOUT_CENTER[1]-player_car.y)**2)
+    rbt_outer_radius = constants.RADIUS+1.7*constants.LANE_W
 
-    # Check if the player car is colliding any of the masks
-    poi = player_car.check_collision_with_mask(constants.MASK_LEFT_RBT)
-    if poi != None:
-        player_car.bounce()
-        #player_car.vel = 0
-        pygame.draw.circle(constants.WIN, constants.GREEN, poi, 3)
+    if player_car.x > constants.EREZ_ROTEM_SIDEWK_TOP_R[0] and player_car.y > constants.ROTEM_ROAD_BOT_R[1]:
+        # player is within right parking lot
+        relevant_mask = constants.MASK_RIGHT_PL
+
+    elif dis_right_rbt < rbt_outer_radius:
+        # player is within right roundabout
+        relevant_mask = constants.MASK_RIGHT_RBT
+    
+    elif dis_left_rbt < rbt_outer_radius:
+        # player is within left roundabout
+        relevant_mask = constants.MASK_LEFT_RBT
+
+    elif player_car.x < constants.ELLA_ROAD_TOP_L[0] and player_car.y > constants.SHAKED_SIDEWK_BOT_R[1]:
+        # player is within right parking lot
+        relevant_mask = constants.MASK_LEFT_PL
+
+    if relevant_mask:
+        # Check if the player car is colliding any of the masks
+        poi = player_car.check_collision_with_mask(relevant_mask)
+        if poi != None:
+            player_car.bounce()
+            pygame.draw.circle(constants.WIN, constants.GREEN, poi, 2)
 
 #--------------------------------------------------------------
 # Function for drawing path points

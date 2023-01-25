@@ -7,9 +7,10 @@ from utils import scale_image
 
 def load_button_images():
     
+    BTNS_PATH = "Assets\Images\Dashboard\Buttons/"
     for i in range(1,7):
-        image_off = pygame.image.load("Assets\Images\Dashboard\Buttons\OFF/btn" + str(i) + ".png")
-        image_on = pygame.image.load("Assets\Images\Dashboard\Buttons\ON/btn" + str(i) + ".png")
+        image_off = pygame.image.load(BTNS_PATH + "OFF/btn" + str(i) + ".png")
+        image_on = pygame.image.load(BTNS_PATH + "ON/btn" + str(i) + ".png")
         BTN_IMGS_OFF.append(image_off)
         BTN_IMGS_ON.append(image_on)
 
@@ -56,24 +57,24 @@ LIGHTS_BTN_CENTER = WIDTH-PHONE_CENTER
 PATH = "Assets\Images/"
 
 # Asset Definitions - Scene
-SKY_DAY = scale_image(pygame.image.load(PATH + "Backgrounds/day_sky.jpg"),0.25)
-SKY_NIGHT = scale_image(pygame.image.load(PATH + "Backgrounds/night_sky.jpg"),0.5)
-SKY_RAINY = scale_image(pygame.image.load(PATH + "Backgrounds/rainy_sky.jpg"),0.3)
-SKY_SUNNY = scale_image(pygame.image.load(PATH + "Backgrounds/sunny_sky.jpg"),0.25)
+SKY_DAY = scale_image(pygame.image.load(PATH + "Backgrounds/" + "day_sky.jpg"),0.25)
+SKY_NIGHT = scale_image(pygame.image.load(PATH + "Backgrounds/" + "night_sky.jpg"),0.5)
+SKY_RAINY = scale_image(pygame.image.load(PATH + "Backgrounds/" + "rainy_sky.jpg"),0.3)
+SKY_SUNNY = scale_image(pygame.image.load(PATH + "Backgrounds/" + "sunny_sky.jpg"),0.25)
 
-SCENE = scale_image(pygame.image.load(PATH + "Scenes\scene_1.png"),1.4)
+SCENE = scale_image(pygame.image.load(PATH + "Scenes\scene_1_light.png"),1.4)
 SCENE_DARK = scale_image(pygame.image.load(PATH + "Scenes\scene_1_dark.png"),1.4)
 LEVEL_IMGS = [(SKY_DAY, (0,0)), (SCENE, (0, SCENE_HEIGHT_START))]
 
 # Asset Definitions - Scene Masks
-BORDER_LEFT_PL = scale_image(pygame.image.load(PATH + "Borders\scene_1_mask_left_pl.png"),1.4)
-BORDER_RIGHT_PL = scale_image(pygame.image.load(PATH + "Borders\scene_1_mask_right_pl.png"),1.4)
-BORDER_LEFT_RBT = scale_image(pygame.image.load(PATH + "Borders\scene_1_mask_left_rbt.png"),1.4)
-BORDER_RIGHT_RBT = scale_image(pygame.image.load(PATH + "Borders\scene_1_mask_right_rbt.png"),1.4)
+BORDER_LEFT_PL = scale_image(pygame.image.load(PATH + "Borders\Scene_1/" + "mask_left_pl_bw_wider.png"),1.4)
+BORDER_LEFT_RBT = scale_image(pygame.image.load(PATH + "Borders\Scene_1/" + "mask_left_rbt_bw.png"),1.4)
+BORDER_RIGHT_PL = scale_image(pygame.image.load(PATH + "Borders\Scene_1/" + "mask_right_pl_bw.png"),1.4)
+BORDER_RIGHT_RBT = scale_image(pygame.image.load(PATH + "Borders\Scene_1/" + "mask_right_rbt_bw.png"),1.4)
 
 MASK_LEFT_PL = pygame.mask.from_surface(BORDER_LEFT_PL)
-MASK_RIGHT_PL = pygame.mask.from_surface(BORDER_RIGHT_PL)
 MASK_LEFT_RBT = pygame.mask.from_surface(BORDER_LEFT_RBT)
+MASK_RIGHT_PL = pygame.mask.from_surface(BORDER_RIGHT_PL)
 MASK_RIGHT_RBT = pygame.mask.from_surface(BORDER_RIGHT_RBT)
 
 #-------------------------------------------------------------------------
@@ -82,6 +83,9 @@ DASHBOARD_RECT_VER = pygame.Rect(WIDTH - WIDTH/4.5, 0, WIDTH/4, HEIGHT)
 SPEEDOMETER = scale_image(pygame.image.load(PATH + "Dashboard/speedometer.png"),0.3)
 MIRROR = scale_image(pygame.image.load(PATH + "Dashboard/rear_view_mirror.png"),0.25)
 PHONE = scale_image(pygame.image.load(PATH + "Dashboard/phone.png"),0.55)
+
+FINISH_LINE_VERT = scale_image(pygame.image.load(PATH + "Dashboard/finish_line.png"),0.68)
+FINISH_LINE_HORI = pygame.transform.rotate(FINISH_LINE_VERT,90)
 
 # Position Definitions - center
 SPEEDOMETER_POS = (MIRROR_CENTER-SPEEDOMETER.get_rect().centerx, DASHBOARD_HOR_TOP-SPEEDOMETER.get_rect().centery/2)
@@ -133,6 +137,7 @@ YAAR_ROAD_MID_R = (YAAR_ROAD_BOT_L[0] + 4.2*LANE_W, HEIGHT-HEIGHT/3+5)
 EREZ_ROAD_BOT_L = (MIRROR_CENTER/3+LANE_W, HEIGHT/6.2)
 ELLA_ROAD_TOP_L = (MIRROR_CENTER/3,HEIGHT/6.2)
 ESHEL_ROAD_BOT_R = (YAAR_ROAD_MID_R[0]+LANE_W,HEIGHT-HEIGHT/4+2)
+ROTEM_ROAD_BOT_R = (MIRROR_CENTER*1.5-0.5*LANE_W,HEIGHT/2 - 2.2*LANE_W + 2*LANE_W)
 
     # Sidewalks    
 SHAKED_SIDEWK_BOT_R = (MIRROR_CENTER/2-4*LANE_W, HEIGHT/2 - 2.2*LANE_W)
@@ -141,6 +146,8 @@ EREZ_ROTEM_SIDEWK_TOP_R = (YAAR_ROAD_MID_R[0]+6*LANE_W, HEIGHT/6.2 + 2*LANE_W)
     # Roundabouts
 LEFT_ROUNDABOUT_CENTER = (MIRROR_CENTER/2+LANE_W, SHAKED_SIDEWK_BOT_R[1]+LANE_W)
 RIGHT_ROUNDABOUT_CENTER = (MIRROR_CENTER*1.5-2*LANE_W, EREZ_ROTEM_SIDEWK_TOP_R[1]+LANE_W)
+
+FINISH_LINE_IMGS = [(FINISH_LINE_HORI, (EREZ_ROTEM_SIDEWK_TOP_R[0]+1.5*LANE_W,LEFT_ROUNDABOUT_CENTER[1]))]
 
 def draw_borders():
 
@@ -185,6 +192,7 @@ def draw_borders():
     
         # HaRotem - Horizontal
     pygame.draw.line(WIN, RED, (YAAR_ROAD_MID_R[0], SHAKED_SIDEWK_BOT_R[1]), (RIGHT_ROUNDABOUT_CENTER[0]-1.5*LANE_W, SHAKED_SIDEWK_BOT_R[1]), 1)
+    pygame.draw.line(WIN, RED, (YAAR_ROAD_MID_R[0], ROTEM_ROAD_BOT_R[1]), (ROTEM_ROAD_BOT_R[0], ROTEM_ROAD_BOT_R[1]), 1)
 
         # HaEshel - Horizontal
             # Bottom
@@ -192,8 +200,8 @@ def draw_borders():
 
 
         # Roundabouts - outer ring
-    pygame.draw.circle(WIN,RED,LEFT_ROUNDABOUT_CENTER,RADIUS+1.4*LANE_W,1)
-    pygame.draw.circle(WIN,RED,RIGHT_ROUNDABOUT_CENTER,RADIUS+1.4*LANE_W,1)
+    pygame.draw.circle(WIN,RED,LEFT_ROUNDABOUT_CENTER,RADIUS+1.5*LANE_W,1)
+    pygame.draw.circle(WIN,RED,RIGHT_ROUNDABOUT_CENTER,RADIUS+1.5*LANE_W,1)
 
         # Roundabouts - inner ring
     pygame.draw.circle(WIN,RED,LEFT_ROUNDABOUT_CENTER,RADIUS-1.3*LANE_W,1)
