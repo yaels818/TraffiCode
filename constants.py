@@ -318,15 +318,24 @@ def draw_borders():
         pygame.draw.circle(WIN,GREEN,LEFT_ROUNDABOUT_CENTER,RADIUS,1)
         pygame.draw.circle(WIN,GREEN,RIGHT_ROUNDABOUT_CENTER,RADIUS,1)
     
-    #==============
-    # Crosswalks
-    #==============
-    #==============
-    # Parallel Parking Spots
-    #==============
+    def draw_parallel_parking_borders():
+        # Yaar - Horizontal
+            # Top spot
+        pygame.draw.line(WIN, ORANGE, (YAAR_ROAD_MID_R[0], ROTEM_ROAD_BOT_R[1]+4*LANE_W), (YAAR_ROAD_MID_R[0]+LANE_W, ROTEM_ROAD_BOT_R[1]+4*LANE_W), 1)
+            # Bottom spot
+        pygame.draw.line(WIN, ORANGE, (YAAR_ROAD_MID_R[0], ESHEL_ROAD_BOT_R[1]-LANE_W), (YAAR_ROAD_MID_R[0]+LANE_W, ESHEL_ROAD_BOT_R[1]-LANE_W), 1)
+
+
+        # Eshel - Vertical
+            # Left
+        pygame.draw.line(WIN, ORANGE, (4.1*LANE_W,ESHEL_ROAD_BOT_R[1]), (4.1*LANE_W, ESHEL_ROAD_BOT_R[1]+LANE_W), 1) 
+            # Right
+        pygame.draw.line(WIN, ORANGE, (6.1*LANE_W,ESHEL_ROAD_BOT_R[1]), (6.1*LANE_W, ESHEL_ROAD_BOT_R[1]+LANE_W), 1) 
+
 
     #draw_road_borders()
-    draw_lane_borders()
+    #draw_lane_borders()
+    draw_parallel_parking_borders()
 
 def draw_street_names():
 
