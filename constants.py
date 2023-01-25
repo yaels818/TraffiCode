@@ -276,19 +276,43 @@ def draw_borders():
         pygame.draw.circle(WIN,RED,RIGHT_ROUNDABOUT_CENTER,RADIUS-1.3*LANE_W,1)
 
     def draw_lane_borders():
-            # Erez - Horizontal - Top
+            # Erez
+                # Horizontal - Top
         pygame.draw.line(WIN, GREEN, (MIRROR_CENTER/3+LANE_W, HEIGHT/5.1), (EREZ_ROTEM_SIDEWK_TOP_R[0]+LANE_W, HEIGHT/5.1), 1) 
-            # Erez - Horizontal - Bottom - main sidewalk till right rbt
+                # Horizontal - Bottom - main sidewalk till right rbt
         pygame.draw.line(WIN, GREEN, (EREZ_ROTEM_SIDEWK_TOP_R[0]+LANE_W, EREZ_ROTEM_SIDEWK_TOP_R[1]+LANE_W), (RIGHT_ROUNDABOUT_CENTER[0], EREZ_ROTEM_SIDEWK_TOP_R[1]+LANE_W), 1)
-            # Erez - Vertical
+                # Vertical - Solid lane line
+        pygame.draw.line(WIN, RED, (YAAR_ROAD_BOT_L[0]+2.2*LANE_W, EREZ_ROTEM_SIDEWK_TOP_R[1]-LANE_W), (YAAR_ROAD_BOT_L[0]+2.2*LANE_W, EREZ_ROTEM_SIDEWK_TOP_R[1]), 1)
+                # Vertical - Erez/Rotem
         pygame.draw.line(WIN, GREEN, (EREZ_ROTEM_SIDEWK_TOP_R[0]+LANE_W, EREZ_ROTEM_SIDEWK_TOP_R[1]-LANE_W), (EREZ_ROTEM_SIDEWK_TOP_R[0]+LANE_W, EREZ_ROTEM_SIDEWK_TOP_R[1]+LANE_W), 1)
 
-            # Yaar - Vertical - Left Lane Line
-        pygame.draw.line(WIN, GREEN, (YAAR_ROAD_BOT_L[0]+1.1*LANE_W, HEIGHT/5.1), (YAAR_ROAD_BOT_L[0]+1.1*LANE_W, HEIGHT-HEIGHT/4+2), 1)
-            # Yaar - Vertical - Continuous Lane Line
-        pygame.draw.line(WIN, GREEN, (YAAR_ROAD_BOT_L[0]+2.2*LANE_W, HEIGHT/5.1), (YAAR_ROAD_BOT_L[0]+2.2*LANE_W, HEIGHT-HEIGHT/4+2), 1)
-            # Yaar - Vertical - Right Lane Line
-        pygame.draw.line(WIN, GREEN, (YAAR_ROAD_MID_R[0]-LANE_W, HEIGHT/5.1), (YAAR_ROAD_MID_R[0]-LANE_W, HEIGHT-HEIGHT/4+2), 1)
+
+            # Yaar - Vertical
+                # Left Lane Line
+        pygame.draw.line(WIN, GREEN, (YAAR_ROAD_BOT_L[0]+1.1*LANE_W, YAAR_SIDEW_BOT_L[1]), (YAAR_ROAD_BOT_L[0]+1.1*LANE_W, ESHEL_ROAD_BOT_R[1]-LANE_W), 1)
+                # Solid Lane Line
+        pygame.draw.line(WIN, RED, (YAAR_ROAD_BOT_L[0]+2.2*LANE_W, YAAR_SIDEW_BOT_L[1]), (YAAR_ROAD_BOT_L[0]+2.2*LANE_W, ESHEL_ROAD_BOT_R[1]-LANE_W), 1)
+                # Right Lane Line
+        pygame.draw.line(WIN, GREEN, (YAAR_ROAD_MID_R[0]-LANE_W, YAAR_SIDEW_BOT_L[1]), (YAAR_ROAD_MID_R[0]-LANE_W, ESHEL_ROAD_BOT_R[1]-LANE_W), 1)
+        
+
+            # Hadas - Vertical
+        pygame.draw.line(WIN, GREEN, (MIRROR_CENTER/2+LANE_W, LEFT_ROUNDABOUT_CENTER[1]+3.2*LANE_W), (MIRROR_CENTER/2+LANE_W, ESHEL_ROAD_BOT_R[1]-2*LANE_W), 1)
+        
+
+            # Rotem - Horizontal
+        pygame.draw.line(WIN, GREEN, (YAAR_ROAD_MID_R[0], SHAKED_SIDEWK_BOT_R[1]+LANE_W), (RIGHT_ROUNDABOUT_CENTER[0], SHAKED_SIDEWK_BOT_R[1]+LANE_W), 1)
+         
+
+            # Shaked - Horizontal
+        pygame.draw.line(WIN, GREEN, (0, SHAKED_SIDEWK_BOT_R[1]+LANE_W), (SHAKED_SIDEWK_BOT_R[0], SHAKED_SIDEWK_BOT_R[1]+LANE_W), 1)
+        
+
+            # Eshel - Horizontal
+                # Dashed
+        pygame.draw.line(WIN, GREEN, (0,ESHEL_ROAD_BOT_R[1]-LANE_W), (YAAR_ROAD_BOT_L[0], ESHEL_ROAD_BOT_R[1]-LANE_W), 1) 
+                # Solid
+        pygame.draw.line(WIN, RED, (YAAR_ROAD_BOT_L[0],ESHEL_ROAD_BOT_R[1]-0.8*LANE_W), (YAAR_ROAD_BOT_L[0]+2*LANE_W, ESHEL_ROAD_BOT_R[1]-0.8*LANE_W), 1) 
         
             # Roundabouts
         pygame.draw.circle(WIN,GREEN,LEFT_ROUNDABOUT_CENTER,RADIUS,1)
@@ -301,7 +325,7 @@ def draw_borders():
     # Parallel Parking Spots
     #==============
 
-    draw_road_borders()
+    #draw_road_borders()
     draw_lane_borders()
 
 def draw_street_names():
