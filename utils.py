@@ -10,6 +10,15 @@ def scale_image(img, factor):
     size = round(img.get_width() * factor), round(img.get_height() * factor)
     return pygame.transform.scale(img, size)
 
+def stretch_image(img, factor_width, factor_height):
+    """
+    Stretch an image by given factors.
+    If factor > 1 ==> image will get bigger.
+    If factor < 1 ==> image will get smaller. 
+    Return the stretched image.
+    """
+    size = round(img.get_width() * factor_width), round(img.get_height() * factor_height)
+    return pygame.transform.scale(img, size)
 
 def blit_rotate_center(win, image, top_left, angle):
     """ 
