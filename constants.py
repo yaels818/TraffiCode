@@ -3,7 +3,7 @@ import pygame
 import os
 
 # Local Imports
-from utils import scale_image
+from utils import scale_image, stretch_image
 
 def load_button_images():
     
@@ -25,7 +25,8 @@ pygame.display.set_icon(scale_image(pygame.image.load("Assets\Images\gameIcon.pn
 # Font Definitions
 pygame.font.init()
 MAIN_FONT = pygame.font.SysFont("centurygothic", 36)
-SMALL_FONT = pygame.font.SysFont("erasdemiitc", 26)
+DASH_FONT = pygame.font.SysFont("erasdemiitc", 26)
+CLIP_FONT = pygame.font.SysFont("erasdemiitc", 20)
 STREETS_FONT = pygame.font.SysFont("erasdemiitc", 12)
 #-------------------------------------------------------------------------
 # Other Definitions
@@ -49,9 +50,12 @@ SCENE_CENTER = (WIDTH - WIDTH/4.7)/2
 MIRROR_CENTER = (WIDTH/2 + (WIDTH - WIDTH/4.7)/2)/2
 DASHBOARD_HOR_TOP = HEIGHT-HEIGHT/7
 DASHBOARD_VERT_LEFT = WIDTH - WIDTH/4.5
-PHONE_CENTER = WIDTH - WIDTH/9
-PHONE_LEFT = WIDTH - WIDTH/4.7
-LIGHTS_BTN_CENTER = WIDTH-PHONE_CENTER
+#PHONE_CENTER = WIDTH - WIDTH/9
+#PHONE_LEFT = WIDTH - WIDTH/4.7
+CLIP_LEFT = WIDTH - WIDTH/4.7
+CLIP_CENTER = WIDTH - WIDTH/8.5 
+CLIP_TOP = HEIGHT/7.5
+LIGHTS_BTN_CENTER = WIDTH-CLIP_CENTER
 #-------------------------------------------------------------------------
 
 PATH = "Assets\Images/"
@@ -82,7 +86,8 @@ DASHBOARD_RECT_HOR = pygame.Rect(0, DASHBOARD_HOR_TOP, WIDTH,HEIGHT/4)
 DASHBOARD_RECT_VER = pygame.Rect(WIDTH - WIDTH/4.5, 0, WIDTH/4, HEIGHT) 
 SPEEDOMETER = scale_image(pygame.image.load(PATH + "Dashboard/speedometer.png"),0.3)
 MIRROR = scale_image(pygame.image.load(PATH + "Dashboard/rear_view_mirror.png"),0.25)
-PHONE = scale_image(pygame.image.load(PATH + "Dashboard/phone.png"),0.55)
+#PHONE = scale_image(pygame.image.load(PATH + "Dashboard/phone.png"),0.55)
+CLIPBOARD = stretch_image(pygame.image.load(PATH + "Dashboard/clipboard.png"),0.55,0.8)
 
 FINISH_LINE_VERT = scale_image(pygame.image.load(PATH + "Dashboard/finish_line.png"),0.68)
 FINISH_LINE_HORI = pygame.transform.rotate(FINISH_LINE_VERT,90)
@@ -90,8 +95,11 @@ FINISH_LINE_HORI = pygame.transform.rotate(FINISH_LINE_VERT,90)
 # Position Definitions - center
 SPEEDOMETER_POS = (MIRROR_CENTER-SPEEDOMETER.get_rect().centerx, DASHBOARD_HOR_TOP-SPEEDOMETER.get_rect().centery/2)
 MIRROR_POS = (MIRROR_CENTER-MIRROR.get_rect().centerx, MIRROR.get_rect().centery/3)
-PHONE_POS = (PHONE_CENTER-PHONE.get_rect().centerx,HEIGHT-DASHBOARD_HOR_TOP-PHONE.get_rect().centery/4)
-DASH_IMGS = [(SPEEDOMETER, SPEEDOMETER_POS), (MIRROR, MIRROR_POS),(PHONE, PHONE_POS)]
+#PHONE_POS = (PHONE_CENTER-PHONE.get_rect().centerx,HEIGHT-DASHBOARD_HOR_TOP-PHONE.get_rect().centery/4)
+#CLIP_POS = (PHONE_CENTER-CLIPBOARD.get_rect().centerx,HEIGHT-DASHBOARD_HOR_TOP-CLIPBOARD.get_rect().centery/4)
+CLIP_POS = (CLIP_CENTER-CLIPBOARD.get_rect().centerx,CLIP_TOP-CLIPBOARD.get_rect().centery/2.5)
+
+DASH_IMGS = [(SPEEDOMETER, SPEEDOMETER_POS), (MIRROR, MIRROR_POS),(CLIPBOARD, CLIP_POS)]
 
 #-------------------------------------------------------------------------
 # Dashboard Buttons Definitions
@@ -112,7 +120,7 @@ RIGHT_BLINK_POS = ((SPEEDOMETER_POS[0]+SPEEDOMETER_RIGHT)/2+BTN_IMGS_OFF[2].get_
 
 WIPERS_BTN_POS = (RIGHT_BLINK_POS[0]+BTN_IMGS_OFF[3].get_rect().centerx*1.5, DASHBOARD_HOR_TOP)
 AC_BTN_POS = (WIPERS_BTN_POS[0]+BTN_IMGS_OFF[4].get_rect().centerx, DASHBOARD_HOR_TOP)
-MUSIC_BTN_POS = (PHONE_CENTER-BTN_IMGS_OFF[5].get_rect().centerx/2, DASHBOARD_HOR_TOP)
+MUSIC_BTN_POS = (CLIP_CENTER-BTN_IMGS_OFF[5].get_rect().centerx/2, DASHBOARD_HOR_TOP)
 
 # Buttons Blueprints for DashboardButton
 MENU_BTN_BLP = [MENU_BTN_IMG,MENU_BTN_IMG,BTN_SCALE,*MENU_BTN_POS]

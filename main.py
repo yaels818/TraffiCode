@@ -74,20 +74,20 @@ def draw(win, player_car):
 
 def draw_dashboard_texts(win):
     
-    timer_text = constants.SMALL_FONT.render(f"00:00:00", 1, constants.BLACK)
+    timer_text = constants.DASH_FONT.render(f"00:00:00", 1, constants.BLACK)
     timer_text_pos = (constants.MIRROR_CENTER-timer_text.get_rect().centerx,constants.MIRROR_POS[1]+timer_text.get_rect().centery)
     win.blit(timer_text, timer_text_pos)
 
-    level_text = constants.SMALL_FONT.render(f"Level {level}", 1, constants.WHITE)
-    level_text_pos = (constants.PHONE_LEFT+0.5*level_text.get_rect().centerx,constants.MIRROR_POS[1]+4*level_text.get_rect().centery)
+    level_text = constants.CLIP_FONT.render(f"Level {level}", 1, constants.BLACK)
+    level_text_pos = (constants.CLIP_LEFT+0.5*level_text.get_rect().centerx,constants.CLIP_TOP+level_text.get_rect().centery)
     win.blit(level_text, level_text_pos)
 
-    score_text = constants.SMALL_FONT.render(f"Score: {score}", 1, constants.RED)
-    score_text_pos = (constants.PHONE_CENTER-score_text.get_rect().centerx,constants.RIGHT_ROUNDABOUT_CENTER[1]-score_text.get_rect().centery)
+    score_text = constants.CLIP_FONT.render(f"Score: {score}", 1, constants.RED)
+    score_text_pos = (constants.CLIP_CENTER-score_text.get_rect().centerx,constants.RIGHT_ROUNDABOUT_CENTER[1]-score_text.get_rect().centery)
     win.blit(score_text, score_text_pos)
 
     # round to the first significant digit, units are px/sec
-    velocity_text = constants.SMALL_FONT.render(f"{round(round(player.vel,1)*10.0)}", 1, (255, 255, 255))
+    velocity_text = constants.DASH_FONT.render(f"{round(round(player.vel,1)*10.0)}", 1, (255, 255, 255))
     velocity_text_pos = (constants.SPEEDOMETER_TEXT_POS[0]-velocity_text.get_rect().centerx,constants.SPEEDOMETER_TEXT_POS[1]-velocity_text.get_rect().centery)
     win.blit(velocity_text, velocity_text_pos)
 
