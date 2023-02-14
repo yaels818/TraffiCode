@@ -125,7 +125,7 @@ def move_player(player_car):
     if not gas_pressed:
         player_car.reduce_speed(emergency_brake = False)
 
-def handle_static_collisions(player_car):
+def check_mask_collisions(player_car):
     """
     Check if player_car is colliding with any of the masks defined for this level.
     Because using masks is heavy on the CPU (due to pixel-by-pixel comparison),
@@ -291,7 +291,7 @@ while running:
     #move_player(player_car)
     move_player(player)
     
-    handle_static_collisions(player)
+    check_mask_collisions(player)
     #handle_collision_with_mask(player_car)
     #handle_collision_with_borders()
 
