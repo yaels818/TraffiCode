@@ -1,4 +1,5 @@
 # Outsource imports
+from tkinter import RIGHT
 import pygame
 import math
 from random import randint, choice
@@ -83,7 +84,7 @@ def draw_dashboard_texts(win):
     win.blit(level_text, level_text_pos)
 
     score_text = constants.CLIP_FONT.render(f"Score: {score}", 1, constants.RED)
-    score_text_pos = (constants.CLIP_CENTER-score_text.get_rect().centerx,constants.RIGHT_ROUNDABOUT_CENTER[1]-score_text.get_rect().centery)
+    score_text_pos = (constants.CLIP_CENTER-score_text.get_rect().centerx,constants.RBT_RIGHT_CENTER[1]-score_text.get_rect().centery)
     win.blit(score_text, score_text_pos)
 
     # round to the first significant digit, units are px/sec
@@ -125,41 +126,51 @@ def move_player(player_car):
     if not gas_pressed:
         player_car.reduce_speed(emergency_brake = False)
 
-def check_mask_collisions(player_car):
+def check_collision_with_road_borders(player_car):
     """
-    Check if player_car is colliding with any of the masks defined for this level.
-    Because using masks is heavy on the CPU (due to pixel-by-pixel comparison),
-    run the check on them only when the player is within their area.
-    """
-    global score
-    player_pos = (player_car.x,player_car.y)
-    relevant_mask = None
-
-    dis_right_rbt = math.sqrt((constants.RIGHT_ROUNDABOUT_CENTER[0]-player_car.x)**2 + (constants.RIGHT_ROUNDABOUT_CENTER[1]-player_car.y)**2)
-    dis_left_rbt = math.sqrt((constants.LEFT_ROUNDABOUT_CENTER[0]-player_car.x)**2 + (constants.LEFT_ROUNDABOUT_CENTER[1]-player_car.y)**2)
-
-    if player_car.x > constants.EREZ_ROTEM_SIDEWK_TOP_R[0] and player_car.y > constants.ROTEM_ROAD_BOT_R[1]:
-        # player is within right parking lot
-        relevant_mask = constants.MASK_RIGHT_PL
-
-    elif dis_right_rbt < constants.RBT_OUTER_RAD:
-        # player is within right roundabout
-        relevant_mask = constants.MASK_RIGHT_RBT
     
-    elif dis_left_rbt < constants.RBT_OUTER_RAD:
-        # player is within left roundabout
-        relevant_mask = constants.MASK_LEFT_RBT
-
-    elif player_car.x < constants.ELLA_ROAD_TOP_L[0] and player_car.y > constants.SHAKED_SIDEWK_BOT_R[1]:
-        # player is within right parking lot
-        relevant_mask = constants.MASK_LEFT_PL
-
-    if relevant_mask:
+    """
+    def check_mask_collisions(player_car, mask):
+        """
+        Check if player_car is colliding with any of the masks defined for this level.
+        Because using masks is heavy on the CPU (due to pixel-by-pixel comparison),
+        run the check on them only when the player is within their area.
+        """
+        
         # Check if the player car is colliding any of the masks
-        poi = player_car.check_collision_with_mask(relevant_mask)
+        poi = player_car.check_collision_with_mask(mask)
         if poi != None:
             player_car.bounce()
             pygame.draw.circle(constants.WIN, constants.GREEN, poi, 2)
+            return 1
+        return 0
+        
+    pl_hits = 0
+    rbt_hits = 0
+
+    MID_POINT = constants.YAAR_ROAD_BOT_L[0]
+
+    # player is on the right side of the scene
+    if player_car.x > MID_POINT:
+        # count mask collisions
+        if player_car.x > constants.EREZ_ROTEM_SIDEWK_TOP_R[0] and player_car.y > constants.ROTEM_ROAD_BOT_R[1]:
+            pl_hits += check_mask_collisions(player_car, constants.MASK_RIGHT_PL)
+        else:
+            dis_right_rbt = math.sqrt((constants.RBT_RIGHT_CENTER[0]-player_car.x)**2 + (constants.RBT_RIGHT_CENTER[1]-player_car.y)**2)
+            if dis_right_rbt < constants.RBT_OUTER_RAD:
+                rbt_hits += check_mask_collisions(player_car, constants.MASK_RIGHT_RBT)
+        
+    # player is on the left side
+    else:
+        # count mask collisions
+        if player_car.x < constants.ELLA_ROAD_TOP_L[0] and player_car.y > constants.SHAKED_SIDEWK_BOT_R[1]:
+             pl_hits += check_mask_collisions(player_car, constants.MASK_LEFT_PL)
+        else:
+            dis_left_rbt = math.sqrt((constants.RBT_LEFT_CENTER[0]-player_car.x)**2 + (constants.RBT_LEFT_CENTER[1]-player_car.y)**2)
+            if dis_left_rbt < constants.RBT_OUTER_RAD:
+                rbt_hits += check_mask_collisions(player_car, constants.MASK_LEFT_RBT)
+        
+    return pl_hits
 
 #--------------------------------------------------------------
 # Function for drawing path points
@@ -224,7 +235,7 @@ def handle_collision_with_borders():
 #-------------------------------------------------------------
 
 # Groups
-player = PlayerSprite((constants.RIGHT_ROUNDABOUT_CENTER[0],constants.LEFT_ROUNDABOUT_CENTER[1]+2.5*constants.LANE_W))
+player = PlayerSprite((constants.RBT_RIGHT_CENTER[0],constants.RBT_LEFT_CENTER[1]+2.5*constants.LANE_W))
 playerGroup = pygame.sprite.GroupSingle()
 playerGroup.add(player)
 
@@ -291,7 +302,7 @@ while running:
     #move_player(player_car)
     move_player(player)
     
-    check_mask_collisions(player)
+    check_collision_with_road_borders(player)
     #handle_collision_with_mask(player_car)
     #handle_collision_with_borders()
 
