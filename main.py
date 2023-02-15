@@ -1,5 +1,4 @@
 # Outsource imports
-from tkinter import RIGHT
 import pygame
 import math
 from random import randint, choice
@@ -144,33 +143,52 @@ def check_collision_with_road_borders(player_car):
             pygame.draw.circle(constants.WIN, constants.GREEN, poi, 2)
             return 1
         return 0
-        
+
+    global score
     pl_hits = 0
     rbt_hits = 0
+    reg_hits = 0
 
     MID_POINT = constants.YAAR_ROAD_BOT_L[0]
+
+    player_car_rect = player_car.rect
+    pygame.draw.circle(constants.WIN, constants.GREEN, player_car.rect.center, 2)
+    #player_car_rect.inflate_ip(-0.5,-0.5)
+    #pygame.draw.rect(constants.WIN,constants.PINK, player_car_rect,4)
 
     # player is on the right side of the scene
     if player_car.x > MID_POINT:
         # count mask collisions
-        if player_car.x > constants.EREZ_ROTEM_SIDEWK_TOP_R[0] and player_car.y > constants.ROTEM_ROAD_BOT_R[1]:
+        #if player_car.x > constants.EREZ_ROTEM_SIDEWK_TOP_R[0] and player_car.y > constants.ROTEM_ROAD_BOT_R[1]:
+        # check if player_car is completely inside the parking lot
+        if constants.RIGHT_PL_BORDER_RECT.contains(player_car.rect):
             pl_hits += check_mask_collisions(player_car, constants.MASK_RIGHT_PL)
         else:
             dis_right_rbt = math.sqrt((constants.RBT_RIGHT_CENTER[0]-player_car.x)**2 + (constants.RBT_RIGHT_CENTER[1]-player_car.y)**2)
             if dis_right_rbt < constants.RBT_OUTER_RAD:
                 rbt_hits += check_mask_collisions(player_car, constants.MASK_RIGHT_RBT)
+            else:
+        # count regular collisions
+                if player_car.rect.collidelist(constants.ROTEM_ROAD_BORDERS) != -1:
+                    print("collision, ROTEM")
+                if player_car.rect.collidelist(constants.EREZ_ROAD_BORDERS) != -1:
+                    print("collision, EREZ")
+                    reg_hits += 1
+
         
     # player is on the left side
     else:
         # count mask collisions
-        if player_car.x < constants.ELLA_ROAD_TOP_L[0] and player_car.y > constants.SHAKED_SIDEWK_BOT_R[1]:
+        #if player_car.x < constants.ELLA_ROAD_TOP_L[0] and player_car.y > constants.SHAKED_SIDEWK_BOT_R[1]:
+        # check if player_car is completely inside the parking lot
+        if constants.LEFT_PL_BORDER_RECT.contains(player_car.rect):
              pl_hits += check_mask_collisions(player_car, constants.MASK_LEFT_PL)
         else:
             dis_left_rbt = math.sqrt((constants.RBT_LEFT_CENTER[0]-player_car.x)**2 + (constants.RBT_LEFT_CENTER[1]-player_car.y)**2)
             if dis_left_rbt < constants.RBT_OUTER_RAD:
                 rbt_hits += check_mask_collisions(player_car, constants.MASK_LEFT_RBT)
         
-    return pl_hits
+    score = reg_hits
 
 #--------------------------------------------------------------
 # Function for drawing path points
