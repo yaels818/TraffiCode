@@ -14,9 +14,8 @@ pygame.font.init()
 
 clock = pygame.time.Clock()
 
-score = 0
 level = 1
-
+hits_counter = [0,0,0]
 path = []
 
 #-------------------------------------------------------------
@@ -48,6 +47,45 @@ class Border(pygame.sprite.Sprite):
 
 def draw(win, player_car):
     
+    def draw_dashboard_texts(win):
+
+        level_text = constants.CLIP_FONT.render(f"Level {level}", 1, constants.BLACK)
+        level_text_pos = (constants.CLIP_LEFT+0.5*level_text.get_rect().centerx,constants.CLIP_TOP+level_text.get_rect().centery)
+
+        timer_text = constants.DASH_FONT.render(f"00:00:00", 1, constants.BLACK)
+        timer_text_pos = (constants.MIRROR_CENTER-timer_text.get_rect().centerx,constants.MIRROR_POS[1]+timer_text.get_rect().centery)
+
+        # round to the first significant digit, units are px/sec
+        velocity_text = constants.DASH_FONT.render(f"{round(round(player.vel,1)*10.0)}", 1, (255, 255, 255))
+        velocity_text_pos = (constants.SPEEDOMETER_TEXT_POS[0]-velocity_text.get_rect().centerx,constants.SPEEDOMETER_TEXT_POS[1]-velocity_text.get_rect().centery)
+
+        rb_hits_text = constants.CLIP_FONT.render(f"Road borders hits: {hits_counter[0]}", 1, constants.RED)
+        rb_hits_text_pos = (constants.CLIP_CENTER-rb_hits_text.get_rect().centerx,constants.RBT_RIGHT_CENTER[1]-rb_hits_text.get_rect().centery)
+        
+        line_space = 1.5
+
+        pl_hits_text = constants.CLIP_FONT.render(f"Parking lot walls hits: {hits_counter[1]}", 1, constants.RED)
+        pl_hits_text_pos = (constants.CLIP_CENTER-pl_hits_text.get_rect().centerx,constants.RBT_RIGHT_CENTER[1]+line_space*pl_hits_text.get_rect().centery)
+        
+        line_space += 2.5
+
+        rbt_hits_text = constants.CLIP_FONT.render(f"Roundabout walls hits: {hits_counter[1]}", 1, constants.RED)
+        rbt_hits_text_pos = (constants.CLIP_CENTER-rbt_hits_text.get_rect().centerx,constants.RBT_RIGHT_CENTER[1]+line_space*rbt_hits_text.get_rect().centery)
+
+        
+        DASH_TEXTS = [  (level_text, level_text_pos), 
+                        (timer_text, timer_text_pos), 
+                        (velocity_text, velocity_text_pos),
+                        (rb_hits_text, rb_hits_text_pos),
+                        (pl_hits_text, pl_hits_text_pos),
+                        (rbt_hits_text, rbt_hits_text_pos)
+                    ]
+
+        for txt, pos in DASH_TEXTS:
+            # Draw this img in this position
+            win.blit(txt, pos)  
+        
+
     for img, pos in constants.LEVEL_IMGS:
         # Draw this img in this position
         win.blit(img, pos)  
@@ -70,26 +108,6 @@ def draw(win, player_car):
         win.blit(img, pos)
 
     draw_dashboard_texts(win)
-    
-
-def draw_dashboard_texts(win):
-    
-    timer_text = constants.DASH_FONT.render(f"00:00:00", 1, constants.BLACK)
-    timer_text_pos = (constants.MIRROR_CENTER-timer_text.get_rect().centerx,constants.MIRROR_POS[1]+timer_text.get_rect().centery)
-    win.blit(timer_text, timer_text_pos)
-
-    level_text = constants.CLIP_FONT.render(f"Level {level}", 1, constants.BLACK)
-    level_text_pos = (constants.CLIP_LEFT+0.5*level_text.get_rect().centerx,constants.CLIP_TOP+level_text.get_rect().centery)
-    win.blit(level_text, level_text_pos)
-
-    score_text = constants.CLIP_FONT.render(f"Score: {score}", 1, constants.RED)
-    score_text_pos = (constants.CLIP_CENTER-score_text.get_rect().centerx,constants.RBT_RIGHT_CENTER[1]-score_text.get_rect().centery)
-    win.blit(score_text, score_text_pos)
-
-    # round to the first significant digit, units are px/sec
-    velocity_text = constants.DASH_FONT.render(f"{round(round(player.vel,1)*10.0)}", 1, (255, 255, 255))
-    velocity_text_pos = (constants.SPEEDOMETER_TEXT_POS[0]-velocity_text.get_rect().centerx,constants.SPEEDOMETER_TEXT_POS[1]-velocity_text.get_rect().centery)
-    win.blit(velocity_text, velocity_text_pos)
 
 #--------------------------------------------------------------
 def move_player(player_car):
