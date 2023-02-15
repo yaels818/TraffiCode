@@ -50,8 +50,6 @@ SCENE_CENTER = (WIDTH - WIDTH/4.7)/2
 MIRROR_CENTER = (WIDTH/2 + (WIDTH - WIDTH/4.7)/2)/2
 DASHBOARD_HOR_TOP = HEIGHT-HEIGHT/7
 DASHBOARD_VERT_LEFT = WIDTH - WIDTH/4.5
-#PHONE_CENTER = WIDTH - WIDTH/9
-#PHONE_LEFT = WIDTH - WIDTH/4.7
 CLIP_LEFT = WIDTH - WIDTH/4.7
 CLIP_CENTER = WIDTH - WIDTH/8.5 
 CLIP_TOP = HEIGHT/7.5
@@ -86,7 +84,6 @@ DASHBOARD_RECT_HOR = pygame.Rect(0, DASHBOARD_HOR_TOP, WIDTH,HEIGHT/4)
 DASHBOARD_RECT_VER = pygame.Rect(WIDTH - WIDTH/4.5, 0, WIDTH/4, HEIGHT) 
 SPEEDOMETER = scale_image(pygame.image.load(PATH + "Dashboard/speedometer.png"),0.3)
 MIRROR = scale_image(pygame.image.load(PATH + "Dashboard/rear_view_mirror.png"),0.25)
-#PHONE = scale_image(pygame.image.load(PATH + "Dashboard/phone.png"),0.55)
 CLIPBOARD = stretch_image(pygame.image.load(PATH + "Dashboard/clipboard.png"),0.55,0.8)
 
 FINISH_LINE_VERT = scale_image(pygame.image.load(PATH + "Dashboard/finish_line.png"),0.68)
@@ -95,8 +92,6 @@ FINISH_LINE_HORI = pygame.transform.rotate(FINISH_LINE_VERT,90)
 # Position Definitions - center
 SPEEDOMETER_POS = (MIRROR_CENTER-SPEEDOMETER.get_rect().centerx, DASHBOARD_HOR_TOP-SPEEDOMETER.get_rect().centery/2)
 MIRROR_POS = (MIRROR_CENTER-MIRROR.get_rect().centerx, MIRROR.get_rect().centery/3)
-#PHONE_POS = (PHONE_CENTER-PHONE.get_rect().centerx,HEIGHT-DASHBOARD_HOR_TOP-PHONE.get_rect().centery/4)
-#CLIP_POS = (PHONE_CENTER-CLIPBOARD.get_rect().centerx,HEIGHT-DASHBOARD_HOR_TOP-CLIPBOARD.get_rect().centery/4)
 CLIP_POS = (CLIP_CENTER-CLIPBOARD.get_rect().centerx,CLIP_TOP-CLIPBOARD.get_rect().centery/2.5)
 
 DASH_IMGS = [(SPEEDOMETER, SPEEDOMETER_POS), (MIRROR, MIRROR_POS),(CLIPBOARD, CLIP_POS)]
@@ -114,10 +109,8 @@ load_button_images()
 
 MENU_BTN_POS = (MIRROR_CENTER/5, DASHBOARD_HOR_TOP-10)
 LIGHTS_BTN_POS = (MIRROR_CENTER/2-BTN_IMGS_OFF[0].get_rect().centerx/2, DASHBOARD_HOR_TOP)
-
 LEFT_BLINK_POS = (SPEEDOMETER_POS[0]-BTN_IMGS_OFF[1].get_rect().centerx ,DASHBOARD_HOR_TOP-10)
 RIGHT_BLINK_POS = ((SPEEDOMETER_POS[0]+SPEEDOMETER_RIGHT)/2+BTN_IMGS_OFF[2].get_rect().centerx ,DASHBOARD_HOR_TOP-10)
-
 WIPERS_BTN_POS = (RIGHT_BLINK_POS[0]+BTN_IMGS_OFF[3].get_rect().centerx*1.5, DASHBOARD_HOR_TOP)
 AC_BTN_POS = (WIPERS_BTN_POS[0]+BTN_IMGS_OFF[4].get_rect().centerx, DASHBOARD_HOR_TOP)
 MUSIC_BTN_POS = (CLIP_CENTER-BTN_IMGS_OFF[5].get_rect().centerx/2, DASHBOARD_HOR_TOP)
@@ -160,9 +153,169 @@ RBT_INNER_RAD = RADIUS-1.3*LANE_W
 
 FINISH_LINE_IMGS = [(FINISH_LINE_HORI, (EREZ_ROTEM_SIDEWK_TOP_R[0]+1.5*LANE_W,RBT_LEFT_CENTER[1]))]
 
+#-------------------------------------------------------------------------
+# Borders Definitions
+LEFT_PL_BORDER_RECT = pygame.Rect((0, SHAKED_SIDEWK_BOT_R[1]+2*LANE_W), (SHAKED_SIDEWK_BOT_R[0], ESHEL_ROAD_BOT_R[1]-2*LANE_W-(SHAKED_SIDEWK_BOT_R[1]+2*LANE_W)))
+RIGHT_PL_BORDER_RECT = pygame.Rect((EREZ_ROTEM_SIDEWK_TOP_R[0], SHAKED_SIDEWK_BOT_R[1]+2*LANE_W), (CLIP_LEFT-LANE_W-(EREZ_ROTEM_SIDEWK_TOP_R[0]), ESHEL_ROAD_BOT_R[1]-(SHAKED_SIDEWK_BOT_R[1]+1.5*LANE_W)))
+
+EREZ_ROAD_BORDERS = [
+    # Horizontal
+        # Top (border with sky)
+    pygame.Rect((MIRROR_CENTER/3, ELLA_ROAD_TOP_L[1]), (EREZ_ROTEM_SIDEWK_TOP_R[0]+2*LANE_W-(MIRROR_CENTER/3), 2)),
+        # Top (border with park)
+    pygame.Rect((EREZ_ROTEM_SIDEWK_TOP_R[0]+2*LANE_W, EREZ_ROTEM_SIDEWK_TOP_R[1]), (RBT_RIGHT_CENTER[0]-3.25*LANE_W-(EREZ_ROTEM_SIDEWK_TOP_R[0]+2*LANE_W), 2)),
+        # Bottom - Ella till Hadas
+    pygame.Rect((MIRROR_CENTER/3+LANE_W, EREZ_ROTEM_SIDEWK_TOP_R[1]), (MIRROR_CENTER/2-(MIRROR_CENTER/3+LANE_W), 2)),
+        # Bottom - Hadas till Yaar
+    pygame.Rect((MIRROR_CENTER/2+2*LANE_W+2, EREZ_ROTEM_SIDEWK_TOP_R[1]), (YAAR_ROAD_BOT_L[0]-(MIRROR_CENTER/2+2*LANE_W+2), 2)),
+        # Bottom - Yaar Sidewalk
+    pygame.Rect((YAAR_SIDEW_BOT_L[0], EREZ_ROTEM_SIDEWK_TOP_R[1]), (YAAR_ROAD_MID_R[0]-1.1*LANE_W-(YAAR_SIDEW_BOT_L[0]), 2)),
+        # Bottom - Yaar till Erez 
+    pygame.Rect((YAAR_ROAD_MID_R[0], EREZ_ROTEM_SIDEWK_TOP_R[1]), (EREZ_ROTEM_SIDEWK_TOP_R[0]-(YAAR_ROAD_MID_R[0]), 2)),
+        # Bottom - Erez till Rotem
+    pygame.Rect((EREZ_ROTEM_SIDEWK_TOP_R[0], EREZ_ROTEM_SIDEWK_TOP_R[1]+2*LANE_W), (RBT_RIGHT_CENTER[0]-3.25*LANE_W-(EREZ_ROTEM_SIDEWK_TOP_R[0]), 2)),
+    # Vertical
+            # Top - Erez till Rotem
+    pygame.Rect((EREZ_ROTEM_SIDEWK_TOP_R[0]+2*LANE_W, ELLA_ROAD_TOP_L[1]), (2, EREZ_ROTEM_SIDEWK_TOP_R[1]-(ELLA_ROAD_TOP_L[1]))),
+            # Bottom - Erez till Rotem
+    pygame.Rect((EREZ_ROTEM_SIDEWK_TOP_R[0], EREZ_ROTEM_SIDEWK_TOP_R[1]), (2, EREZ_ROTEM_SIDEWK_TOP_R[1]+2*LANE_W-(EREZ_ROTEM_SIDEWK_TOP_R[1])))
+    ]
+
+YAAR_ROAD_BORDERS = [
+    # Horizontal
+        # Yaar Sidewalk bottom 
+    pygame.Rect((YAAR_SIDEW_BOT_L[0], YAAR_SIDEW_BOT_L[1]), (YAAR_ROAD_MID_R[0]-1.1*LANE_W-(YAAR_SIDEW_BOT_L[0]), 2)),
+            # Yaar Parallels top
+    pygame.Rect((YAAR_ROAD_MID_R[0], SHAKED_SIDEWK_BOT_R[1]+4*LANE_W), (YAAR_ROAD_MID_R[0]+LANE_W-(YAAR_ROAD_MID_R[0]), 2)),
+    # Vertical
+            # Yaar Sidewalk left
+    pygame.Rect((YAAR_SIDEW_BOT_L[0], EREZ_ROTEM_SIDEWK_TOP_R[1]), (2, YAAR_SIDEW_BOT_L[1]-(EREZ_ROTEM_SIDEWK_TOP_R[1]))),
+            # Yaar Sidewalk right
+    pygame.Rect((YAAR_ROAD_MID_R[0]-1.1*LANE_W, EREZ_ROTEM_SIDEWK_TOP_R[1]), (2, YAAR_SIDEW_BOT_L[1]-(EREZ_ROTEM_SIDEWK_TOP_R[1]))),
+    
+            # Yaar till Hadas (left)
+    pygame.Rect((YAAR_ROAD_BOT_L[0], EREZ_ROTEM_SIDEWK_TOP_R[1]), (2, SHAKED_SIDEWK_BOT_R[1]-(EREZ_ROTEM_SIDEWK_TOP_R[1]))),
+            # Yaar till Eshel
+    pygame.Rect((YAAR_ROAD_BOT_L[0], ROTEM_ROAD_BOT_R[1]), (2, ESHEL_ROAD_BOT_R[1]-2*LANE_W-(ROTEM_ROAD_BOT_R[1]))),
+    
+            # Yaar till Rotem (right)
+    pygame.Rect((YAAR_ROAD_MID_R[0], EREZ_ROTEM_SIDEWK_TOP_R[1]), (2, SHAKED_SIDEWK_BOT_R[1]-(EREZ_ROTEM_SIDEWK_TOP_R[1]))),
+            # Yaar/Rotem till Parallels
+    pygame.Rect((YAAR_ROAD_MID_R[0], ROTEM_ROAD_BOT_R[1]), (2, SHAKED_SIDEWK_BOT_R[1]+4*LANE_W-(ROTEM_ROAD_BOT_R[1]))),
+            # Parallels (right)
+    pygame.Rect((YAAR_ROAD_MID_R[0]+LANE_W, SHAKED_SIDEWK_BOT_R[1]+4*LANE_W), (2, ESHEL_ROAD_BOT_R[1]-(SHAKED_SIDEWK_BOT_R[1]+4*LANE_W)))
+    ]
+
+ELLA_ROAD_BORDERS = [
+    # Vertical - left
+        # Ella till Shaked
+    pygame.Rect((ELLA_ROAD_TOP_L[0],ELLA_ROAD_TOP_L[1]), (2,SHAKED_SIDEWK_BOT_R[1]-(ELLA_ROAD_TOP_L[1]))),
+        # Ella/Shaked till left PL
+    pygame.Rect((ELLA_ROAD_TOP_L[0],ROTEM_ROAD_BOT_R[1]), (2,RBT_LEFT_CENTER[1]+3*LANE_W-(ROTEM_ROAD_BOT_R[1]))),
+        # Ella left PL till Eshel
+    pygame.Rect((ELLA_ROAD_TOP_L[0],RBT_LEFT_CENTER[1]+4.2*LANE_W), (2,ESHEL_ROAD_BOT_R[1]-2*LANE_W-(RBT_LEFT_CENTER[1]+4.2*LANE_W))),
+    # Vertical - right
+        # Ella till Shaked
+    pygame.Rect((ELLA_ROAD_TOP_L[0]+LANE_W,EREZ_ROTEM_SIDEWK_TOP_R[1]), (2,SHAKED_SIDEWK_BOT_R[1]-(EREZ_ROTEM_SIDEWK_TOP_R[1]))),
+        # Ella/Shaked till Eshel
+    pygame.Rect((ELLA_ROAD_TOP_L[0]+LANE_W,ROTEM_ROAD_BOT_R[1]), (2,ESHEL_ROAD_BOT_R[1]-2*LANE_W-(ROTEM_ROAD_BOT_R[1])))
+    ]
+
+HADAS_ROAD_BORDERS = [
+    # Vertical - left
+        # Erez till Hadas
+    pygame.Rect((MIRROR_CENTER/2,EREZ_ROTEM_SIDEWK_TOP_R[1]), (2, SHAKED_SIDEWK_BOT_R[1]-2.25*LANE_W-(EREZ_ROTEM_SIDEWK_TOP_R[1]))),
+        # Hadas till Eshel
+    pygame.Rect((MIRROR_CENTER/2,RBT_LEFT_CENTER[1]+3.25*LANE_W), (2, ESHEL_ROAD_BOT_R[1]-2*LANE_W-(RBT_LEFT_CENTER[1]+3.25*LANE_W))),
+    # Vertical - right
+        # Erez till Hadas
+    pygame.Rect((MIRROR_CENTER/2+2*LANE_W,EREZ_ROTEM_SIDEWK_TOP_R[1]), (2, SHAKED_SIDEWK_BOT_R[1]-2.25*LANE_W-(EREZ_ROTEM_SIDEWK_TOP_R[1]))),
+        # Hadas till Eshel
+    pygame.Rect((MIRROR_CENTER/2+2*LANE_W,RBT_LEFT_CENTER[1]+3.25*LANE_W), (2, ESHEL_ROAD_BOT_R[1]-2*LANE_W-(RBT_LEFT_CENTER[1]+3.25*LANE_W)))
+    ]
+
+ROTEM_ROAD_BORDERS = [
+    # Horizontal
+        # Top
+    pygame.Rect((YAAR_ROAD_MID_R[0], SHAKED_SIDEWK_BOT_R[1]), (RBT_RIGHT_CENTER[0]-1.5*LANE_W-(YAAR_ROAD_MID_R[0]), 2)),
+        # Bottom - Yaar/Rotem till right PL
+    pygame.Rect((YAAR_ROAD_MID_R[0], ROTEM_ROAD_BOT_R[1]), (EREZ_ROTEM_SIDEWK_TOP_R[0]+2*LANE_W-(YAAR_ROAD_MID_R[0]), 2)),
+        # Bottom - right PL till Rotem
+    pygame.Rect((EREZ_ROTEM_SIDEWK_TOP_R[0]+4.1*LANE_W, ROTEM_ROAD_BOT_R[1]), (ROTEM_ROAD_BOT_R[0]-(EREZ_ROTEM_SIDEWK_TOP_R[0]+4.1*LANE_W), 2)),        
+    # Vertical
+        # Left
+    pygame.Rect((RBT_RIGHT_CENTER[0]-1.4*LANE_W,SHAKED_SIDEWK_BOT_R[1]-LANE_W), (2, (SHAKED_SIDEWK_BOT_R[1]+LANE_W)-SHAKED_SIDEWK_BOT_R[1])),
+        # Right
+    pygame.Rect((ROTEM_ROAD_BOT_R[0],ROTEM_ROAD_BOT_R[1]-3*LANE_W), (2, (ROTEM_ROAD_BOT_R[1]+3*LANE_W)-(ROTEM_ROAD_BOT_R[1])))
+    ]
+
+SHAKED_ROAD_BORDERS = [
+    # Horizontal
+        # Top
+    pygame.Rect((0, SHAKED_SIDEWK_BOT_R[1]), (SHAKED_SIDEWK_BOT_R[0], 2)),
+        # Bottom - till left pl
+    pygame.Rect((0, SHAKED_SIDEWK_BOT_R[1]+2*LANE_W), (SHAKED_SIDEWK_BOT_R[0]/2+LANE_W, 2)),
+        # Bottom - left pl till Ella
+    pygame.Rect((SHAKED_SIDEWK_BOT_R[0]/2+2*LANE_W, SHAKED_SIDEWK_BOT_R[1]+2*LANE_W), (SHAKED_SIDEWK_BOT_R[0]-(SHAKED_SIDEWK_BOT_R[0]/2+2*LANE_W), 2)),
+    ]
+
+ESHEL_ROAD_BORDERS = [
+    # Horizontal
+        # Top - till left pl
+    pygame.Rect((0, ESHEL_ROAD_BOT_R[1]-2*LANE_W), (SHAKED_SIDEWK_BOT_R[0]/2+LANE_W, 2)),
+        # Top - left pl till Ella
+    pygame.Rect((SHAKED_SIDEWK_BOT_R[0]/2+2*LANE_W, ESHEL_ROAD_BOT_R[1]-2*LANE_W), (SHAKED_SIDEWK_BOT_R[0]-(SHAKED_SIDEWK_BOT_R[0]/2+2*LANE_W), 2)),
+        # Top - Ella till Hadas
+    pygame.Rect((ELLA_ROAD_TOP_L[0]+LANE_W,ESHEL_ROAD_BOT_R[1]-2*LANE_W), (MIRROR_CENTER/2-(ELLA_ROAD_TOP_L[0]+LANE_W), 2)), 
+        # Top - Hadas till Yaar
+    pygame.Rect((MIRROR_CENTER/2+2*LANE_W,ESHEL_ROAD_BOT_R[1]-2*LANE_W), (YAAR_ROAD_BOT_L[0]-(MIRROR_CENTER/2+2*LANE_W), 2)), 
+        # Bottom - Eshel till Parallels
+    pygame.Rect((0,ESHEL_ROAD_BOT_R[1]), (2.1*LANE_W, 2)),
+        # Bottom - Parallels
+    pygame.Rect((2*LANE_W,ESHEL_ROAD_BOT_R[1]+LANE_W), (ELLA_ROAD_TOP_L[0]-(2*LANE_W), 2)),
+        # Bottom - Parallels till Eshel/Yaar
+    pygame.Rect((ELLA_ROAD_TOP_L[0],ESHEL_ROAD_BOT_R[1]), (ESHEL_ROAD_BOT_R[0]-(ELLA_ROAD_TOP_L[0]), 2)),
+     # Vertical
+        # Parallels - left
+    pygame.Rect((2*LANE_W,ESHEL_ROAD_BOT_R[1]), (2, LANE_W)), 
+        # Parallels - Right
+    pygame.Rect((ELLA_ROAD_TOP_L[0],ESHEL_ROAD_BOT_R[1]), (2, LANE_W)) 
+        
+    ]
+
 def draw_borders():
 
     def draw_road_borders():
+        """
+        Rect(left, top, width, height) -> Rect
+        Rect((left, top), (width, height)) -> Rect
+        """
+        pygame.draw.rect(WIN,RED,LEFT_PL_BORDER_RECT,5)
+        pygame.draw.rect(WIN,RED,RIGHT_PL_BORDER_RECT,5)
+
+
+        for r in EREZ_ROAD_BORDERS:
+            pygame.draw.rect(WIN, BLUE, r)
+        
+        for r in YAAR_ROAD_BORDERS:
+            pygame.draw.rect(WIN, BLUE, r)
+
+        for r in ELLA_ROAD_BORDERS:
+            pygame.draw.rect(WIN, BLUE, r)
+
+        for r in HADAS_ROAD_BORDERS:
+            pygame.draw.rect(WIN, BLUE, r)
+
+        for r in ROTEM_ROAD_BORDERS:
+            pygame.draw.rect(WIN, BLUE, r)
+        
+        for r in SHAKED_ROAD_BORDERS:
+            pygame.draw.rect(WIN, BLUE, r)
+
+        for r in ESHEL_ROAD_BORDERS:
+            pygame.draw.rect(WIN, BLUE, r)
+        
+        """
             # Erez - Top Road 
             # Horizontal
                 # Top (border with sky)
@@ -184,7 +337,7 @@ def draw_borders():
         pygame.draw.line(WIN, RED, (EREZ_ROTEM_SIDEWK_TOP_R[0]+2*LANE_W, ELLA_ROAD_TOP_L[1]), (EREZ_ROTEM_SIDEWK_TOP_R[0]+2*LANE_W,EREZ_ROTEM_SIDEWK_TOP_R[1]), 1)
                 # Bottom - Erez till Rotem
         pygame.draw.line(WIN, RED, (EREZ_ROTEM_SIDEWK_TOP_R[0], EREZ_ROTEM_SIDEWK_TOP_R[1]), (EREZ_ROTEM_SIDEWK_TOP_R[0],EREZ_ROTEM_SIDEWK_TOP_R[1]+2*LANE_W), 1)
-
+        
 
             # Yaar - Main Road
             # Horizontal
@@ -210,7 +363,7 @@ def draw_borders():
                 # Parallels (right)
         pygame.draw.line(WIN, RED, (YAAR_ROAD_MID_R[0]+LANE_W, SHAKED_SIDEWK_BOT_R[1]+4*LANE_W), (YAAR_ROAD_MID_R[0]+LANE_W, ESHEL_ROAD_BOT_R[1]), 1)
         
-
+        
         # Ella - One Way Road
         # Vertical - left
             # Ella till Shaked
@@ -225,7 +378,7 @@ def draw_borders():
             # Ella/Shaked till Eshel
         pygame.draw.line(WIN, RED, (ELLA_ROAD_TOP_L[0]+LANE_W,ROTEM_ROAD_BOT_R[1]), (ELLA_ROAD_TOP_L[0]+LANE_W,ESHEL_ROAD_BOT_R[1]-2*LANE_W), 1)
         
-
+        
         # Hadas
         # Vertical - left
             # Erez till Hadas
@@ -238,7 +391,7 @@ def draw_borders():
             # Hadas till Eshel
         pygame.draw.line(WIN, RED, (MIRROR_CENTER/2+2*LANE_W,RBT_LEFT_CENTER[1]+3.25*LANE_W), (MIRROR_CENTER/2+2*LANE_W, ESHEL_ROAD_BOT_R[1]-2*LANE_W), 1)
         
-
+        
         # Rotem
         # Horizontal
             # Top
@@ -257,6 +410,7 @@ def draw_borders():
         # Shaked - Horizontal
         pygame.draw.line(WIN, RED, (0, SHAKED_SIDEWK_BOT_R[1]), (SHAKED_SIDEWK_BOT_R[0], SHAKED_SIDEWK_BOT_R[1]), 1)
         
+
         # Eshel
         # Horizontal
             # Top - Ella till Hadas
@@ -274,7 +428,7 @@ def draw_borders():
         pygame.draw.line(WIN, RED, (2*LANE_W,ESHEL_ROAD_BOT_R[1]), (2*LANE_W, ESHEL_ROAD_BOT_R[1]+LANE_W), 1) 
             # Parallels - Right
         pygame.draw.line(WIN, RED, (ELLA_ROAD_TOP_L[0],ESHEL_ROAD_BOT_R[1]), (ELLA_ROAD_TOP_L[0], ESHEL_ROAD_BOT_R[1]+LANE_W), 1) 
-
+        """
 
             # Roundabouts - outer ring
         #pygame.draw.circle(WIN,RED,RBT_LEFT_CENTER,RADIUS+1.5*LANE_W,1)
@@ -339,7 +493,6 @@ def draw_borders():
         pygame.draw.line(WIN, ORANGE, (4.1*LANE_W,ESHEL_ROAD_BOT_R[1]), (4.1*LANE_W, ESHEL_ROAD_BOT_R[1]+LANE_W), 1) 
             # Right
         pygame.draw.line(WIN, ORANGE, (6.1*LANE_W,ESHEL_ROAD_BOT_R[1]), (6.1*LANE_W, ESHEL_ROAD_BOT_R[1]+LANE_W), 1) 
-
 
     draw_road_borders()
     draw_lane_borders()
