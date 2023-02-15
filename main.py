@@ -214,33 +214,6 @@ def draw_points(path, win):
     for point in path:
         # Draw a red point of radius 5 in the path
         pygame.draw.circle(win, constants.RED, point, 5)
-
-def draw_scene_borders(win):
-    sidewalk_borders = [(("Top_Hori_Sidewalk"), (0, 185), (constants.SCENE.get_width(), 5)),
-                        (("Bot_Hori_Sidewalk_Left"), (0, 380), (243, 5)),
-                        (("Bot_Hori_Sidewalk_Right"), (437, 380), (constants.SCENE.get_width()-437, 5)),
-                        (("Vert_Sidewalk_Left"), (constants.SCENE.get_width()-440, 380), (5, constants.HEIGHT)),
-                        (("Vert_Sidewalk_Right"), (437, 380), (5, constants.HEIGHT))]
-
-
-    lane_borders = [(("Hori_Lane"), (0, 285), (constants.SCENE.get_width(), 5)),
-                    (("Vert_Lane"), ((int(constants.SCENE.get_width()/2)), 285), (5, constants.HEIGHT))]
-
-    island_borders = [(("Left_Island"), (135,273), (218-135,298-273)),
-                    (("Bot_Island"), (300,381), (380-300,463-381))]
-
-    for kind, top_left, bottom_right in sidewalk_borders:
-        # Draw this kind in this position
-        pygame.draw.rect(win, constants.GREEN, (*top_left, *bottom_right))
-    
-    for kind, top_left, bottom_right in lane_borders:
-        # Draw this kind in this position
-        pygame.draw.rect(win, constants.BLUE, (*top_left, *bottom_right))
-
-    for kind, top_left, bottom_right in island_borders:
-        # Draw this kind in this position
-        pygame.draw.rect(win, constants.RED, (*top_left, *bottom_right))
-    
     
 def create_scene_borders(borders_list, all_sprite_list):
 
