@@ -2,6 +2,7 @@
 import pygame
 import math
 from random import randint, choice
+from FeedbackTracker import FeedbackTracker
 
 # Local imports
 import constants
@@ -69,7 +70,7 @@ def draw(win, player_car):
         
         line_space += 2.5
 
-        rbt_hits_text = constants.CLIP_FONT.render(f"Roundabout walls hits: {hits_counter[1]}", 1, constants.RED)
+        rbt_hits_text = constants.CLIP_FONT.render(f"Roundabout walls hits: {hits_counter[2]}", 1, constants.RED)
         rbt_hits_text_pos = (constants.CLIP_CENTER-rbt_hits_text.get_rect().centerx,constants.RBT_RIGHT_CENTER[1]+line_space*rbt_hits_text.get_rect().centery)
 
         
@@ -80,7 +81,7 @@ def draw(win, player_car):
                         (pl_hits_text, pl_hits_text_pos),
                         (rbt_hits_text, rbt_hits_text_pos)
                     ]
-
+        
         for txt, pos in DASH_TEXTS:
             # Draw this img in this position
             win.blit(txt, pos)  
@@ -143,7 +144,7 @@ def move_player(player_car):
     if not gas_pressed:
         player_car.reduce_speed(emergency_brake = False)
 
-def check_collision_with_road_borders(player_car):
+def handle_collisions_with_road_borders(player_car):
     """
     
     """
@@ -162,10 +163,11 @@ def check_collision_with_road_borders(player_car):
             return 1
         return 0
 
-    global score
+    global hits_counter
+    reg_hits = 0
     pl_hits = 0
     rbt_hits = 0
-    reg_hits = 0
+    
 
     MID_POINT = constants.YAAR_ROAD_BOT_L[0]
 
@@ -189,11 +191,14 @@ def check_collision_with_road_borders(player_car):
         # count regular collisions
                 if player_car.rect.collidelist(constants.ROTEM_ROAD_BORDERS) != -1:
                     print("collision, ROTEM")
-                if player_car.rect.collidelist(constants.EREZ_ROAD_BORDERS) != -1:
+                    reg_hits += 1
+                elif player_car.rect.collidelist(constants.EREZ_ROAD_BORDERS) != -1:
                     print("collision, EREZ")
                     reg_hits += 1
-
-        
+                elif player_car.rect.collidelist(constants.YAAR_ROAD_BORDERS) != -1:
+                    print("collision, YAAR")
+                    reg_hits += 1
+                        
     # player is on the left side
     else:
         # count mask collisions
@@ -205,8 +210,27 @@ def check_collision_with_road_borders(player_car):
             dis_left_rbt = math.sqrt((constants.RBT_LEFT_CENTER[0]-player_car.x)**2 + (constants.RBT_LEFT_CENTER[1]-player_car.y)**2)
             if dis_left_rbt < constants.RBT_OUTER_RAD:
                 rbt_hits += check_mask_collisions(player_car, constants.MASK_LEFT_RBT)
-        
-    score = reg_hits
+            else:
+        # count regular collisions
+                if player_car.rect.collidelist(constants.HADAS_ROAD_BORDERS) != -1:
+                    print("collision, HADAS")
+                    reg_hits += 1
+                elif player_car.rect.collidelist(constants.EREZ_ROAD_BORDERS) != -1:
+                    print("collision, EREZ")
+                    reg_hits += 1
+                elif player_car.rect.collidelist(constants.ELLA_ROAD_BORDERS) != -1:
+                    print("collision, ELLA")
+                    reg_hits += 1
+                elif player_car.rect.collidelist(constants.SHAKED_ROAD_BORDERS) != -1:
+                    print("collision, SHAKED")
+                    reg_hits += 1
+                elif player_car.rect.collidelist(constants.ESHEL_ROAD_BORDERS) != -1:
+                    print("collision, ESHEL")
+                    reg_hits += 1
+                    
+    hits_counter[0] = reg_hits
+    hits_counter[1] = pl_hits
+    hits_counter[2] = rbt_hits
 
 #--------------------------------------------------------------
 # Function for drawing path points
@@ -235,30 +259,31 @@ def create_scene_borders(borders_list, all_sprite_list):
     borders_list.add(vert_lane)
     all_sprite_list.add(vert_lane) 
 
+"""
 def handle_collision_with_borders():
 
     # Did the player moving caused collision with a border?
     borders_hit_list = pygame.sprite.spritecollide(player.sprite,borders_list,False)
 
     print(borders_hit_list)
+"""
 #-------------------------------------------------------------
 
 # Groups
 player = PlayerSprite((constants.RBT_RIGHT_CENTER[0],constants.RBT_LEFT_CENTER[1]+2.5*constants.LANE_W))
-playerGroup = pygame.sprite.GroupSingle()
-playerGroup.add(player)
 
 buttons_list = DashboardButton.create_buttons_list()
-buttons_group = pygame.sprite.Group()
-buttons_group.add(buttons_list)
+buttons_group = pygame.sprite.Group(buttons_list)
 
-borders_list = pygame.sprite.Group()
-other_cars_list = pygame.sprite.Group()
-other_cars_list.add(player)
+feedback_tracker = FeedbackTracker()
+
+#borders_list = pygame.sprite.Group()
+#other_cars_list = pygame.sprite.Group()
+#other_cars_list.add(player)
 
 #player_car = PlayerCar(5,3)
 
-create_scene_borders(borders_list, playerGroup)
+#create_scene_borders(borders_list, playerGroup)
 #-------------------------------------------------------------------------
 running = True
 # Game Loop
@@ -267,7 +292,7 @@ while running:
     clock.tick(constants.FPS)   
 
     draw(constants.WIN,player)
-    
+    #feedback_tracker.update()
     buttons_group.draw(constants.WIN)
     
     #constants.draw_screen_positions()
@@ -308,15 +333,15 @@ while running:
             path.append(pos)
         """
 
-    #move_player(player_car)
     move_player(player)
     
-    check_collision_with_road_borders(player)
-    #handle_collision_with_mask(player_car)
-    #handle_collision_with_borders()
+    handle_collisions_with_road_borders(player)
 
+    
     # Update the window with everything we have drawn
     pygame.display.update()
+
+    
 
 #print(path)
 #print(score)
