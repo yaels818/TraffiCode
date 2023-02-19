@@ -26,7 +26,7 @@ pygame.display.set_icon(scale_image(pygame.image.load("Assets\Images\gameIcon.pn
 pygame.font.init()
 MAIN_FONT = pygame.font.SysFont("centurygothic", 36)
 DASH_FONT = pygame.font.SysFont("erasdemiitc", 26)
-CLIP_FONT = pygame.font.SysFont("erasdemiitc", 20)
+CLIP_FONT = pygame.font.SysFont("erasdemiitc", 19)
 STREETS_FONT = pygame.font.SysFont("erasdemiitc", 12)
 #-------------------------------------------------------------------------
 # Other Definitions
@@ -128,7 +128,7 @@ SPEEDOMETER_TEXT_POS = (MIRROR_CENTER,SPEEDOMETER_POS[1]+SPEEDOMETER.get_rect().
 #-------------------------------------------------------------------------
 
 # Road Users Definitions 
-RED_CAR = scale_image(pygame.image.load(PATH + "Cars/red_car.png"), 0.3)
+RED_CAR = scale_image(pygame.image.load(PATH + "Cars/red_car.png"), 0.27)
 #-------------------------------------------------------------------------
 # Road Definitions
 LANE_W = 22 # Lane Width in px
