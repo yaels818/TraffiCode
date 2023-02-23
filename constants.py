@@ -86,9 +86,6 @@ SPEEDOMETER = scale_image(pygame.image.load(PATH + "Dashboard/speedometer.png"),
 MIRROR = scale_image(pygame.image.load(PATH + "Dashboard/rear_view_mirror.png"),0.25)
 CLIPBOARD = stretch_image(pygame.image.load(PATH + "Dashboard/clipboard.png"),0.55,0.8)
 
-FINISH_LINE_VERT = scale_image(pygame.image.load(PATH + "Dashboard/finish_line.png"),0.68)
-FINISH_LINE_HORI = pygame.transform.rotate(FINISH_LINE_VERT,90)
-
 # Position Definitions - center
 SPEEDOMETER_POS = (MIRROR_CENTER-SPEEDOMETER.get_rect().centerx, DASHBOARD_HOR_TOP-SPEEDOMETER.get_rect().centery/2)
 MIRROR_POS = (MIRROR_CENTER-MIRROR.get_rect().centerx, MIRROR.get_rect().centery/3)
@@ -150,8 +147,6 @@ RBT_LEFT_CENTER = (MIRROR_CENTER/2+LANE_W, SHAKED_SIDEWK_BOT_R[1]+LANE_W)
 RBT_RIGHT_CENTER = (MIRROR_CENTER*1.5-2*LANE_W, EREZ_ROTEM_SIDEWK_TOP_R[1]+LANE_W)
 RBT_OUTER_RAD = RADIUS+1.7*LANE_W
 RBT_INNER_RAD = RADIUS-1.3*LANE_W
-
-FINISH_LINE_IMGS = [(FINISH_LINE_HORI, (EREZ_ROTEM_SIDEWK_TOP_R[0]+1.5*LANE_W,RBT_LEFT_CENTER[1]))]
 
 #-------------------------------------------------------------------------
 # Borders Definitions
@@ -283,6 +278,23 @@ ESHEL_ROAD_BORDERS = [
         
     ]
 
+#-------------------------------------------------------------------------
+# Finish Line Definitions
+FINISH_LINE_RECT = pygame.Rect((EREZ_ROTEM_SIDEWK_TOP_R[0]+2*LANE_W, ROTEM_ROAD_BOT_R[1]), (40, 20))
+    
+FINISH_LINE_HORI = stretch_image(pygame.image.load(PATH + "Dashboard/finish_line.png"),0.5,0.7)
+FINISH_LINE_VERT = pygame.transform.rotate(FINISH_LINE_HORI,90)
+
+
+FINISH_LINE_IMGS = [
+                    # exit right pl - enter Rotem
+                    (FINISH_LINE_HORI, (EREZ_ROTEM_SIDEWK_TOP_R[0]+2*LANE_W, ROTEM_ROAD_BOT_R[1])),
+                    
+                    # Yaar after turn right from Rotem
+                     
+                    ]
+#-------------------------------------------------------------------------
+
 def draw_borders():
 
     def draw_road_borders():
@@ -290,9 +302,8 @@ def draw_borders():
         Rect(left, top, width, height) -> Rect
         Rect((left, top), (width, height)) -> Rect
         """
-        pygame.draw.rect(WIN,RED,LEFT_PL_BORDER_RECT,5)
-        pygame.draw.rect(WIN,RED,RIGHT_PL_BORDER_RECT,5)
-
+        #pygame.draw.rect(WIN,RED,LEFT_PL_BORDER_RECT,5)
+        #pygame.draw.rect(WIN,RED,RIGHT_PL_BORDER_RECT,5)
 
         for r in EREZ_ROAD_BORDERS:
             pygame.draw.rect(WIN, BLUE, r)
