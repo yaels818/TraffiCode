@@ -2,7 +2,7 @@
 import pygame
 import math
 from random import randint, choice
-from FeedbackTracker import FeedbackTracker
+from LevelTracker import LevelTracker
 
 # Local imports
 import constants
@@ -15,8 +15,6 @@ pygame.font.init()
 
 clock = pygame.time.Clock()
 
-level = 1
-hits_counter = [0,0,0]
 path = []
 
 #-------------------------------------------------------------
@@ -50,51 +48,24 @@ def draw(win, player_car):
     
     def draw_dashboard_texts(win):
 
-        level_text = constants.CLIP_FONT.render(f"Level {level}", 1, constants.BLACK)
-        level_text_pos = (constants.CLIP_LEFT+0.5*level_text.get_rect().centerx,constants.CLIP_TOP+level_text.get_rect().centery)
-
-        timer_text = constants.DASH_FONT.render(f"00:00:00", 1, constants.BLACK)
-        timer_text_pos = (constants.MIRROR_CENTER-timer_text.get_rect().centerx,constants.MIRROR_POS[1]+timer_text.get_rect().centery)
-
         # round to the first significant digit, units are px/sec
         velocity_text = constants.DASH_FONT.render(f"{round(round(player.vel,1)*10.0)}", 1, (255, 255, 255))
         velocity_text_pos = (constants.SPEEDOMETER_TEXT_POS[0]-velocity_text.get_rect().centerx,constants.SPEEDOMETER_TEXT_POS[1]-velocity_text.get_rect().centery)
 
-        rb_hits_text = constants.CLIP_FONT.render(f"Road borders hits: {hits_counter[0]}", 1, constants.RED)
-        rb_hits_text_pos = (constants.CLIP_CENTER-rb_hits_text.get_rect().centerx,constants.RBT_RIGHT_CENTER[1]-rb_hits_text.get_rect().centery)
-        
-        line_space = 1.5
-
-        pl_hits_text = constants.CLIP_FONT.render(f"Parking lot walls hits: {hits_counter[1]}", 1, constants.RED)
-        pl_hits_text_pos = (constants.CLIP_CENTER-pl_hits_text.get_rect().centerx,constants.RBT_RIGHT_CENTER[1]+line_space*pl_hits_text.get_rect().centery)
-        
-        line_space += 2.5
-
-        rbt_hits_text = constants.CLIP_FONT.render(f"Roundabout walls hits: {hits_counter[2]}", 1, constants.RED)
-        rbt_hits_text_pos = (constants.CLIP_CENTER-rbt_hits_text.get_rect().centerx,constants.RBT_RIGHT_CENTER[1]+line_space*rbt_hits_text.get_rect().centery)
-
-        
-        DASH_TEXTS = [  (level_text, level_text_pos), 
-                        (timer_text, timer_text_pos), 
-                        (velocity_text, velocity_text_pos),
-                        (rb_hits_text, rb_hits_text_pos),
-                        (pl_hits_text, pl_hits_text_pos),
-                        (rbt_hits_text, rbt_hits_text_pos)
-                    ]
+        DASH_TEXTS = [(velocity_text, velocity_text_pos)]
         
         for txt, pos in DASH_TEXTS:
             # Draw this img in this position
             win.blit(txt, pos)  
-        
-
+                  
     for img, pos in constants.LEVEL_IMGS:
         # Draw this img in this position
         win.blit(img, pos)  
     
     constants.draw_street_names()
 
-    #for img, pos in constants.FINISH_LINE_IMGS:
-    #    win.blit(img, pos)
+    for img, pos in constants.FINISH_LINE_IMGS:
+        win.blit(img, pos)
 
     player_car.draw(win)
 
@@ -109,6 +80,8 @@ def draw(win, player_car):
         win.blit(img, pos)
 
     draw_dashboard_texts(win)
+
+    level_tracker.display()
 
 #--------------------------------------------------------------
 def move_player(player_car):
@@ -160,19 +133,14 @@ def handle_collisions_with_road_borders(player_car):
         if poi != None:
             player_car.bounce()
             pygame.draw.circle(constants.WIN, constants.GREEN, poi, 2)
-            return 1
-        return 0
+            return True
+        return False
 
-    global hits_counter
-    reg_hits = 0
-    pl_hits = 0
-    rbt_hits = 0
-    
 
     MID_POINT = constants.YAAR_ROAD_BOT_L[0]
 
-    player_car_rect = player_car.rect
-    pygame.draw.circle(constants.WIN, constants.GREEN, player_car.rect.center, 2)
+    #player_car_rect = player_car.rect
+    #pygame.draw.circle(constants.WIN, constants.GREEN, player_car.rect.center, 2)
     #player_car_rect.inflate_ip(-0.5,-0.5)
     #pygame.draw.rect(constants.WIN,constants.PINK, player_car_rect,4)
 
@@ -182,22 +150,24 @@ def handle_collisions_with_road_borders(player_car):
         #if player_car.x > constants.EREZ_ROTEM_SIDEWK_TOP_R[0] and player_car.y > constants.ROTEM_ROAD_BOT_R[1]:
         # check if player_car is completely inside the parking lot
         if constants.RIGHT_PL_BORDER_RECT.contains(player_car.rect):
-            pl_hits += check_mask_collisions(player_car, constants.MASK_RIGHT_PL)
+            if check_mask_collisions(player_car, constants.MASK_RIGHT_PL):
+                level_tracker.add_parking_lot_hit()
         else:
             dis_right_rbt = math.sqrt((constants.RBT_RIGHT_CENTER[0]-player_car.x)**2 + (constants.RBT_RIGHT_CENTER[1]-player_car.y)**2)
             if dis_right_rbt < constants.RBT_OUTER_RAD:
-                rbt_hits += check_mask_collisions(player_car, constants.MASK_RIGHT_RBT)
+                if check_mask_collisions(player_car, constants.MASK_RIGHT_RBT):
+                    level_tracker.add_roundabout_hit()
             else:
         # count regular collisions
                 if player_car.rect.collidelist(constants.ROTEM_ROAD_BORDERS) != -1:
                     print("collision, ROTEM")
-                    reg_hits += 1
+                    level_tracker.add_sidewalk_hit()
                 elif player_car.rect.collidelist(constants.EREZ_ROAD_BORDERS) != -1:
                     print("collision, EREZ")
-                    reg_hits += 1
+                    level_tracker.add_sidewalk_hit()
                 elif player_car.rect.collidelist(constants.YAAR_ROAD_BORDERS) != -1:
                     print("collision, YAAR")
-                    reg_hits += 1
+                    level_tracker.add_sidewalk_hit()
                         
     # player is on the left side
     else:
@@ -205,32 +175,34 @@ def handle_collisions_with_road_borders(player_car):
         #if player_car.x < constants.ELLA_ROAD_TOP_L[0] and player_car.y > constants.SHAKED_SIDEWK_BOT_R[1]:
         # check if player_car is completely inside the parking lot
         if constants.LEFT_PL_BORDER_RECT.contains(player_car.rect):
-             pl_hits += check_mask_collisions(player_car, constants.MASK_LEFT_PL)
+            if check_mask_collisions(player_car, constants.MASK_LEFT_PL):
+                level_tracker.add_parking_lot_hit()
         else:
             dis_left_rbt = math.sqrt((constants.RBT_LEFT_CENTER[0]-player_car.x)**2 + (constants.RBT_LEFT_CENTER[1]-player_car.y)**2)
             if dis_left_rbt < constants.RBT_OUTER_RAD:
-                rbt_hits += check_mask_collisions(player_car, constants.MASK_LEFT_RBT)
+                if check_mask_collisions(player_car, constants.MASK_LEFT_RBT):
+                    level_tracker.add_roundabout_hit()
             else:
         # count regular collisions
                 if player_car.rect.collidelist(constants.HADAS_ROAD_BORDERS) != -1:
                     print("collision, HADAS")
-                    reg_hits += 1
+                    level_tracker.add_sidewalk_hit()
                 elif player_car.rect.collidelist(constants.EREZ_ROAD_BORDERS) != -1:
                     print("collision, EREZ")
-                    reg_hits += 1
+                    level_tracker.add_sidewalk_hit()
                 elif player_car.rect.collidelist(constants.ELLA_ROAD_BORDERS) != -1:
                     print("collision, ELLA")
-                    reg_hits += 1
+                    level_tracker.add_sidewalk_hit()
                 elif player_car.rect.collidelist(constants.SHAKED_ROAD_BORDERS) != -1:
                     print("collision, SHAKED")
-                    reg_hits += 1
+                    level_tracker.add_sidewalk_hit()
                 elif player_car.rect.collidelist(constants.ESHEL_ROAD_BORDERS) != -1:
                     print("collision, ESHEL")
-                    reg_hits += 1
-                    
-    hits_counter[0] = reg_hits
-    hits_counter[1] = pl_hits
-    hits_counter[2] = rbt_hits
+                    level_tracker.add_sidewalk_hit()
+
+
+def handle_collision_with_finish_line(player_car):
+    MID_POINT = constants.YAAR_ROAD_BOT_L[0]
 
 #--------------------------------------------------------------
 # Function for drawing path points
@@ -275,7 +247,7 @@ player = PlayerSprite((constants.RBT_RIGHT_CENTER[0],constants.RBT_LEFT_CENTER[1
 buttons_list = DashboardButton.create_buttons_list()
 buttons_group = pygame.sprite.Group(buttons_list)
 
-feedback_tracker = FeedbackTracker()
+level_tracker = LevelTracker()
 
 #borders_list = pygame.sprite.Group()
 #other_cars_list = pygame.sprite.Group()
