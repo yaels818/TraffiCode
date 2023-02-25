@@ -3,7 +3,7 @@ import pygame
 from RoadUsers import RoadUser
 from constants import RED_CAR, SCENE_HEIGHT_START
 
-class PlayerSprite(RoadUser):
+class PlayerCar(RoadUser):
 
     IMG = RED_CAR
 

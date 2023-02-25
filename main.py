@@ -7,7 +7,7 @@ from LevelTracker import LevelTracker
 # Local imports
 import constants
 import DashboardButton
-from RoadUsers import PlayerSprite
+from RoadUsers import PlayerCar
 from utils import *
 
 pygame.init()
@@ -250,7 +250,7 @@ def handle_collision_with_borders():
 #-------------------------------------------------------------
 
 # Groups
-player = PlayerSprite((constants.RBT_RIGHT_CENTER[0],constants.RBT_LEFT_CENTER[1]+2.5*constants.LANE_W))
+player = PlayerCar((constants.RBT_RIGHT_CENTER[0],constants.RBT_LEFT_CENTER[1]+2.5*constants.LANE_W))
 
 buttons_list = DashboardButton.create_buttons_list()
 buttons_group = pygame.sprite.Group(buttons_list)
