@@ -280,8 +280,7 @@ ESHEL_ROAD_BORDERS = [
 
 #-------------------------------------------------------------------------
 # Finish Line Definitions
-FINISH_LINE_RECT = pygame.Rect((EREZ_ROTEM_SIDEWK_TOP_R[0]+2*LANE_W, ROTEM_ROAD_BOT_R[1]), (40, 20))
-    
+   
 FINISH_LINE_HORI = stretch_image(pygame.image.load(PATH + "Dashboard/finish_line.png"),0.5,0.7)
 FINISH_LINE_VERT = pygame.transform.rotate(FINISH_LINE_HORI,90)
 

@@ -62,11 +62,12 @@ def draw(win, player_car):
         # Draw this img in this position
         win.blit(img, pos)  
     
-    constants.draw_street_names()
-
     for img, pos in constants.FINISH_LINE_IMGS:
         win.blit(img, pos)
+    
+    constants.draw_street_names()
 
+    
     player_car.draw(win)
 
     #draw_points(path, win)
@@ -202,7 +203,18 @@ def handle_collisions_with_road_borders(player_car):
 
 
 def handle_collision_with_finish_line(player_car):
-    MID_POINT = constants.YAAR_ROAD_BOT_L[0]
+    
+    curr_finish_line = level_tracker.level - 1
+
+    # get the rectangle of the finish line for this level, 
+    # then move it to the right coordinates
+    finish_line_rect = constants.FINISH_LINE_IMGS[curr_finish_line][0].get_rect()
+    finish_line_rect.move_ip(constants.FINISH_LINE_IMGS[curr_finish_line][1])
+    
+    # check if player_car's center is colliding with finish_line_rect -
+    # if the player crossed the finish line
+    if finish_line_rect.collidepoint(player_car.rect.center):
+        print("collision, Finish line")
 
 #--------------------------------------------------------------
 # Function for drawing path points
@@ -222,10 +234,6 @@ def create_scene_borders(borders_list, all_sprite_list):
     borders_list.add(bot_hori_sidewalk_left)
     all_sprite_list.add(bot_hori_sidewalk_left)    
     """
-
-    hori_lane = Border('lane', 0, 285, constants.SCENE.get_width(), 5)
-    borders_list.add(hori_lane)
-    all_sprite_list.add(hori_lane) 
 
     vert_lane = Border('lane', int(constants.SCENE.get_width()/2), 285, 5, constants.HEIGHT)
     borders_list.add(vert_lane)
@@ -307,8 +315,8 @@ while running:
 
     move_player(player)
     
-    handle_collisions_with_road_borders(player)
-
+    #handle_collisions_with_road_borders(player)
+    handle_collision_with_finish_line(player)
     
     # Update the window with everything we have drawn
     pygame.display.update()
