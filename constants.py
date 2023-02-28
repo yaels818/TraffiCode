@@ -70,9 +70,9 @@ LEVEL_IMGS = [(SKY_DAY, (0,0)), (SCENE, (0, SCENE_HEIGHT_START))]
 
 # Asset Definitions - Scene Masks
 BORDER_LEFT_PL = scale_image(pygame.image.load(PATH + "Borders\Scene_1/" + "mask_left_pl_bw_wider.png"),1.4)
-BORDER_LEFT_RBT = scale_image(pygame.image.load(PATH + "Borders\Scene_1/" + "mask_left_rbt_bw.png"),1.4)
+BORDER_LEFT_RBT = scale_image(pygame.image.load(PATH + "Borders\Scene_1/" + "left_rbt_mask_full_bw.png"),1.4)
 BORDER_RIGHT_PL = scale_image(pygame.image.load(PATH + "Borders\Scene_1/" + "mask_right_pl_bw.png"),1.4)
-BORDER_RIGHT_RBT = scale_image(pygame.image.load(PATH + "Borders\Scene_1/" + "mask_right_rbt_bw.png"),1.4)
+BORDER_RIGHT_RBT = scale_image(pygame.image.load(PATH + "Borders\Scene_1/" + "right_rbt_mask_full_bw.png"),1.4)
 
 MASK_LEFT_PL = pygame.mask.from_surface(BORDER_LEFT_PL)
 MASK_LEFT_RBT = pygame.mask.from_surface(BORDER_LEFT_RBT)
@@ -125,7 +125,7 @@ SPEEDOMETER_TEXT_POS = (MIRROR_CENTER,SPEEDOMETER_POS[1]+SPEEDOMETER.get_rect().
 #-------------------------------------------------------------------------
 
 # Road Users Definitions 
-RED_CAR = scale_image(pygame.image.load(PATH + "Cars/red_car.png"), 0.27)
+RED_CAR = scale_image(pygame.image.load(PATH + "Cars/red_car.png"), 0.28)
 #-------------------------------------------------------------------------
 # Road Definitions
 LANE_W = 22 # Lane Width in px
@@ -153,6 +153,7 @@ RBT_INNER_RAD = RADIUS-1.3*LANE_W
 LEFT_PL_BORDER_RECT = pygame.Rect((0, SHAKED_SIDEWK_BOT_R[1]+2*LANE_W), (SHAKED_SIDEWK_BOT_R[0], ESHEL_ROAD_BOT_R[1]-2*LANE_W-(SHAKED_SIDEWK_BOT_R[1]+2*LANE_W)))
 RIGHT_PL_BORDER_RECT = pygame.Rect((EREZ_ROTEM_SIDEWK_TOP_R[0], SHAKED_SIDEWK_BOT_R[1]+2*LANE_W), (CLIP_LEFT-LANE_W-(EREZ_ROTEM_SIDEWK_TOP_R[0]), ESHEL_ROAD_BOT_R[1]-(SHAKED_SIDEWK_BOT_R[1]+1.5*LANE_W)))
 
+# Sidewalk Borders
 EREZ_ROAD_BORDERS = [
     # Horizontal
         # Top (border with sky)
@@ -278,9 +279,31 @@ ESHEL_ROAD_BORDERS = [
         
     ]
 
+# Parallel Parking Borders
+YAAR_PP_BORDERS = [
+    # Vertical
+        # Top spot
+    pygame.Rect((YAAR_ROAD_MID_R[0], ROTEM_ROAD_BOT_R[1]+2*LANE_W), (LANE_W, 2*LANE_W)),
+        # Bottom spot
+    pygame.Rect((YAAR_ROAD_MID_R[0], ROTEM_ROAD_BOT_R[1]+4.1*LANE_W), (LANE_W, 2*LANE_W))
+    ]
+
+ESHEL_PP_BORDERS = [
+    # Horizontal
+        # Left
+    pygame.Rect((2.1*LANE_W, ESHEL_ROAD_BOT_R[1]), (2*LANE_W, LANE_W)),
+        # Middle
+    pygame.Rect((4.1*LANE_W, ESHEL_ROAD_BOT_R[1]), (2*LANE_W, LANE_W)),
+        # Right
+    pygame.Rect((6.1*LANE_W, ESHEL_ROAD_BOT_R[1]), (2*LANE_W, LANE_W))
+    ]
+
+# Lane Borders
+ELLA_LANE_BORDERS = [
+
+]
 #-------------------------------------------------------------------------
-# Finish Line Definitions
-   
+# Finish Line Definitions  
 FINISH_LINE_HORI = stretch_image(pygame.image.load(PATH + "Dashboard/finish_line.png"),0.5,0.7)
 FINISH_LINE_VERT = pygame.transform.rotate(FINISH_LINE_HORI,90)
 
@@ -301,6 +324,7 @@ def draw_borders():
         Rect(left, top, width, height) -> Rect
         Rect((left, top), (width, height)) -> Rect
         """
+
         #pygame.draw.rect(WIN,RED,LEFT_PL_BORDER_RECT,5)
         #pygame.draw.rect(WIN,RED,RIGHT_PL_BORDER_RECT,5)
 
@@ -491,18 +515,27 @@ def draw_borders():
         pygame.draw.circle(WIN,GREEN,RBT_RIGHT_CENTER,RADIUS,1)
     
     def draw_parallel_parking_borders():
+
+        for r in YAAR_PP_BORDERS:
+            pygame.draw.rect(WIN, ORANGE, r)
+
+        for r in ESHEL_PP_BORDERS:
+            pygame.draw.rect(WIN, ORANGE, r)
+
+        """
         # Yaar - Horizontal
             # Top spot
-        pygame.draw.line(WIN, ORANGE, (YAAR_ROAD_MID_R[0], ROTEM_ROAD_BOT_R[1]+4*LANE_W), (YAAR_ROAD_MID_R[0]+LANE_W, ROTEM_ROAD_BOT_R[1]+4*LANE_W), 1)
+        pygame.draw.line(WIN, BLUE, (YAAR_ROAD_MID_R[0], ROTEM_ROAD_BOT_R[1]+4*LANE_W), (YAAR_ROAD_MID_R[0]+LANE_W, ROTEM_ROAD_BOT_R[1]+4*LANE_W), 1)
             # Bottom spot
-        pygame.draw.line(WIN, ORANGE, (YAAR_ROAD_MID_R[0], ESHEL_ROAD_BOT_R[1]-LANE_W), (YAAR_ROAD_MID_R[0]+LANE_W, ESHEL_ROAD_BOT_R[1]-LANE_W), 1)
+        pygame.draw.line(WIN, BLUE, (YAAR_ROAD_MID_R[0], ESHEL_ROAD_BOT_R[1]-LANE_W), (YAAR_ROAD_MID_R[0]+LANE_W, ESHEL_ROAD_BOT_R[1]-LANE_W), 1)
 
 
         # Eshel - Vertical
             # Left
-        pygame.draw.line(WIN, ORANGE, (4.1*LANE_W,ESHEL_ROAD_BOT_R[1]), (4.1*LANE_W, ESHEL_ROAD_BOT_R[1]+LANE_W), 1) 
+        pygame.draw.line(WIN, BLUE, (4.1*LANE_W,ESHEL_ROAD_BOT_R[1]), (4.1*LANE_W, ESHEL_ROAD_BOT_R[1]+LANE_W), 1) 
             # Right
-        pygame.draw.line(WIN, ORANGE, (6.1*LANE_W,ESHEL_ROAD_BOT_R[1]), (6.1*LANE_W, ESHEL_ROAD_BOT_R[1]+LANE_W), 1) 
+        pygame.draw.line(WIN, BLUE, (6.1*LANE_W,ESHEL_ROAD_BOT_R[1]), (6.1*LANE_W, ESHEL_ROAD_BOT_R[1]+LANE_W), 1) 
+        """
 
     draw_road_borders()
     draw_lane_borders()
