@@ -65,8 +65,8 @@ def draw(win, player_car):
     for img, pos in constants.FINISH_LINE_IMGS:
         win.blit(img, pos)
     
+    constants.draw_borders()
     constants.draw_street_names()
-
     
     player_car.draw(win)
 
@@ -201,7 +201,6 @@ def handle_collisions_with_road_borders(player_car):
                     print("collision, ESHEL")
                     level_tracker.add_sidewalk_hit()
 
-
 def handle_collision_with_finish_line(player_car):
     
     curr_finish_line = level_tracker.level - 1
@@ -272,13 +271,9 @@ while running:
     clock.tick(constants.FPS)   
 
     draw(constants.WIN,player)
-    #feedback_tracker.update()
+    
     buttons_group.draw(constants.WIN)
     
-    #constants.draw_screen_positions()
-    constants.draw_borders()
-    
-    #pygame.draw.rect(WIN, GREEN, (0,0,850,490))
     #all_sprite_list.draw(WIN)
 
     for event in pygame.event.get():
@@ -315,7 +310,7 @@ while running:
 
     move_player(player)
     
-    #handle_collisions_with_road_borders(player)
+    handle_collisions_with_road_borders(player)
     handle_collision_with_finish_line(player)
     
     # Update the window with everything we have drawn
