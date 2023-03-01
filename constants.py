@@ -69,10 +69,10 @@ SCENE_DARK = scale_image(pygame.image.load(PATH + "Scenes\scene_1_dark.png"),1.4
 LEVEL_IMGS = [(SKY_DAY, (0,0)), (SCENE, (0, SCENE_HEIGHT_START))]
 
 # Asset Definitions - Scene Masks
-BORDER_LEFT_PL = scale_image(pygame.image.load(PATH + "Borders\Scene_1/" + "mask_left_pl_bw_wider.png"),1.4)
-BORDER_LEFT_RBT = scale_image(pygame.image.load(PATH + "Borders\Scene_1/" + "left_rbt_mask_full_bw.png"),1.4)
-BORDER_RIGHT_PL = scale_image(pygame.image.load(PATH + "Borders\Scene_1/" + "mask_right_pl_bw.png"),1.4)
-BORDER_RIGHT_RBT = scale_image(pygame.image.load(PATH + "Borders\Scene_1/" + "right_rbt_mask_full_bw.png"),1.4)
+BORDER_LEFT_PL = scale_image(pygame.image.load(PATH + "Borders\Scene_1/" + "mask_left_pl_wider.png"),1.4)
+BORDER_LEFT_RBT = scale_image(pygame.image.load(PATH + "Borders\Scene_1/" + "mask_left_rbt_full.png"),1.4)
+BORDER_RIGHT_PL = scale_image(pygame.image.load(PATH + "Borders\Scene_1/" + "mask_right_pl.png"),1.4)
+BORDER_RIGHT_RBT = scale_image(pygame.image.load(PATH + "Borders\Scene_1/" + "mask_right_rbt_full.png"),1.4)
 
 MASK_LEFT_PL = pygame.mask.from_surface(BORDER_LEFT_PL)
 MASK_LEFT_RBT = pygame.mask.from_surface(BORDER_LEFT_RBT)
