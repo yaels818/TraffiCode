@@ -13,8 +13,8 @@ from utils import *
 pygame.init()
 pygame.font.init()
 
+MID_POINT = constants.YAAR_ROAD_BOT_L[0]
 clock = pygame.time.Clock()
-
 path = []
 
 #-------------------------------------------------------------
@@ -138,8 +138,6 @@ def handle_collisions_with_road_borders(player_car):
         return False
 
 
-    MID_POINT = constants.YAAR_ROAD_BOT_L[0]
-
     #player_car_rect = player_car.rect
     #pygame.draw.circle(constants.WIN, constants.GREEN, player_car.rect.center, 2)
     #player_car_rect.inflate_ip(-0.5,-0.5)
@@ -215,6 +213,38 @@ def handle_collision_with_finish_line(player_car):
     if finish_line_rect.collidepoint(player_car.rect.center):
         print("collision, Finish line")
 
+def handle_driving_against_traffic(player_car):
+    """
+    """
+
+    player_center = player_car.rect.center
+    direction = player_car.angle
+
+     # player is on the right side of the scene
+    if player_center[0] > MID_POINT:
+        pass
+    # player is on the left side
+    else:
+        if player_center[1] < constants.SHAKED_SIDEWK_BOT_R[1]:
+            # entering Hadas from Erez
+            if player_center >= constants.HADAS_ROAD_BORDERS[0].topleft and \
+                player_center <= constants.HADAS_ROAD_BORDERS[2].bottomright:
+                # direction is not downwards
+                if direction < 135 or direction > 225:
+                    print("AGAINST")
+            # entering Ella from Erez
+            elif player_center >= constants.ELLA_ROAD_BORDERS[0].topleft and \
+                player_center <= constants.ELLA_ROAD_BORDERS[3].bottomright:
+                # direction is not downwards
+                if direction < 135 or direction > 225:
+                    print("AGAINST")
+        else:
+            # entering Ella from Left PL or Eshel
+            if player_center >= constants.ELLA_ROAD_BORDERS[1].topleft and \
+                player_center <= constants.ELLA_ROAD_BORDERS[4].bottomright:
+                # direction is not upwards or sideways
+                if direction > 90 and direction < 270:
+                    print("AGAINST")
 #--------------------------------------------------------------
 # Function for drawing path points
 def draw_points(path, win):
@@ -310,9 +340,10 @@ while running:
 
     move_player(player)
     
-    handle_collisions_with_road_borders(player)
     handle_collision_with_finish_line(player)
-    
+    #handle_collisions_with_road_borders(player)
+    handle_driving_against_traffic(player)
+
     # Update the window with everything we have drawn
     pygame.display.update()
 
