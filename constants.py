@@ -149,6 +149,18 @@ RBT_OUTER_RAD = RADIUS+1.7*LANE_W
 RBT_INNER_RAD = RADIUS-1.3*LANE_W
 
 #-------------------------------------------------------------------------
+# Car Directions Definitions
+NORTH = 0
+WEST = 90
+SOUTH = 180
+EAST = 270
+
+NORTH_WEST = 45
+SOUTH_WEST = 135
+SOUTH_EAST = 225
+NORTH_EAST = 315
+
+#-------------------------------------------------------------------------
 # Borders Definitions
 LEFT_PL_BORDER_RECT = pygame.Rect((0, SHAKED_SIDEWK_BOT_R[1]+2*LANE_W), (SHAKED_SIDEWK_BOT_R[0], ESHEL_ROAD_BOT_R[1]-2*LANE_W-(SHAKED_SIDEWK_BOT_R[1]+2*LANE_W)))
 RIGHT_PL_BORDER_RECT = pygame.Rect((EREZ_ROTEM_SIDEWK_TOP_R[0], SHAKED_SIDEWK_BOT_R[1]+2*LANE_W), (CLIP_LEFT-LANE_W-(EREZ_ROTEM_SIDEWK_TOP_R[0]), ESHEL_ROAD_BOT_R[1]-(SHAKED_SIDEWK_BOT_R[1]+1.5*LANE_W)))
