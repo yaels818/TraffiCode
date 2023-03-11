@@ -13,7 +13,6 @@ from utils import *
 pygame.init()
 pygame.font.init()
 
-MID_POINT = constants.YAAR_ROAD_BOT_L[0]
 clock = pygame.time.Clock()
 path = []
 
@@ -137,6 +136,8 @@ def handle_collisions_with_road_borders(player_car):
             return True
         return False
 
+    # middle is between Yaar and Hadas
+    VERT_MID_POINT = constants.YAAR_ROAD_BOT_L[0]
 
     #player_car_rect = player_car.rect
     #pygame.draw.circle(constants.WIN, constants.GREEN, player_car.rect.center, 2)
@@ -144,7 +145,7 @@ def handle_collisions_with_road_borders(player_car):
     #pygame.draw.rect(constants.WIN,constants.PINK, player_car_rect,4)
 
     # player is on the right side of the scene
-    if player_car.x > MID_POINT:
+    if player_car.x > VERT_MID_POINT:
         # count mask collisions
         #if player_car.x > constants.EREZ_ROTEM_SIDEWK_TOP_R[0] and player_car.y > constants.ROTEM_ROAD_BOT_R[1]:
         # check if player_car is completely inside the parking lot
@@ -152,7 +153,8 @@ def handle_collisions_with_road_borders(player_car):
             if check_mask_collisions(player_car, constants.MASK_RIGHT_PL):
                 level_tracker.add_parking_lot_hit()
         else:
-            dis_right_rbt = math.sqrt((constants.RBT_RIGHT_CENTER[0]-player_car.x)**2 + (constants.RBT_RIGHT_CENTER[1]-player_car.y)**2)
+            dis_right_rbt = math.sqrt((constants.RBT_RIGHT_CENTER[0]-player_car.x)**2 + \
+                                    (constants.RBT_RIGHT_CENTER[1]-player_car.y)**2)
             if dis_right_rbt < constants.RBT_OUTER_RAD:
                 if check_mask_collisions(player_car, constants.MASK_RIGHT_RBT):
                     level_tracker.add_roundabout_hit()
@@ -217,34 +219,88 @@ def handle_driving_against_traffic(player_car):
     """
     """
 
+    # middle x is middle of Yaar (solid lane line)
+    VERT_MID_POINT = constants.YAAR_SIDEW_BOT_L[0]
+
+    # middle y is shaked sidewalk bottom line
+    HORI_MID_POINT = constants.SHAKED_SIDEWK_BOT_R[1]
+
     player_center = player_car.rect.center
     direction = player_car.angle
 
      # player is on the right side of the scene
-    if player_center[0] > MID_POINT:
-        pass
+    if player_center[0] > VERT_MID_POINT:
+        # player is at the top-right of the screen
+        if player_center[1] < HORI_MID_POINT:
+            # Erez, right side (top)
+            if player_center >= constants.SOLID_LANE_BORDERS[0].topright and \
+                player_center <= constants.EREZ_ROAD_BORDERS[7].topleft and \
+                player_center[1] < constants.EREZ_LANE_BORDERS[0].top:
+
+                if direction > constants.SOUTH_WEST and direction < constants.NORTH_EAST:
+                    level_tracker.add_driving_against_traffic()
+                    
+            # Erez, right side (bottom)
+            elif player_center >= constants.SOLID_LANE_BORDERS[0].topright and \
+                player_center <= constants.EREZ_LANE_BORDERS[1].topleft and \
+                player_center[1] > constants.EREZ_LANE_BORDERS[0].bottom:
+
+                #if direction < constants.SOUTH_WEST or direction > constants.NORTH_EAST:
+                if direction < constants.SOUTH or direction > constants.NORTH_EAST:
+                    level_tracker.add_driving_against_traffic()
+
+            # entering Erez from Yaar  
+            elif player_center >= constants.SOLID_LANE_BORDERS[1].bottomright and \
+                player_center <= constants.YAAR_ROAD_BORDERS[6].topleft :
+                
+                if direction > constants.WEST and direction < constants.EAST:
+                    level_tracker.add_driving_against_traffic()   
+
+                  
     # player is on the left side
     else:
-        if player_center[1] < constants.SHAKED_SIDEWK_BOT_R[1]:
+        # player is at the top-left of the screen
+        if player_center[1] < HORI_MID_POINT:
+            
+            # Erez, left side
+            if player_center >= constants.ELLA_ROAD_BORDERS[0].topleft and \
+                player_center <= constants.SOLID_LANE_BORDERS[0].bottomright:
+
+                if direction < constants.NORTH_WEST or direction > constants.SOUTH:
+                    level_tracker.add_driving_against_traffic()
+        
+            # entering Yaar from Erez #TODO : DEBUG HERE  
+            elif player_center >= constants.YAAR_ROAD_BORDERS[4].topleft and \
+                player_center <= constants.SOLID_LANE_BORDERS[1].bottomright:
+                
+                if direction < constants.WEST or direction > constants.SOUTH_EAST:
+                    level_tracker.add_driving_against_traffic()
+                    print("x")
             # entering Hadas from Erez
-            if player_center >= constants.HADAS_ROAD_BORDERS[0].topleft and \
+            elif player_center >= constants.HADAS_ROAD_BORDERS[0].topleft and \
                 player_center <= constants.HADAS_ROAD_BORDERS[2].bottomright:
-                # direction is not downwards
-                if direction < 135 or direction > 225:
-                    print("AGAINST")
+                
+                if direction < constants.SOUTH_WEST or direction > constants.SOUTH_EAST:
+                    level_tracker.add_driving_against_traffic()
+            
             # entering Ella from Erez
             elif player_center >= constants.ELLA_ROAD_BORDERS[0].topleft and \
                 player_center <= constants.ELLA_ROAD_BORDERS[3].bottomright:
                 # direction is not downwards
-                if direction < 135 or direction > 225:
-                    print("AGAINST")
+                if direction < constants.SOUTH_WEST or direction > constants.SOUTH_EAST:
+                    level_tracker.add_driving_against_traffic()
+        
+        # player is at the bottom-left
         else:
+            # entering Yaar from Hadas or Erez
+            
             # entering Ella from Left PL or Eshel
             if player_center >= constants.ELLA_ROAD_BORDERS[1].topleft and \
                 player_center <= constants.ELLA_ROAD_BORDERS[4].bottomright:
                 # direction is not upwards or sideways
                 if direction > 90 and direction < 270:
-                    print("AGAINST")
+                    level_tracker.add_driving_against_traffic()
+            
 #--------------------------------------------------------------
 # Function for drawing path points
 def draw_points(path, win):
@@ -340,7 +396,7 @@ while running:
 
     move_player(player)
     
-    handle_collision_with_finish_line(player)
+    #handle_collision_with_finish_line(player)
     #handle_collisions_with_road_borders(player)
     handle_driving_against_traffic(player)
 
