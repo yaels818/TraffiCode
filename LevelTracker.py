@@ -7,26 +7,31 @@ class LevelTracker():
         self.level = 1
 
         self.sidewalk_hits = 0
-        self.parking_lot_hits = 0
-        self.roundabout_hits = 0
+        self.over_solid_lane = 0
         self.against_traffic = 0
+
+        self.roundabout_hits = 0
+        self.parking_lot_hits = 0
         self.parking_inaccurate = 0
 
     def increase_level(self):
         self.level += 1
 
-    def add_parking_lot_hit(self):
-        self.parking_lot_hits += 1
-    
-    def add_roundabout_hit(self):
-        self.roundabout_hits += 1
-    
     def add_sidewalk_hit(self):
         self.sidewalk_hits += 1
+
+    def add_over_solid_lane(self):
+        self.over_solid_lane += 1
 
     def add_driving_against_traffic(self):
         self.against_traffic += 1
 
+    def add_roundabout_hit(self):
+        self.roundabout_hits += 1
+    
+    def add_parking_lot_hit(self):
+        self.parking_lot_hits += 1
+    
     def add_parking_inaccurate(self):
         self.parking_inaccurate += 1
 
@@ -34,9 +39,11 @@ class LevelTracker():
         self.level = 1
 
         self.sidewalk_hits = 0
-        self.parking_lot_hits = 0
-        self.roundabout_hits = 0
+        self.over_solid_lane = 0
         self.against_traffic = 0
+
+        self.roundabout_hits = 0
+        self.parking_lot_hits = 0
         self.parking_inaccurate = 0
     
     def display(self):
@@ -50,9 +57,11 @@ class LevelTracker():
         level_text = CLIP_FONT.render(f"Level {self.level}", 1, BLACK)
 
         sidewalk_hits_text = CLIP_FONT.render(f"Sidewalk hits: {self.sidewalk_hits}", 1, RED)
-        pl_hits_text = CLIP_FONT.render(f"Parking lot hits: {self.parking_lot_hits}", 1, RED)
-        rbt_hits_text = CLIP_FONT.render(f"Roundabout hits: {self.roundabout_hits}", 1, RED)
         against_traffic_text = CLIP_FONT.render(f"Wrong direction: {self.against_traffic}", 1, RED)
+        over_solid_lane_text = CLIP_FONT.render(f"Over solid lanes: {self.over_solid_lane}", 1, RED)
+
+        rbt_hits_text = CLIP_FONT.render(f"Roundabout hits: {self.roundabout_hits}", 1, RED)
+        pl_hits_text = CLIP_FONT.render(f"Parking lot hits: {self.parking_lot_hits}", 1, RED)
         parking_inaccurate_text = CLIP_FONT.render(f"Inaccurate parking: {self.parking_inaccurate}", 1, RED)
 
 
@@ -63,9 +72,9 @@ class LevelTracker():
         texts_to_display = [(level_text, level_text_pos), 
                             (timer_text, timer_text_pos)]
 
-        hit_texts = [sidewalk_hits_text,pl_hits_text,
-                    rbt_hits_text,against_traffic_text,
-                    parking_inaccurate_text]
+        hit_texts = [sidewalk_hits_text, against_traffic_text, over_solid_lane_text,
+                    rbt_hits_text, pl_hits_text, parking_inaccurate_text]
+                    
         line_space = -3
         for t in hit_texts:
             pos = (CLIP_CENTER-t.get_rect().centerx, RBT_RIGHT_CENTER[1]+line_space*t.get_rect().centery)
