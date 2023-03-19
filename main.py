@@ -117,6 +117,20 @@ def move_player(player_car):
     if not gas_pressed:
         player_car.reduce_speed(emergency_brake = False)
 
+def handle_collision_with_finish_line(player_car):
+    
+    curr_finish_line = level_tracker.level - 1
+
+    # get the rectangle of the finish line for this level, 
+    # then move it to the right coordinates
+    finish_line_rect = constants.FINISH_LINE_IMGS[curr_finish_line][0].get_rect()
+    finish_line_rect.move_ip(constants.FINISH_LINE_IMGS[curr_finish_line][1])
+    
+    # check if player_car's center is colliding with finish_line_rect -
+    # if the player crossed the finish line
+    if finish_line_rect.collidepoint(player_car.rect.center):
+        print("collision, Finish line")
+
 def handle_collisions_with_road_borders(player_car):
     """
     
@@ -147,7 +161,6 @@ def handle_collisions_with_road_borders(player_car):
     # player is on the right side of the scene
     if player_car.x > VERT_MID_POINT:
         # count mask collisions
-        #if player_car.x > constants.EREZ_ROTEM_SIDEWK_TOP_R[0] and player_car.y > constants.ROTEM_ROAD_BOT_R[1]:
         # check if player_car is completely inside the parking lot
         if constants.RIGHT_PL_BORDER_RECT.contains(player_car.rect):
             if check_mask_collisions(player_car, constants.MASK_RIGHT_PL):
@@ -169,6 +182,10 @@ def handle_collisions_with_road_borders(player_car):
                 elif player_car.rect.collidelist(constants.YAAR_ROAD_BORDERS) != -1:
                     print("collision, YAAR")
                     level_tracker.add_sidewalk_hit()
+        # count solid lanes collisions
+                elif player_car.rect.collidelist(constants.SOLID_LANE_BORDERS) != -1:
+                    print("collision, SOLID")
+                    level_tracker.add_over_solid_lane()
                         
     # player is on the left side
     else:
@@ -179,7 +196,8 @@ def handle_collisions_with_road_borders(player_car):
             if check_mask_collisions(player_car, constants.MASK_LEFT_PL):
                 level_tracker.add_parking_lot_hit()
         else:
-            dis_left_rbt = math.sqrt((constants.RBT_LEFT_CENTER[0]-player_car.x)**2 + (constants.RBT_LEFT_CENTER[1]-player_car.y)**2)
+            dis_left_rbt = math.sqrt((constants.RBT_LEFT_CENTER[0]-player_car.x)**2 + \
+                                    (constants.RBT_LEFT_CENTER[1]-player_car.y)**2)
             if dis_left_rbt < constants.RBT_OUTER_RAD:
                 if check_mask_collisions(player_car, constants.MASK_LEFT_RBT):
                     level_tracker.add_roundabout_hit()
@@ -201,20 +219,6 @@ def handle_collisions_with_road_borders(player_car):
                     print("collision, ESHEL")
                     level_tracker.add_sidewalk_hit()
 
-def handle_collision_with_finish_line(player_car):
-    
-    curr_finish_line = level_tracker.level - 1
-
-    # get the rectangle of the finish line for this level, 
-    # then move it to the right coordinates
-    finish_line_rect = constants.FINISH_LINE_IMGS[curr_finish_line][0].get_rect()
-    finish_line_rect.move_ip(constants.FINISH_LINE_IMGS[curr_finish_line][1])
-    
-    # check if player_car's center is colliding with finish_line_rect -
-    # if the player crossed the finish line
-    if finish_line_rect.collidepoint(player_car.rect.center):
-        print("collision, Finish line")
-
 def handle_driving_against_traffic(player_car):
     """
     """
@@ -228,7 +232,7 @@ def handle_driving_against_traffic(player_car):
     player_center = player_car.rect.center
     direction = player_car.angle
 
-     # player is on the right side of the scene
+    # player is on the right side of the scene
     if player_center[0] > VERT_MID_POINT:
         # player is at the top-right of the screen
         if player_center[1] < HORI_MID_POINT:
@@ -244,18 +248,35 @@ def handle_driving_against_traffic(player_car):
             elif player_center >= constants.SOLID_LANE_BORDERS[0].topright and \
                 player_center <= constants.EREZ_LANE_BORDERS[1].topleft and \
                 player_center[1] > constants.EREZ_LANE_BORDERS[0].bottom:
+                print("b")
+                if direction < constants.SOUTH or direction > constants.NORTH_EAST:
+                    level_tracker.add_driving_against_traffic()
+
+            # entering Erez from Yaar  #TODO : DEBUG HERE  
+            elif player_center >= constants.SOLID_LANE_BORDERS[1].bottomright and \
+                player_center <= constants.YAAR_ROAD_BORDERS[6].topleft :
+                print("x")
+                if direction > constants.WEST and direction < constants.EAST:
+                    level_tracker.add_driving_against_traffic()   
+        
+        # player is at the bottom-right
+        else:
+            # Rotem (top)
+            if player_center >= constants.ROTEM_ROAD_BORDERS[0].topleft and \
+                player_center <= constants.ROTEM_LANE_BORDERS[0].bottomright and \
+                player_center[1] < constants.ROTEM_LANE_BORDERS[0].top:
+
+                if direction > constants.SOUTH_WEST and direction < constants.NORTH_EAST:
+                    level_tracker.add_driving_against_traffic()
+            
+            # Rotem (bottom)
+            elif player_center >= constants.ROTEM_ROAD_BORDERS[0].topleft and \
+                player_center <= constants.ROTEM_LANE_BORDERS[0].bottomright and \
+                player_center[1] > constants.ROTEM_LANE_BORDERS[0].bottom:
 
                 #if direction < constants.SOUTH_WEST or direction > constants.NORTH_EAST:
                 if direction < constants.SOUTH or direction > constants.NORTH_EAST:
                     level_tracker.add_driving_against_traffic()
-
-            # entering Erez from Yaar  
-            elif player_center >= constants.SOLID_LANE_BORDERS[1].bottomright and \
-                player_center <= constants.YAAR_ROAD_BORDERS[6].topleft :
-                
-                if direction > constants.WEST and direction < constants.EAST:
-                    level_tracker.add_driving_against_traffic()   
-
                   
     # player is on the left side
     else:
@@ -300,7 +321,33 @@ def handle_driving_against_traffic(player_car):
                 # direction is not upwards or sideways
                 if direction > 90 and direction < 270:
                     level_tracker.add_driving_against_traffic()
-            
+
+def handle_parallel_parking(player_car,finish_line_center):
+    """
+    """
+    
+    player_center = player_car.rect.center
+    direction = player_car.angle
+    parking_spot = None
+
+    # find the right parking spot rectangle where the finish line is at
+    for p in constants.YAAR_PP_BORDERS:
+        if p.collidepoint(finish_line_center):
+            parking_spot = p
+            break
+
+    if not parking_spot:
+        for p in constants.ESHEL_PP_BORDERS:
+            if p.collidepoint(finish_line_center):
+                parking_spot = p
+                break
+
+    # check if player_car is completely inside the parking spot
+    if not parking_spot.contains(player_car.rect):
+        print("bad")
+    else:
+        print("good")
+
 #--------------------------------------------------------------
 # Function for drawing path points
 def draw_points(path, win):
@@ -397,8 +444,9 @@ while running:
     move_player(player)
     
     #handle_collision_with_finish_line(player)
-    #handle_collisions_with_road_borders(player)
-    handle_driving_against_traffic(player)
+    handle_collisions_with_road_borders(player)
+    #handle_driving_against_traffic(player)
+    #handle_parallel_parking(player, constants.YAAR_PP_BORDERS[0].center)
 
     # Update the window with everything we have drawn
     pygame.display.update()
