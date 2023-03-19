@@ -317,7 +317,7 @@ SOLID_LANE_BORDERS = [
     # Vertical - Yaar
     pygame.Rect((YAAR_ROAD_BOT_L[0]+2.2*LANE_W,YAAR_SIDEW_BOT_L[1]), (2, ESHEL_ROAD_BOT_R[1]-LANE_W-(YAAR_SIDEW_BOT_L[1]))),
     # Horizontal - Eshel
-    pygame.Rect((YAAR_ROAD_BOT_L[0], ESHEL_ROAD_BOT_R[1]-0.9*LANE_W), (2*LANE_W, 2))
+    pygame.Rect((YAAR_ROAD_BOT_L[0], ESHEL_ROAD_BOT_R[1]-1*LANE_W), (2*LANE_W, 2))
     ]
        
 # Lane Borders
@@ -614,7 +614,6 @@ def draw_borders():
             # Right
         pygame.draw.line(WIN, BLUE, (6.1*LANE_W,ESHEL_ROAD_BOT_R[1]), (6.1*LANE_W, ESHEL_ROAD_BOT_R[1]+LANE_W), 1) 
         
-
     draw_road_borders()
     draw_lane_borders()
     draw_parallel_parking_borders()
