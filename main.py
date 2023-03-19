@@ -398,7 +398,7 @@ level_tracker = LevelTracker()
 #create_scene_borders(borders_list, playerGroup)
 #-------------------------------------------------------------------------
 running = True
-# Game Loop
+# Main Game Loop
 while running:
     # Limit our window to this max speed
     clock.tick(constants.FPS)   
@@ -417,6 +417,10 @@ while running:
 
         if event.type == pygame.KEYDOWN:
             keys = pygame.key.get_pressed()
+
+            if keys[pygame.K_w] or keys[pygame.K_s]:
+                if not level_tracker.level_started:
+                    level_tracker.start_level()
             if keys[pygame.K_q]:
                 buttons_list[1].button_pressed() # left blinker
             if keys[pygame.K_e]:
@@ -433,20 +437,20 @@ while running:
                 if (dis < constants.RADIUS):
                     button.button_pressed()
 
-        
-        """
-        # Create the path for computer car
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            pos = pygame.mouse.get_pos()
-            path.append(pos)
-        """
+            
+            """
+            # Create the path for computer car
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                pos = pygame.mouse.get_pos()
+                path.append(pos)
+            """
 
     move_player(player)
     
     #handle_collision_with_finish_line(player)
     handle_collisions_with_road_borders(player)
-    #handle_driving_against_traffic(player)
-    #handle_parallel_parking(player, constants.YAAR_PP_BORDERS[0].center)
+    handle_driving_against_traffic(player)
+    handle_parallel_parking(player, constants.YAAR_PP_BORDERS[0].center)
 
     # Update the window with everything we have drawn
     pygame.display.update()
