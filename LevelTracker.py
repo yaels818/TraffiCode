@@ -1,10 +1,16 @@
+import time
+
 from constants import WIN, CLIP_FONT, DASH_FONT, BLACK, RED, GREEN, CLIP_LEFT, CLIP_TOP, CLIP_CENTER, MIRROR_CENTER,MIRROR_POS, RBT_RIGHT_CENTER
 
 class LevelTracker():
     
+    LEVELS = 8
+
     def __init__(self):
         
         self.level = 1
+        self.level_started = False
+        self.level_start_time = 0
 
         self.sidewalk_hits = 0
         self.over_solid_lane = 0
@@ -16,6 +22,22 @@ class LevelTracker():
 
     def increase_level(self):
         self.level += 1
+        self.level_started = False
+        self.level_start_time = 0
+
+    def start_level(self):
+        self.level_started = True
+        self.level_start_time = time.time()
+
+    def get_level_time(self):
+        if not self.level_started:
+            return 0
+        else:
+            # round to a whole number
+            return round(time.time() - self.level_start_time) 
+
+    def game_finished(self):
+        return self.level > self.LEVELS
 
     def add_sidewalk_hit(self):
         self.sidewalk_hits += 1
@@ -37,6 +59,8 @@ class LevelTracker():
 
     def reset(self):
         self.level = 1
+        self.level_started = False
+        self.level_start_time = 0
 
         self.sidewalk_hits = 0
         self.over_solid_lane = 0
@@ -53,7 +77,7 @@ class LevelTracker():
         """
 
         # generate texts to display
-        timer_text = DASH_FONT.render(f"00:00:00", 1, BLACK)
+        timer_text = DASH_FONT.render(f"Time: {self.get_level_time()} sec", 1, BLACK)
         level_text = CLIP_FONT.render(f"Level {self.level}", 1, BLACK)
 
         sidewalk_hits_text = CLIP_FONT.render(f"Sidewalk hits: {self.sidewalk_hits}", 1, RED)
