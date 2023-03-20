@@ -1,14 +1,15 @@
 import pygame
 
 from RoadUsers import RoadUser
-from constants import RED_CAR, SCENE_HEIGHT_START
+from constants import RED_CAR, SCENE_HEIGHT_START, RBT_RIGHT_CENTER, RBT_LEFT_CENTER, LANE_W
 
 class PlayerCar(RoadUser):
 
     IMG = RED_CAR
+    START_POS = (RBT_RIGHT_CENTER[0],RBT_LEFT_CENTER[1]+2.5*LANE_W)
 
-    def __init__(self,start_pos):
-        RoadUser.__init__(self,start_pos)
+    def __init__(self):
+        RoadUser.__init__(self,self.START_POS)
 
     def reduce_speed(self, emergency_brake = False):
         if emergency_brake:
