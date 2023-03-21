@@ -3,6 +3,7 @@ import pygame
 import math
 from random import randint, choice
 from LevelTracker import LevelTracker
+from RoadUsers.OtherCar import OtherCar
 
 # Local imports
 import constants
@@ -12,9 +13,6 @@ from utils import *
 
 pygame.init()
 pygame.font.init()
-
-clock = pygame.time.Clock()
-path = []
 
 #-------------------------------------------------------------
 # Class for all borders in the scene (sidewalk, island, lane)
@@ -64,7 +62,7 @@ def draw(win, player_car):
     for img, pos in constants.FINISH_LINE_IMGS:
         win.blit(img, pos)
     
-    constants.draw_borders()
+    #constants.draw_borders()
     constants.draw_street_names()
     
     player_car.draw(win)
@@ -381,33 +379,33 @@ def handle_collision_with_borders():
 """
 #-------------------------------------------------------------
 
-# Groups
-player = PlayerCar((constants.RBT_RIGHT_CENTER[0],constants.RBT_LEFT_CENTER[1]+2.5*constants.LANE_W))
+# Objects
+level_tracker = LevelTracker()
+clock = pygame.time.Clock()
+
+player = PlayerCar()
+other = OtherCar()
 
 buttons_list = DashboardButton.create_buttons_list()
 buttons_group = pygame.sprite.Group(buttons_list)
 
-level_tracker = LevelTracker()
-
 #borders_list = pygame.sprite.Group()
-#other_cars_list = pygame.sprite.Group()
-#other_cars_list.add(player)
-
-#player_car = PlayerCar(5,3)
+other_cars_list = pygame.sprite.Group()
+other_cars_list.add(other)
 
 #create_scene_borders(borders_list, playerGroup)
 #-------------------------------------------------------------------------
-running = True
 # Main Game Loop
+running = True
 while running:
     # Limit our window to this max speed
     clock.tick(constants.FPS)   
 
     draw(constants.WIN,player)
+    #draw(constants.WIN,other)
     
     buttons_group.draw(constants.WIN)
-    
-    #all_sprite_list.draw(WIN)
+    other_cars_list.draw(constants.WIN)
 
     for event in pygame.event.get():
         # If player clicked X on the window
@@ -430,23 +428,20 @@ while running:
         if event.type == pygame.MOUSEBUTTONDOWN:
             # Get current mouse position
             m_x, m_y = pygame.mouse.get_pos()
+            pos = pygame.mouse.get_pos()
+            other.path_exp.append(pos)
             # Check if one of the dashboard buttons was pressed
             for button in buttons_list:
                 dis = math.sqrt((button.rect.centerx-m_x)**2 + (button.rect.centery-m_y)**2)
                 #pygame.draw.circle(WIN, RED, (button.rect.centerx, button.rect.centery), RADIUS)
                 if (dis < constants.RADIUS):
                     button.button_pressed()
-
             
-            """
-            # Create the path for computer car
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                pos = pygame.mouse.get_pos()
-                path.append(pos)
-            """
 
     move_player(player)
-    
+    for car in other_cars_list:
+        car.move()
+
     #handle_collision_with_finish_line(player)
     handle_collisions_with_road_borders(player)
     handle_driving_against_traffic(player)
@@ -457,8 +452,7 @@ while running:
 
     
 
-#print(path)
-#print(score)
+print(other.path)
 
 #print(*pygame.font.get_fonts(), sep = "\n")
 
