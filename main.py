@@ -4,6 +4,7 @@ import math
 from random import randint, choice
 from LevelTracker import LevelTracker
 from RoadUsers.OtherCar import OtherCar
+from RoadUsers.Pedestrian import Pedestrian
 
 # Local imports
 import constants
@@ -385,6 +386,7 @@ clock = pygame.time.Clock()
 
 player = PlayerCar()
 other = OtherCar()
+ped = Pedestrian()
 
 buttons_list = DashboardButton.create_buttons_list()
 buttons_group = pygame.sprite.Group(buttons_list)
@@ -392,6 +394,9 @@ buttons_group = pygame.sprite.Group(buttons_list)
 #borders_list = pygame.sprite.Group()
 other_cars_list = pygame.sprite.Group()
 other_cars_list.add(other)
+
+peds_list = pygame.sprite.Group()
+peds_list.add(ped)
 
 #create_scene_borders(borders_list, playerGroup)
 #-------------------------------------------------------------------------
@@ -406,6 +411,7 @@ while running:
     
     buttons_group.draw(constants.WIN)
     other_cars_list.draw(constants.WIN)
+    peds_list.draw(constants.WIN)
 
     for event in pygame.event.get():
         # If player clicked X on the window
@@ -429,6 +435,7 @@ while running:
             # Get current mouse position
             m_x, m_y = pygame.mouse.get_pos()
             pos = pygame.mouse.get_pos()
+            #other.draw_points(constants.WIN)
             other.path_exp.append(pos)
             # Check if one of the dashboard buttons was pressed
             for button in buttons_list:
@@ -437,11 +444,15 @@ while running:
                 if (dis < constants.RADIUS):
                     button.button_pressed()
             
-
+    other.draw_points(constants.WIN)
     move_player(player)
+    
     for car in other_cars_list:
         car.move()
 
+    for ped in peds_list:
+        ped.move()
+        
     #handle_collision_with_finish_line(player)
     handle_collisions_with_road_borders(player)
     handle_driving_against_traffic(player)
@@ -452,7 +463,7 @@ while running:
 
     
 
-print(other.path)
+print(other.path_exp)
 
 #print(*pygame.font.get_fonts(), sep = "\n")
 
