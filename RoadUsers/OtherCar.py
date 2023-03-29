@@ -2,20 +2,21 @@ import pygame
 import math
 
 from RoadUsers import RoadUser
-from constants import YELLOW_CAR, RBT_RIGHT_CENTER, RBT_LEFT_CENTER, LANE_W
+from constants import YELLOW_CAR, RBT_RIGHT_CENTER, RBT_LEFT_CENTER, LANE_W, WEST
 
 class OtherCar(RoadUser):
 
     IMG = YELLOW_CAR
     path_exp = []
-    path = [(821, 420), (768, 376), (672, 379), (675, 316)]
+    path = [(460, 440), (460, 130)]
 
     def __init__(self):
-        start_pos = (RBT_RIGHT_CENTER[0]+2.5*LANE_W,RBT_LEFT_CENTER[1]+2.5*LANE_W)
+        start_pos = (460, 440)
         RoadUser.__init__(self,start_pos)
         self.current_point = 0
         # Computer car will be moving at max velocity all the time, no acceleration
-        self.vel = 1.5 
+        self.vel = 1.5
+        self.angle = WEST
 
     def reduce_speed(self):
         # Reduce the velocity by half the acceleration, if negative then just stop moving 
