@@ -126,6 +126,9 @@ SPEEDOMETER_TEXT_POS = (MIRROR_CENTER,SPEEDOMETER_POS[1]+SPEEDOMETER.get_rect().
 
 # Road Users Definitions 
 RED_CAR = scale_image(pygame.image.load(PATH + "Cars/red_car.png"), 0.28)
+YELLOW_CAR = scale_image(pygame.image.load(PATH + "Cars/yellow_taxi.png"), 0.15)
+
+RED_GIRL = scale_image(pygame.image.load(PATH + "Peds/red_girl_front_1.png"), 0.8)
 #-------------------------------------------------------------------------
 # Road Definitions
 LANE_W = 22 # Lane Width in px
