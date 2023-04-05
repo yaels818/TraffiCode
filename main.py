@@ -42,9 +42,9 @@ class Border(pygame.sprite.Sprite):
 
 #-------------------------------------------------------------
 
-def draw(win, player_car):
+def draw(player_car):
     
-    def draw_dashboard_texts(win):
+    def draw_dashboard_texts():
 
         # round to the first significant digit, units are px/sec
         velocity_text = constants.DASH_FONT.render(f"{round(round(player.vel,1)*10.0)}", 1, (255, 255, 255))
@@ -54,31 +54,40 @@ def draw(win, player_car):
         
         for txt, pos in DASH_TEXTS:
             # Draw this img in this position
-            win.blit(txt, pos)  
-                  
+            constants.WIN.blit(txt, pos)  
+
+    def draw_finish_line(curr_level):
+        pass
+
     for img, pos in constants.LEVEL_IMGS:
         # Draw this img in this position
-        win.blit(img, pos)  
+        constants.WIN.blit(img, pos)  
     
     for img, pos in constants.FINISH_LINE_IMGS:
-        win.blit(img, pos)
+        if img == "HORI":
+            constants.WIN.blit(constants.FINISH_LINE_HORI, pos)
+        elif img == "VERT":
+            constants.WIN.blit(constants.FINISH_LINE_VERT,pos)
+        else:
+            pygame.draw.rect(constants.WIN, constants.ORANGE, pos)
     
     #constants.draw_borders()
     constants.draw_street_names()
     
-    player_car.draw(win)
+    player_car.draw(constants.WIN)
 
     #draw_points(path, win)
     #draw_scene_borders(win)
+    #constants.draw_finish_lines()
 
     pygame.draw.rect(constants.WIN, constants.GRAY, constants.DASHBOARD_RECT_HOR)
     pygame.draw.rect(constants.WIN, constants.GRAY, constants.DASHBOARD_RECT_VER)
     
     for img, pos in constants.DASH_IMGS:
         # Draw this img in this position
-        win.blit(img, pos)
+        constants.WIN.blit(img, pos)
 
-    draw_dashboard_texts(win)
+    draw_dashboard_texts()
 
     level_tracker.display()
 
@@ -129,6 +138,8 @@ def handle_collision_with_finish_line(player_car):
     # if the player crossed the finish line
     if finish_line_rect.collidepoint(player_car.rect.center):
         print("collision, Finish line")
+        #TODO - check
+        #level_tracker.increase_level()
 
 def handle_collisions_with_road_borders(player_car):
     """
@@ -406,7 +417,7 @@ while running:
     # Limit our window to this max speed
     clock.tick(constants.FPS)   
 
-    draw(constants.WIN,player)
+    draw(player)
     #draw(constants.WIN,other)
     
     buttons_group.draw(constants.WIN)
@@ -448,15 +459,18 @@ while running:
     move_player(player)
     
     for car in other_cars_list:
-        car.move()
+        #car.move()
+        pass
+        
 
     for ped in peds_list:
         ped.move()
+        #pass
         
     #handle_collision_with_finish_line(player)
-    handle_collisions_with_road_borders(player)
-    handle_driving_against_traffic(player)
-    handle_parallel_parking(player, constants.YAAR_PP_BORDERS[0].center)
+    #handle_collisions_with_road_borders(player)
+    #handle_driving_against_traffic(player)
+    #handle_parallel_parking(player, constants.YAAR_PP_BORDERS[0].center)
 
     # Update the window with everything we have drawn
     pygame.display.update()
