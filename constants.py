@@ -1,6 +1,5 @@
 # Outsource Imports
-import pygame
-import os
+import pygame, os
 
 # Local Imports
 from utils import scale_image, stretch_image
@@ -66,7 +65,6 @@ SKY_SUNNY = scale_image(pygame.image.load(PATH + "Backgrounds/" + "sunny_sky.jpg
 
 SCENE = scale_image(pygame.image.load(PATH + "Scenes\scene_1_light.png"),1.4)
 SCENE_DARK = scale_image(pygame.image.load(PATH + "Scenes\scene_1_dark.png"),1.4)
-LEVEL_IMGS = [(SKY_DAY, (0,0)), (SCENE, (0, SCENE_HEIGHT_START))]
 
 # Asset Definitions - Scene Masks
 BORDER_LEFT_PL = scale_image(pygame.image.load(PATH + "Borders\Scene_1/" + "mask_left_pl_wider.png"),1.4)
@@ -80,8 +78,15 @@ MASK_RIGHT_PL = pygame.mask.from_surface(BORDER_RIGHT_PL)
 MASK_RIGHT_RBT = pygame.mask.from_surface(BORDER_RIGHT_RBT)
 
 #-------------------------------------------------------------------------
-DASHBOARD_RECT_HOR = pygame.Rect(0, DASHBOARD_HOR_TOP, WIDTH,HEIGHT/4)
-DASHBOARD_RECT_VER = pygame.Rect(WIDTH - WIDTH/4.5, 0, WIDTH/4, HEIGHT) 
+DASH_RECTS = [
+    # Horizontal
+    pygame.Rect(0, DASHBOARD_HOR_TOP, WIDTH,HEIGHT/4),
+    
+    # Vertical
+    pygame.Rect(WIDTH - WIDTH/4.5, 0, WIDTH/4, HEIGHT) 
+
+    ]
+
 SPEEDOMETER = scale_image(pygame.image.load(PATH + "Dashboard/speedometer.png"),0.3)
 MIRROR = scale_image(pygame.image.load(PATH + "Dashboard/rear_view_mirror.png"),0.25)
 CLIPBOARD = stretch_image(pygame.image.load(PATH + "Dashboard/clipboard.png"),0.55,0.8)
@@ -410,7 +415,6 @@ FINISH_LINE_IMGS = [
 
                     # 10 - Right PL bottom right spot
                     #(FINISH_LINE_HORI, (ROTEM_ROAD_BOT_R[0]+2*LANE_W, ESHEL_ROAD_BOT_R[1]-1.5*LANE_W)),
-
                     ("PARKING", PLS_RP_BORDERS[1]),
 
                     ]
