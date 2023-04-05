@@ -1,13 +1,10 @@
-# Outsource imports
 """
 Author: Yael Sch
 Description: TraffiCode - Driving challenges (with regards to traffic codes)
 """
 
-# Outsource imports
+# Imports
 import pygame, math, random
-
-# Local imports
 import constants, DashboardButton
 from LevelTracker import LevelTracker
 from RoadUsers import PlayerCar, OtherCar, Pedestrian
@@ -51,6 +48,10 @@ def draw(player_car):
     ----------
     player_car : PlayerCar
         The car the player drives
+    
+    Returns
+    -------
+    None
     """
     def draw_scene(curr_level):
         """
@@ -62,10 +63,46 @@ def draw(player_car):
             The number of the current level
     
         """
-        # TODO: insert random and change skies and dark/light
-        LEVEL_IMGS = [(constants.SKY_DAY, (0,0)), (constants.SCENE, (0, constants.SCENE_HEIGHT_START))]
+        # BUG: random is on loop, has to happen only once at the beginning of each level
+
+        sky = constants.SKY_RAINY
+        scene = constants.SCENE_DARK
+
+        """
+        if level_tracker.level_started == False:
+            if curr_level <= 5:
+                #50/50 chance of either sky
+                rand_sky = random.randint(0,1)
+                if rand_sky == 0:
+                    sky = constants.SKY_DAY
+                elif rand_sky == 1:
+                    sky = constants.SKY_SUNNY
+                scene = constants.SCENE
+            elif curr_level > 5 and curr_level < 8:
+                #1:3 chance of each sky
+                rand_sky = random.randint(0,2)
+                if rand_sky == 0:
+                    sky = constants.SKY_DAY
+                    scene = constants.SCENE
+                elif rand_sky == 1:
+                    sky = constants.SKY_SUNNY
+                    scene = constants.SCENE
+                elif rand_sky == 2:
+                    sky = constants.SKY_RAINY
+                    scene = constants.SCENE_DARK
+            else:
+                #50/50 chance of either sky
+                rand_sky = random.randint(0,1)
+                if rand_sky == 0:
+                    sky = constants.SKY_RAINY
+                elif rand_sky == 1:
+                    sky = constants.SKY_NIGHT
+                scene = constants.SCENE_DARK
+            """
+
+        level_imgs = [(sky, (0,0)), (scene, (0, constants.SCENE_HEIGHT_START))]
         
-        for img, pos in LEVEL_IMGS:
+        for img, pos in level_imgs:
             # Draw this img in this position
             constants.WIN.blit(img, pos)  
 
@@ -134,7 +171,21 @@ def draw(player_car):
 
 #--------------------------------------------------------------
 def move_player(player_car):
+    """
+    Move the player_car according to the keyboard keys pressed 
+
+    Parameters
+    ----------
+    player_car : PlayerCar
+        The car the player drives
+    
+    Returns
+    -------
+    None
+    """
+    # Get which keyboard keys are pressed
     keys = pygame.key.get_pressed()
+    
     gas_pressed = False
     reverse_gear = False
 
@@ -162,21 +213,30 @@ def move_player(player_car):
             player_car.rotate(right = True)
         else:
             player_car.rotate(left = True)
-        
+
+    # If player did not press on gas, the car should lose speed naturally 
     if not gas_pressed:
         player_car.reduce_speed(emergency_brake = False)
 
 def handle_collision_with_finish_line(player_car):
     """
-    
-    """
+    Check if player reached the current level's finish line
 
+    Parameters
+    ----------
+    player_car : PlayerCar
+        The car the player drives
+    
+    Returns
+    -------
+    None
+    """
     curr_finish_line = level_tracker.level - 1
 
     img = constants.FINISH_LINE_IMGS[curr_finish_line][0]
     pos = constants.FINISH_LINE_IMGS[curr_finish_line][1]
-
-    # get the rectangle of the finish line for this level
+    
+    # copy the rectangle of the finish line for this level
     # then move it to the right coordinates
     if img == "HORI":
         finish_line_rect = constants.FINISH_LINE_HORI.get_rect().copy()
@@ -186,25 +246,32 @@ def handle_collision_with_finish_line(player_car):
         finish_line_rect.move_ip(pos)
     else:
         # img == "PARKING" ==> rect is inside pos
-        finish_line_rect = pos.copy()
-        #finish_line_rect.move_ip(finish_line_rect.topleft)
+        finish_line_rect = pos
 
     # check collision
+    player_center = player_car.rect.center
+    direction = player_car.angle
+    
+    print(direction)
     if img != "PARKING":
         # check if player_car's center is colliding with finish_line_rect -
         # if the player crossed the finish line
         if finish_line_rect.collidepoint(player_car.rect.center):
             level_tracker.increase_level()
-    else:
-        player_center = player_car.rect.center
-        direction = player_car.angle
-
+    
+        """
         # check if player_car is completely inside the parking spot
         if finish_line_rect.contains(player_car.rect):
-            print("good")
-        else:
-            pass
-        
+            
+            if finish_line_rect.topleft == constants.PLS_RP_BORDERS[0].topleft:
+                if direction != constants.EAST and direction != constants.WEST:
+                    level_tracker.add_parking_inaccurate()
+            elif finish_line_rect == constants.ESHEL_PP_BORDERS[1]:
+                if direction != constants.EAST:
+                    level_tracker.add_parking_inaccurate()
+            
+            level_tracker.increase_level()
+        """
 
 def handle_collisions_with_road_borders(player_car):
     """
@@ -430,7 +497,6 @@ def handle_collision_with_borders():
     print(borders_hit_list)
 """
 #-------------------------------------------------------------
-
 # Game Management Objects
 level_tracker = LevelTracker()
 clock = pygame.time.Clock()
@@ -512,8 +578,6 @@ while running:
 
     # Update the window with everything we have drawn
     pygame.display.update()
-
-    
 
 print(other.path_exp)
 
