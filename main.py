@@ -1,16 +1,16 @@
 # Outsource imports
-from multiprocessing import cpu_count
-import pygame
-import math
-from random import randint, choice
-from LevelTracker import LevelTracker
-from RoadUsers.OtherCar import OtherCar
-from RoadUsers.Pedestrian import Pedestrian
+"""
+Author: Yael Sch
+Description: TraffiCode - Driving challenges (with regards to traffic codes)
+"""
+
+# Outsource imports
+import pygame, math, random
 
 # Local imports
-import constants
-import DashboardButton
-from RoadUsers import PlayerCar
+import constants, DashboardButton
+from LevelTracker import LevelTracker
+from RoadUsers import PlayerCar, OtherCar, Pedestrian
 from utils import *
 
 pygame.init()
@@ -44,9 +44,47 @@ class Border(pygame.sprite.Sprite):
 #-------------------------------------------------------------
 
 def draw(player_car):
+    """
+    Draw the level scene, finish line, player car, dashboard, level status. 
+
+    Parameters
+    ----------
+    player_car : PlayerCar
+        The car the player drives
+    """
+    def draw_scene(curr_level):
+        """
+        Draw the scene for the current level (sky, roads, street names).
+
+        Parameters
+        ----------
+        curr_level : int
+            The number of the current level
     
-    def draw_finish_line(curr_level):
+        """
+        # TODO: insert random and change skies and dark/light
+        LEVEL_IMGS = [(constants.SKY_DAY, (0,0)), (constants.SCENE, (0, constants.SCENE_HEIGHT_START))]
         
+        for img, pos in LEVEL_IMGS:
+            # Draw this img in this position
+            constants.WIN.blit(img, pos)  
+
+        constants.draw_street_names()
+        
+    def draw_finish_line(curr_level):
+        """
+        Draw the finish line for the current level.
+
+        Finish line is either a line to be crossed, 
+        or a parking spot to be filled, by the player's car.
+
+        Parameters
+        ----------
+        curr_level : int
+            The number of the current level
+    
+        """
+        # Get the current level's finish line's image and position
         img = constants.FINISH_LINE_IMGS[curr_level-1][0]
         pos = constants.FINISH_LINE_IMGS[curr_level-1][1]
 
@@ -55,47 +93,43 @@ def draw(player_car):
         elif img == "VERT":
             constants.WIN.blit(constants.FINISH_LINE_VERT,pos)
         else:
+            # If finish line is a parking spot
             pygame.draw.rect(constants.WIN, constants.ORANGE, pos)
 
     def draw_dashboard():
+        """
+        Draw the dashboard elements and texts (excluding the buttons). 
+        """
 
-        def draw_dashboard_texts():
-
-            # round to the first significant digit, units are px/sec
-            velocity_text = constants.DASH_FONT.render(f"{round(round(player.vel,1)*10.0)}", 1, (255, 255, 255))
-            velocity_text_pos = (constants.SPEEDOMETER_TEXT_POS[0]-velocity_text.get_rect().centerx,constants.SPEEDOMETER_TEXT_POS[1]-velocity_text.get_rect().centery)
-
-            DASH_TEXTS = [(velocity_text, velocity_text_pos)]
-            
-            for txt, pos in DASH_TEXTS:
-                # Draw this img in this position
-                constants.WIN.blit(txt, pos) 
-
-        pygame.draw.rect(constants.WIN, constants.GRAY, constants.DASHBOARD_RECT_HOR)
-        pygame.draw.rect(constants.WIN, constants.GRAY, constants.DASHBOARD_RECT_VER)
+        # Draw the dashboard background
+        for r in constants.DASH_RECTS:
+            pygame.draw.rect(constants.WIN, constants.GRAY, r)
         
+        # Draw the dashboard elements
         for img, pos in constants.DASH_IMGS:
             # Draw this img in this position
             constants.WIN.blit(img, pos)
 
-        draw_dashboard_texts()
+        # Draw the dashboard text (how fast the player's car is moving)
+        # (Round to the first significant digit, units are px/sec)
+        velocity_text = constants.DASH_FONT.render(f"{round(round(player.vel,1)*10.0)}", 1, (255, 255, 255))
+        velocity_text_pos = (constants.SPEEDOMETER_TEXT_POS[0]-velocity_text.get_rect().centerx,constants.SPEEDOMETER_TEXT_POS[1]-velocity_text.get_rect().centery)
+        constants.WIN.blit(velocity_text, velocity_text_pos) 
 
-    for img, pos in constants.LEVEL_IMGS:
-        # Draw this img in this position
-        constants.WIN.blit(img, pos)  
     
+    draw_scene(level_tracker.level)
+
     draw_finish_line(level_tracker.level)
-    
-    #constants.draw_borders()
-    constants.draw_street_names()
     
     player_car.draw(constants.WIN)
 
     #draw_points(path, win)
-    #draw_scene_borders(win)
+    #constants.draw_borders()
     #constants.draw_finish_lines()
 
     draw_dashboard()
+
+    # Display the clipboard area (current level, violations, bonus points)
     level_tracker.display()
 
 #--------------------------------------------------------------
@@ -397,10 +431,11 @@ def handle_collision_with_borders():
 """
 #-------------------------------------------------------------
 
-# Objects
+# Game Management Objects
 level_tracker = LevelTracker()
 clock = pygame.time.Clock()
 
+# Sprites (moving objects)
 player = PlayerCar()
 other = OtherCar()
 ped = Pedestrian()
@@ -408,7 +443,6 @@ ped = Pedestrian()
 buttons_list = DashboardButton.create_buttons_list()
 buttons_group = pygame.sprite.Group(buttons_list)
 
-#borders_list = pygame.sprite.Group()
 other_cars_list = pygame.sprite.Group()
 other_cars_list.add(other)
 
@@ -424,11 +458,10 @@ while running:
     clock.tick(constants.FPS)   
 
     draw(player)
-    #draw(constants.WIN,other)
     
     buttons_group.draw(constants.WIN)
-    other_cars_list.draw(constants.WIN)
-    peds_list.draw(constants.WIN)
+    #other_cars_list.draw(constants.WIN)
+    #peds_list.draw(constants.WIN)
 
     for event in pygame.event.get():
         # If player clicked X on the window
@@ -461,13 +494,12 @@ while running:
                 if (dis < constants.RADIUS):
                     button.button_pressed()
             
-    other.draw_points(constants.WIN)
+    #other.draw_points(constants.WIN)
     move_player(player)
     
     for car in other_cars_list:
         #car.move()
         pass
-        
 
     for ped in peds_list:
         ped.move()
