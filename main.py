@@ -1,4 +1,5 @@
 # Outsource imports
+from multiprocessing import cpu_count
 import pygame
 import math
 from random import randint, choice
@@ -44,32 +45,46 @@ class Border(pygame.sprite.Sprite):
 
 def draw(player_car):
     
-    def draw_dashboard_texts():
-
-        # round to the first significant digit, units are px/sec
-        velocity_text = constants.DASH_FONT.render(f"{round(round(player.vel,1)*10.0)}", 1, (255, 255, 255))
-        velocity_text_pos = (constants.SPEEDOMETER_TEXT_POS[0]-velocity_text.get_rect().centerx,constants.SPEEDOMETER_TEXT_POS[1]-velocity_text.get_rect().centery)
-
-        DASH_TEXTS = [(velocity_text, velocity_text_pos)]
-        
-        for txt, pos in DASH_TEXTS:
-            # Draw this img in this position
-            constants.WIN.blit(txt, pos)  
-
     def draw_finish_line(curr_level):
-        pass
+        
+        img = constants.FINISH_LINE_IMGS[curr_level-1][0]
+        pos = constants.FINISH_LINE_IMGS[curr_level-1][1]
 
-    for img, pos in constants.LEVEL_IMGS:
-        # Draw this img in this position
-        constants.WIN.blit(img, pos)  
-    
-    for img, pos in constants.FINISH_LINE_IMGS:
         if img == "HORI":
             constants.WIN.blit(constants.FINISH_LINE_HORI, pos)
         elif img == "VERT":
             constants.WIN.blit(constants.FINISH_LINE_VERT,pos)
         else:
             pygame.draw.rect(constants.WIN, constants.ORANGE, pos)
+
+    def draw_dashboard():
+
+        def draw_dashboard_texts():
+
+            # round to the first significant digit, units are px/sec
+            velocity_text = constants.DASH_FONT.render(f"{round(round(player.vel,1)*10.0)}", 1, (255, 255, 255))
+            velocity_text_pos = (constants.SPEEDOMETER_TEXT_POS[0]-velocity_text.get_rect().centerx,constants.SPEEDOMETER_TEXT_POS[1]-velocity_text.get_rect().centery)
+
+            DASH_TEXTS = [(velocity_text, velocity_text_pos)]
+            
+            for txt, pos in DASH_TEXTS:
+                # Draw this img in this position
+                constants.WIN.blit(txt, pos) 
+
+        pygame.draw.rect(constants.WIN, constants.GRAY, constants.DASHBOARD_RECT_HOR)
+        pygame.draw.rect(constants.WIN, constants.GRAY, constants.DASHBOARD_RECT_VER)
+        
+        for img, pos in constants.DASH_IMGS:
+            # Draw this img in this position
+            constants.WIN.blit(img, pos)
+
+        draw_dashboard_texts()
+
+    for img, pos in constants.LEVEL_IMGS:
+        # Draw this img in this position
+        constants.WIN.blit(img, pos)  
+    
+    #draw_finish_line(level_tracker.level)
     
     #constants.draw_borders()
     constants.draw_street_names()
@@ -78,17 +93,9 @@ def draw(player_car):
 
     #draw_points(path, win)
     #draw_scene_borders(win)
-    #constants.draw_finish_lines()
+    constants.draw_finish_lines()
 
-    pygame.draw.rect(constants.WIN, constants.GRAY, constants.DASHBOARD_RECT_HOR)
-    pygame.draw.rect(constants.WIN, constants.GRAY, constants.DASHBOARD_RECT_VER)
-    
-    for img, pos in constants.DASH_IMGS:
-        # Draw this img in this position
-        constants.WIN.blit(img, pos)
-
-    draw_dashboard_texts()
-
+    draw_dashboard()
     level_tracker.display()
 
 #--------------------------------------------------------------
@@ -126,7 +133,7 @@ def move_player(player_car):
         player_car.reduce_speed(emergency_brake = False)
 
 def handle_collision_with_finish_line(player_car):
-    
+
     curr_finish_line = level_tracker.level - 1
 
     # get the rectangle of the finish line for this level, 
@@ -138,8 +145,7 @@ def handle_collision_with_finish_line(player_car):
     # if the player crossed the finish line
     if finish_line_rect.collidepoint(player_car.rect.center):
         print("collision, Finish line")
-        #TODO - check
-        #level_tracker.increase_level()
+        level_tracker.increase_level()
 
 def handle_collisions_with_road_borders(player_car):
     """
