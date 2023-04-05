@@ -84,7 +84,7 @@ def draw(player_car):
         # Draw this img in this position
         constants.WIN.blit(img, pos)  
     
-    #draw_finish_line(level_tracker.level)
+    draw_finish_line(level_tracker.level)
     
     #constants.draw_borders()
     constants.draw_street_names()
@@ -93,7 +93,7 @@ def draw(player_car):
 
     #draw_points(path, win)
     #draw_scene_borders(win)
-    constants.draw_finish_lines()
+    #constants.draw_finish_lines()
 
     draw_dashboard()
     level_tracker.display()
@@ -133,19 +133,44 @@ def move_player(player_car):
         player_car.reduce_speed(emergency_brake = False)
 
 def handle_collision_with_finish_line(player_car):
+    """
+    
+    """
 
     curr_finish_line = level_tracker.level - 1
 
-    # get the rectangle of the finish line for this level, 
+    img = constants.FINISH_LINE_IMGS[curr_finish_line][0]
+    pos = constants.FINISH_LINE_IMGS[curr_finish_line][1]
+
+    # get the rectangle of the finish line for this level
     # then move it to the right coordinates
-    finish_line_rect = constants.FINISH_LINE_IMGS[curr_finish_line][0].get_rect()
-    finish_line_rect.move_ip(constants.FINISH_LINE_IMGS[curr_finish_line][1])
-    
-    # check if player_car's center is colliding with finish_line_rect -
-    # if the player crossed the finish line
-    if finish_line_rect.collidepoint(player_car.rect.center):
-        print("collision, Finish line")
-        level_tracker.increase_level()
+    if img == "HORI":
+        finish_line_rect = constants.FINISH_LINE_HORI.get_rect().copy()
+        finish_line_rect.move_ip(pos)
+    elif img == "VERT":
+        finish_line_rect = constants.FINISH_LINE_VERT.get_rect().copy()
+        finish_line_rect.move_ip(pos)
+    else:
+        # img == "PARKING" ==> rect is inside pos
+        finish_line_rect = pos.copy()
+        #finish_line_rect.move_ip(finish_line_rect.topleft)
+
+    # check collision
+    if img != "PARKING":
+        # check if player_car's center is colliding with finish_line_rect -
+        # if the player crossed the finish line
+        if finish_line_rect.collidepoint(player_car.rect.center):
+            level_tracker.increase_level()
+    else:
+        player_center = player_car.rect.center
+        direction = player_car.angle
+
+        # check if player_car is completely inside the parking spot
+        if finish_line_rect.contains(player_car.rect):
+            print("good")
+        else:
+            pass
+        
 
 def handle_collisions_with_road_borders(player_car):
     """
@@ -338,31 +363,6 @@ def handle_driving_against_traffic(player_car):
                 if direction > 90 and direction < 270:
                     level_tracker.add_driving_against_traffic()
 
-def handle_parallel_parking(player_car,finish_line_center):
-    """
-    """
-    
-    player_center = player_car.rect.center
-    direction = player_car.angle
-    parking_spot = None
-
-    # find the right parking spot rectangle where the finish line is at
-    for p in constants.YAAR_PP_BORDERS:
-        if p.collidepoint(finish_line_center):
-            parking_spot = p
-            break
-
-    if not parking_spot:
-        for p in constants.ESHEL_PP_BORDERS:
-            if p.collidepoint(finish_line_center):
-                parking_spot = p
-                break
-
-    # check if player_car is completely inside the parking spot
-    if not parking_spot.contains(player_car.rect):
-        print("bad")
-    else:
-        print("good")
 
 #--------------------------------------------------------------
 # Function for drawing path points
@@ -473,7 +473,7 @@ while running:
         ped.move()
         #pass
         
-    #handle_collision_with_finish_line(player)
+    handle_collision_with_finish_line(player)
     #handle_collisions_with_road_borders(player)
     #handle_driving_against_traffic(player)
     #handle_parallel_parking(player, constants.YAAR_PP_BORDERS[0].center)
