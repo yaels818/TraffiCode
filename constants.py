@@ -168,6 +168,18 @@ NORTH_EAST = 315
 LEFT_PL_BORDER_RECT = pygame.Rect((0, SHAKED_SIDEWK_BOT_R[1]+2*LANE_W), (SHAKED_SIDEWK_BOT_R[0], ESHEL_ROAD_BOT_R[1]-2*LANE_W-(SHAKED_SIDEWK_BOT_R[1]+2*LANE_W)))
 RIGHT_PL_BORDER_RECT = pygame.Rect((EREZ_ROTEM_SIDEWK_TOP_R[0], SHAKED_SIDEWK_BOT_R[1]+2*LANE_W), (CLIP_LEFT-LANE_W-(EREZ_ROTEM_SIDEWK_TOP_R[0]), ESHEL_ROAD_BOT_R[1]-(SHAKED_SIDEWK_BOT_R[1]+1.5*LANE_W)))
 
+# Reverse Parking Borders
+PLS_RP_BORDERS = [
+    # Horizontal
+        # Left PL, top left spot (FINISH_LINE_IMGS #4)
+    pygame.Rect((0.35*LANE_W, SHAKED_SIDEWK_BOT_R[1]+2.3*LANE_W), (2*LANE_W, LANE_W)),
+    
+    # Vertical
+        # Right PL, bottom right spot (FINISH_LINE_IMGS #5)
+    pygame.Rect((ROTEM_ROAD_BOT_R[0]+2.75*LANE_W, ESHEL_ROAD_BOT_R[1]-2.25*LANE_W), (LANE_W, 2*LANE_W)),
+    
+    ]
+
 # Sidewalk Borders
 EREZ_ROAD_BORDERS = [
     # Horizontal
@@ -367,11 +379,36 @@ FINISH_LINE_VERT = pygame.transform.rotate(FINISH_LINE_HORI,90)
 
 
 FINISH_LINE_IMGS = [
-                    # exit right pl - enter Rotem
+                    # 1 - Exit right PL entering Rotem
                     (FINISH_LINE_HORI, (EREZ_ROTEM_SIDEWK_TOP_R[0]+2*LANE_W, ROTEM_ROAD_BOT_R[1])),
                     
-                    # Yaar after turn right from Rotem
-                     
+                    # 2 - Yaar after right turn from Rotem
+                    (FINISH_LINE_HORI, (YAAR_ROAD_MID_R[0]-2*LANE_W, YAAR_SIDEW_BOT_L[1]+2*LANE_W)),
+                    
+                    # 3 - Ella top after crosswalk
+                    (FINISH_LINE_HORI, (SHAKED_SIDEWK_BOT_R[0]-LANE_W, SHAKED_SIDEWK_BOT_R[1]+0.25*LANE_W)),
+                    
+                    # 4 - Left PL top left spot
+                    (FINISH_LINE_HORI, (0.5*LANE_W, SHAKED_SIDEWK_BOT_R[1]+2.5*LANE_W)),
+                    
+                    # 5 - Erez entering right RBT
+                    (FINISH_LINE_VERT, (RBT_RIGHT_CENTER[0]-4.5*LANE_W, RBT_RIGHT_CENTER[1]-LANE_W)),
+                    
+                    # 6 - Yaar bottom before turn to Eshel
+                    (FINISH_LINE_HORI, (YAAR_ROAD_BOT_L[0], YAAR_ROAD_BOT_L[1])),
+                    
+                    # 7 - Eshel PP middle spot
+                    (FINISH_LINE_HORI, (4.1*LANE_W, ESHEL_ROAD_BOT_R[1])),
+
+                    # 8 - Hadas RBT right exit
+                    (FINISH_LINE_VERT, (YAAR_ROAD_BOT_L[0], RBT_LEFT_CENTER[1]-LANE_W)),
+
+                    # 9 - Yaar PP top spot
+                    (FINISH_LINE_VERT, (YAAR_ROAD_MID_R[0], ROTEM_ROAD_BOT_R[1]+2.1*LANE_W)),
+
+                    # 10 - Right PL bottom right spot
+                    (FINISH_LINE_HORI, (ROTEM_ROAD_BOT_R[0]+2*LANE_W, ESHEL_ROAD_BOT_R[1]-1.5*LANE_W)),
+
                     ]
 #-------------------------------------------------------------------------
 
@@ -641,3 +678,19 @@ def draw_street_names():
             
         street_text_pos = (pos[0]+street_text.get_rect().centerx, pos[1]+street_text.get_rect().centery)
         WIN.blit(street_text, street_text_pos)  
+
+def draw_finish_lines():
+    """
+    for i in range(10):
+        if i == 3 or i == 6 or i == 8 or i == 9:
+             pygame.draw.rect(WIN, ORANGE, YAAR_PP_BORDERS)
+    """
+    for img, pos in FINISH_LINE_IMGS:
+        WIN.blit(img, pos)
+
+    pygame.draw.rect(WIN, ORANGE, YAAR_PP_BORDERS[0])
+    pygame.draw.rect(WIN, ORANGE, ESHEL_PP_BORDERS[1])
+
+    for r in PLS_RP_BORDERS:
+        pygame.draw.rect(WIN, ORANGE, r)
+    
