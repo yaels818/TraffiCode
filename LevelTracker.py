@@ -1,16 +1,38 @@
+"""
+Author: Yael Sch
+Description: LevelTracker module, contains definitions needed to track the game status
+            (current level, time for each level, violations).
+Notes: 
+    
+"""
+# Imports
 import time
-
-from constants import WIN, CLIP_FONT, DASH_FONT, BLACK, RED, GREEN, CLIP_LEFT, CLIP_TOP, CLIP_CENTER, MIRROR_CENTER,MIRROR_POS, RBT_RIGHT_CENTER
-
+from constants import WIN, CLIP_FONT, DASH_FONT, BLACK, RED, ORANGE, GREEN, CLIP_LEFT, CLIP_TOP, CLIP_CENTER, MIRROR_CENTER,MIRROR_POS, RBT_RIGHT_CENTER
+#-------------------------------------------------------------------------
 class LevelTracker():
     
-    LEVELS = 8
+    LEVELS = 10
 
     def __init__(self):
+        """
+        Parameters
+        ----------
+        level : int
+            The current level of the game (default is 1)
+        level_started : bool
+            If the current level started (default is False)
+        level_start_time : int
+            How many seconds passed since the level started (default is 0)
+        time_to_add_sprites : int
+            Keeps track of when to add new sprites like peds and other cars to the game
+            (increases every seconds)
         
+        """
         self.level = 1
         self.level_started = False
         self.level_start_time = 0
+
+        self.time_to_add_sprites = 0 
 
         self.sidewalk_hits = 0
         self.over_solid_lane = 0
@@ -38,6 +60,9 @@ class LevelTracker():
 
     def game_finished(self):
         return self.level > self.LEVELS
+
+    def increase_time_to_add_sprites(self):
+        self.time_to_add_sprites += 1
 
     def add_sidewalk_hit(self):
         self.sidewalk_hits += 1
@@ -86,7 +111,7 @@ class LevelTracker():
 
         rbt_hits_text = CLIP_FONT.render(f"Roundabout hits: {self.roundabout_hits}", 1, RED)
         pl_hits_text = CLIP_FONT.render(f"Parking lot hits: {self.parking_lot_hits}", 1, RED)
-        parking_inaccurate_text = CLIP_FONT.render(f"Inaccurate parking: {self.parking_inaccurate}", 1, RED)
+        parking_inaccurate_text = CLIP_FONT.render(f"Inaccurate parking: {self.parking_inaccurate}", 1, ORANGE)
 
 
         # define position for each text, center by text rect center
