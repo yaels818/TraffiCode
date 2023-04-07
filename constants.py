@@ -1,5 +1,5 @@
 """
-Author: Yael Sch
+Author: @yaels818
 Description: Constants module, contains all constant definitions needed for the game, 
             and helper functions to draw them (some for dev only).
 Notes: 
@@ -17,20 +17,20 @@ def load_button_images():
     """
     Load all the images (on and off) for the dashboard buttons. 
     """
-    BTNS_PATH_IMGS = "Assets\Images\Dashboard\Buttons/"
+    BTNS_DIR_IMGS = "Assets\Images\Dashboard\Buttons/"
 
     # Go over all the images in the directories,
     # load and add them to their lists
     for i in range(1,7):
-        image_off = pygame.image.load(BTNS_PATH_IMGS + "OFF/btn" + str(i) + ".png")
-        image_on = pygame.image.load(BTNS_PATH_IMGS + "ON/btn" + str(i) + ".png")
+        image_off = pygame.image.load(BTNS_DIR_IMGS + "OFF/btn" + str(i) + ".png")
+        image_on = pygame.image.load(BTNS_DIR_IMGS + "ON/btn" + str(i) + ".png")
 
         BTN_IMGS_OFF.append(image_off)
         BTN_IMGS_ON.append(image_on)
 #-------------------------------------------------------------------------
 # Directory Paths
 #----------------
-PATH_IMGS = "Assets\Images/"
+DIR_IMGS = "Assets\Images/"
 #-------------------------------------------------------------------------
 # Screen Definitions
 #-------------------
@@ -38,7 +38,7 @@ WIDTH, HEIGHT = 1200, 600
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 pygame.display.set_caption("TraffiCode")
-pygame.display.set_icon(scale_image(pygame.image.load(PATH_IMGS + "gameIcon.png"),0.2))
+pygame.display.set_icon(scale_image(pygame.image.load(DIR_IMGS + "gameIcon.png"),0.2))
 #-------------------------------------------------------------------------
 # Font Definitions
 #-----------------
@@ -64,24 +64,22 @@ BLUE = (0, 0, 255)
 PINK = (255, 174, 201)
 ORANGE = (255,127,39)
 #-------------------------------------------------------------------------
-
-
 # Asset Definitions - Scene
 #---------------------------
-SKY_DAY = scale_image(pygame.image.load(PATH_IMGS + "Backgrounds/" + "day_sky.jpg"),0.25)
-SKY_NIGHT = scale_image(pygame.image.load(PATH_IMGS + "Backgrounds/" + "night_sky.jpg"),0.5)
-SKY_RAINY = scale_image(pygame.image.load(PATH_IMGS + "Backgrounds/" + "rainy_sky.jpg"),0.3)
-SKY_SUNNY = scale_image(pygame.image.load(PATH_IMGS + "Backgrounds/" + "sunny_sky.jpg"),0.25)
+SKY_DAY = scale_image(pygame.image.load(DIR_IMGS + "Backgrounds/" + "day_sky.jpg"),0.25)
+SKY_NIGHT = scale_image(pygame.image.load(DIR_IMGS + "Backgrounds/" + "night_sky.jpg"),0.5)
+SKY_RAINY = scale_image(pygame.image.load(DIR_IMGS + "Backgrounds/" + "rainy_sky.jpg"),0.3)
+SKY_SUNNY = scale_image(pygame.image.load(DIR_IMGS + "Backgrounds/" + "sunny_sky.jpg"),0.25)
 
-SCENE = scale_image(pygame.image.load(PATH_IMGS + "Scenes\scene_1_light.png"),1.4)
-SCENE_DARK = scale_image(pygame.image.load(PATH_IMGS + "Scenes\scene_1_dark.png"),1.4)
+SCENE = scale_image(pygame.image.load(DIR_IMGS + "Scenes\scene_1_light.png"),1.4)
+SCENE_DARK = scale_image(pygame.image.load(DIR_IMGS + "Scenes\scene_1_dark.png"),1.4)
 
 # Asset Definitions - Scene Masks
 #---------------------------------
-BORDER_LEFT_PL = scale_image(pygame.image.load(PATH_IMGS + "Borders\Scene_1/" + "mask_left_pl_wider.png"),1.4)
-BORDER_LEFT_RBT = scale_image(pygame.image.load(PATH_IMGS + "Borders\Scene_1/" + "mask_left_rbt_full.png"),1.4)
-BORDER_RIGHT_PL = scale_image(pygame.image.load(PATH_IMGS + "Borders\Scene_1/" + "mask_right_pl.png"),1.4)
-BORDER_RIGHT_RBT = scale_image(pygame.image.load(PATH_IMGS + "Borders\Scene_1/" + "mask_right_rbt_full.png"),1.4)
+BORDER_LEFT_PL = scale_image(pygame.image.load(DIR_IMGS + "Borders\Scene_1/" + "mask_left_pl_wider.png"),1.4)
+BORDER_LEFT_RBT = scale_image(pygame.image.load(DIR_IMGS + "Borders\Scene_1/" + "mask_left_rbt_full.png"),1.4)
+BORDER_RIGHT_PL = scale_image(pygame.image.load(DIR_IMGS + "Borders\Scene_1/" + "mask_right_pl.png"),1.4)
+BORDER_RIGHT_RBT = scale_image(pygame.image.load(DIR_IMGS + "Borders\Scene_1/" + "mask_right_rbt_full.png"),1.4)
 
 MASK_LEFT_PL = pygame.mask.from_surface(BORDER_LEFT_PL)
 MASK_LEFT_RBT = pygame.mask.from_surface(BORDER_LEFT_RBT)
@@ -114,9 +112,9 @@ DASH_RECTS = [
 
     ]
 
-SPEEDOMETER = scale_image(pygame.image.load(PATH_IMGS + "Dashboard/speedometer.png"),0.3)
-MIRROR = scale_image(pygame.image.load(PATH_IMGS + "Dashboard/rear_view_mirror.png"),0.25)
-CLIPBOARD = stretch_image(pygame.image.load(PATH_IMGS + "Dashboard/clipboard.png"),0.55,0.8)
+SPEEDOMETER = scale_image(pygame.image.load(DIR_IMGS + "Dashboard/speedometer.png"),0.3)
+MIRROR = scale_image(pygame.image.load(DIR_IMGS + "Dashboard/rear_view_mirror.png"),0.25)
+CLIPBOARD = stretch_image(pygame.image.load(DIR_IMGS + "Dashboard/clipboard.png"),0.55,0.8)
 
 SPEEDOMETER_POS = (MIRROR_CENTER-SPEEDOMETER.get_rect().centerx, DASHBOARD_HOR_TOP-SPEEDOMETER.get_rect().centery/2)
 MIRROR_POS = (MIRROR_CENTER-MIRROR.get_rect().centerx, MIRROR.get_rect().centery/3)
@@ -129,7 +127,7 @@ DASH_IMGS = [(SPEEDOMETER, SPEEDOMETER_POS), (MIRROR, MIRROR_POS),(CLIPBOARD, CL
 BTN_SCALE = 0.45
 BLINKER_SCALE = 0.5
 SPEEDOMETER_RIGHT = MIRROR_CENTER+SPEEDOMETER.get_rect().centerx
-MENU_BTN_IMG = pygame.image.load(PATH_IMGS + "Dashboard\Buttons/menu_btn.png")
+MENU_BTN_IMG = pygame.image.load(DIR_IMGS + "Dashboard\Buttons/menu_btn.png")
 BTN_IMGS_OFF = []
 BTN_IMGS_ON = []
 
@@ -154,13 +152,6 @@ MUSIC_BTN_BLP = [BTN_IMGS_OFF[5],BTN_IMGS_ON[5],BTN_SCALE,*MUSIC_BTN_POS]
 
 SPEEDOMETER_TEXT_POS = (MIRROR_CENTER,SPEEDOMETER_POS[1]+SPEEDOMETER.get_rect().centery)
 #-------------------------------------------------------------------------
-# Road Users Definitions 
-#------------------------
-RED_CAR = scale_image(pygame.image.load(PATH_IMGS + "Cars/red_car.png"), 0.28)
-YELLOW_CAR = scale_image(pygame.image.load(PATH_IMGS + "Cars/yellow_taxi.png"), 0.15)
-
-RED_GIRL = scale_image(pygame.image.load(PATH_IMGS + "Peds/red_girl_front_1.png"), 0.8)
-#-------------------------------------------------------------------------
 # Road Definitions
 #-----------------
 LANE_W = 22 # Lane Width in px
@@ -183,18 +174,6 @@ RBT_LEFT_CENTER = (MIRROR_CENTER/2+LANE_W, SHAKED_SIDEWK_BOT_R[1]+LANE_W)
 RBT_RIGHT_CENTER = (MIRROR_CENTER*1.5-2*LANE_W, EREZ_ROTEM_SIDEWK_TOP_R[1]+LANE_W)
 RBT_OUTER_RAD = RADIUS+1.7*LANE_W
 RBT_INNER_RAD = RADIUS-1.3*LANE_W
-#-------------------------------------------------------------------------
-# Car Directions Definitions
-#---------------------------
-NORTH = 0
-WEST = 90
-SOUTH = 180
-EAST = 270
-
-NORTH_WEST = 45
-SOUTH_WEST = 135
-SOUTH_EAST = 225
-NORTH_EAST = 315
 #-------------------------------------------------------------------------
 # Borders Definitions
 #--------------------
@@ -408,7 +387,7 @@ ESHEL_LANE_BORDERS = [
 #-------------------------------------------------------------------------
 # Finish Line Definitions  
 #------------------------
-FINISH_LINE_HORI = stretch_image(pygame.image.load(PATH_IMGS + "Dashboard/finish_line.png"),0.5,0.7)
+FINISH_LINE_HORI = stretch_image(pygame.image.load(DIR_IMGS + "Dashboard/finish_line.png"),0.5,0.7)
 FINISH_LINE_VERT = pygame.transform.rotate(FINISH_LINE_HORI,90)
 
 FINISH_LINE_IMGS = [
@@ -447,6 +426,47 @@ FINISH_LINE_IMGS = [
                     ("PARKING", PLS_RP_BORDERS[1]),
 
                     ]
+#-------------------------------------------------------------------------
+# Road Users Definitions 
+#------------------------
+RED_CAR = scale_image(pygame.image.load(DIR_IMGS + "Cars/red_car.png"), 0.28)
+YELLOW_CAR = scale_image(pygame.image.load(DIR_IMGS + "Cars/yellow_taxi.png"), 0.15)
+
+RED_GIRL = scale_image(pygame.image.load(DIR_IMGS + "Peds/red_girl_small.png"), 0.85)
+GREEN_GIRL = scale_image(pygame.image.load(DIR_IMGS + "Peds/green_girl_small.png"), 0.85)
+OLD_MAN = scale_image(pygame.image.load(DIR_IMGS + "Peds/old_man_small.png"), 0.85)
+BLOND_BOY = scale_image(pygame.image.load(DIR_IMGS + "Peds/blond_boy_small.png"), 0.85)
+
+# Pedestrians Paths (made using draw_points)
+#-------------------------------------------
+PED_PATH_ROTEM_SW_TILL_ELLA = [
+    (496, 209), (500, 164), (470, 130), (425, 128), (395, 128),
+    (369, 129), (335, 127), (307, 130), (287, 130), (262, 131),
+    (231, 130), (203, 167), (174, 167), (144, 168), (101, 176),
+    (47, 173), (22, 174)]
+
+PED_PATH_YAAR_SW_TILL_RBT = [
+    (551, 153), (587, 179), (630, 185), (671, 186), (702, 199),
+    (737, 184), (764, 185), (794, 181), (822, 183), (841, 199)] 
+
+PED_PATH_YAAR_SW_TILL_ROTEM_SW = [
+    (552, 425), (523, 297), (516, 238), (535, 202), (550, 151)]
+
+PED_PATH_ELLA_TILL_ESHEL = [
+    (131, 163), (190, 230), (211, 288), (231, 360), (239, 422),
+    (277, 457), (335, 460), (395, 457)]
+#-------------------------------------------------------------------------
+# Car Directions Definitions
+#---------------------------
+NORTH = 0
+WEST = 90
+SOUTH = 180
+EAST = 270
+
+NORTH_WEST = 45
+SOUTH_WEST = 135
+SOUTH_EAST = 225
+NORTH_EAST = 315
 #-------------------------------------------------------------------------
 # Helper Functions (called outside this module)
 #-----------------------------------------------
