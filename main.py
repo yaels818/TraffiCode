@@ -1,5 +1,5 @@
 """
-Author: Yael Sch
+Author: @yaels818
 Description: TraffiCode - Driving challenges (with regards to traffic codes)
 """
 
@@ -11,7 +11,6 @@ from RoadUsers import PlayerCar, OtherCar, Pedestrian
 from utils import *
 
 pygame.init()
-pygame.font.init()
 
 #-------------------------------------------------------------
 # Class for all borders in the scene (sidewalk, island, lane)
@@ -252,7 +251,6 @@ def handle_collision_with_finish_line(player_car):
     player_center = player_car.rect.center
     direction = player_car.angle
     
-    print(direction)
     if img != "PARKING":
         # check if player_car's center is colliding with finish_line_rect -
         # if the player crossed the finish line
@@ -500,6 +498,8 @@ def handle_collision_with_borders():
 # Game Management Objects
 level_tracker = LevelTracker()
 clock = pygame.time.Clock()
+time_counter = 0
+TIME_BETWEEN_PEDS = 2
 
 # Sprites (moving objects)
 player = PlayerCar()
@@ -512,22 +512,32 @@ buttons_group = pygame.sprite.Group(buttons_list)
 other_cars_list = pygame.sprite.Group()
 other_cars_list.add(other)
 
-peds_list = pygame.sprite.Group()
-peds_list.add(ped)
+peds_group = pygame.sprite.Group()
 
 #create_scene_borders(borders_list, playerGroup)
 #-------------------------------------------------------------------------
 # Main Game Loop
 running = True
 while running:
-    # Limit our window to this max speed
+    # Limit our window to this max speed (display this many Frames Per Second)
+    # (so the game would run equally on computers with different processing power)
     clock.tick(constants.FPS)   
 
+    # Run a seperate, in-game counter
+    time_counter += 1
+    if time_counter == constants.FPS:
+        level_tracker.increase_time_to_add_sprites()
+        # Adds peds every TIME_BETWEEN_PEDS seconds  
+        if level_tracker.time_to_add_sprites != 0 and level_tracker.time_to_add_sprites % TIME_BETWEEN_PEDS == 0:
+            peds_group.add(Pedestrian())
+        
+        time_counter = 0
+
     draw(player)
-    
     buttons_group.draw(constants.WIN)
+
     #other_cars_list.draw(constants.WIN)
-    #peds_list.draw(constants.WIN)
+    peds_group.draw(constants.WIN)
 
     for event in pygame.event.get():
         # If player clicked X on the window
@@ -567,9 +577,10 @@ while running:
         #car.move()
         pass
 
-    for ped in peds_list:
+    for ped in peds_group:
+        #ped.draw_points(constants.WIN)
         ped.move()
-        #pass
+        ped.has_reached_end_point()
         
     handle_collision_with_finish_line(player)
     #handle_collisions_with_road_borders(player)
