@@ -13,11 +13,16 @@ from utils import scale_image, stretch_image
 #-------------------------------------------------------------------------
 # Helper Function (called within this module)
 #--------------------------------------------
-def load_button_images():
+def load_buttons_images():
     """
     Load all the images (on and off) for the dashboard buttons. 
     """
     BTNS_DIR_IMGS = "Assets\Images\Dashboard\Buttons/"
+
+    MENU_BTN_IMG = pygame.image.load(BTNS_DIR_IMGS + "menu_btn.png")
+
+    BTN_IMGS_OFF.append(MENU_BTN_IMG)
+    BTN_IMGS_ON.append(MENU_BTN_IMG)
 
     # Go over all the images in the directories,
     # load and add them to their lists
@@ -27,6 +32,63 @@ def load_button_images():
 
         BTN_IMGS_OFF.append(image_off)
         BTN_IMGS_ON.append(image_on)
+
+def load_buttons_blueprints():
+    """
+    Load buttons blueprints for DashboardButton
+    """
+    # Buttons Blueprints for DashboardButton
+    BTN_SCALE = 0.45
+    BLINKER_SCALE = 0.5
+
+    BLINKER_INDEX = 2
+
+    SPEEDOMETER_RIGHT = MIRROR_CENTER+SPEEDOMETER.get_rect().centerx
+
+    y = DASHBOARD_HOR_TOP
+    i = 1
+
+    MENU_BTN_POS = (MIRROR_CENTER/5, y-10)    
+    LIGHTS_BTN_POS = (MIRROR_CENTER/2-BTN_IMGS_OFF[i].get_rect().centerx/2, y)
+    LEFT_BLINK_POS = (SPEEDOMETER_POS[0]-BTN_IMGS_OFF[i+1].get_rect().centerx ,y-10)
+    RIGHT_BLINK_POS = ((SPEEDOMETER_POS[0]+SPEEDOMETER_RIGHT)/2+BTN_IMGS_OFF[i+2].get_rect().centerx ,y-10)
+    WIPERS_BTN_POS = (RIGHT_BLINK_POS[0]+BTN_IMGS_OFF[i+3].get_rect().centerx*1.5, y)
+    AC_BTN_POS = (WIPERS_BTN_POS[0]+BTN_IMGS_OFF[i+4].get_rect().centerx, y)
+    MUSIC_BTN_POS = (CLIP_CENTER-BTN_IMGS_OFF[i+5].get_rect().centerx/2, y)
+
+    BTNS_POSITIONS = [
+        MENU_BTN_POS, LIGHTS_BTN_POS, LEFT_BLINK_POS, RIGHT_BLINK_POS,
+        WIPERS_BTN_POS, AC_BTN_POS, MUSIC_BTN_POS]
+
+    for i in range(len(BTNS_POSITIONS)):
+        if i == BLINKER_INDEX or i == BLINKER_INDEX+1:
+            scale = BLINKER_SCALE
+        else:
+            scale = BTN_SCALE
+
+        BTN_BLPS.append([BTN_IMGS_OFF[i], BTN_IMGS_ON[i], scale, *BTNS_POSITIONS[i]])
+
+def load_masks():
+    """
+    Generate masks for all the complex areas in the game
+    """
+    BORDERS_DIR = DIR_IMGS + "Borders\Scene_1/"
+
+    LEFT_PL = scale_image(pygame.image.load(BORDERS_DIR + "mask_left_pl.png"),SCENE_SCALE)
+    LEFT_RBT = scale_image(pygame.image.load(BORDERS_DIR + "mask_left_rbt_full.png"),SCENE_SCALE)
+    RIGHT_PL = scale_image(pygame.image.load(BORDERS_DIR + "mask_right_pl.png"),SCENE_SCALE)
+    RIGHT_RBT = scale_image(pygame.image.load(BORDERS_DIR + "mask_right_rbt_full.png"),SCENE_SCALE)
+
+    MASKS_IMGS = [
+        LEFT_PL,    # 1 
+        LEFT_RBT,   # 2
+        RIGHT_PL,   # 3
+        RIGHT_RBT   # 4
+        ]
+
+    for m in MASKS_IMGS:
+        MASKS.append(pygame.mask.from_surface(m))
+
 #-------------------------------------------------------------------------
 # Directory Paths
 #----------------
@@ -66,25 +128,21 @@ ORANGE = (255,127,39)
 #-------------------------------------------------------------------------
 # Asset Definitions - Scene
 #---------------------------
+SCENE_SCALE = 1.4
+
 SKY_DAY = scale_image(pygame.image.load(DIR_IMGS + "Backgrounds/" + "day_sky.jpg"),0.25)
 SKY_NIGHT = scale_image(pygame.image.load(DIR_IMGS + "Backgrounds/" + "night_sky.jpg"),0.5)
 SKY_RAINY = scale_image(pygame.image.load(DIR_IMGS + "Backgrounds/" + "rainy_sky.jpg"),0.3)
 SKY_SUNNY = scale_image(pygame.image.load(DIR_IMGS + "Backgrounds/" + "sunny_sky.jpg"),0.25)
 
-SCENE = scale_image(pygame.image.load(DIR_IMGS + "Scenes\scene_1_light.png"),1.4)
-SCENE_DARK = scale_image(pygame.image.load(DIR_IMGS + "Scenes\scene_1_dark.png"),1.4)
+SCENE_LIGHT = scale_image(pygame.image.load(DIR_IMGS + "Scenes\scene_1_light.png"),SCENE_SCALE)
+SCENE_DARK = scale_image(pygame.image.load(DIR_IMGS + "Scenes\scene_1_dark.png"),SCENE_SCALE)
 
 # Asset Definitions - Scene Masks
 #---------------------------------
-BORDER_LEFT_PL = scale_image(pygame.image.load(DIR_IMGS + "Borders\Scene_1/" + "mask_left_pl_wider.png"),1.4)
-BORDER_LEFT_RBT = scale_image(pygame.image.load(DIR_IMGS + "Borders\Scene_1/" + "mask_left_rbt_full.png"),1.4)
-BORDER_RIGHT_PL = scale_image(pygame.image.load(DIR_IMGS + "Borders\Scene_1/" + "mask_right_pl.png"),1.4)
-BORDER_RIGHT_RBT = scale_image(pygame.image.load(DIR_IMGS + "Borders\Scene_1/" + "mask_right_rbt_full.png"),1.4)
-
-MASK_LEFT_PL = pygame.mask.from_surface(BORDER_LEFT_PL)
-MASK_LEFT_RBT = pygame.mask.from_surface(BORDER_LEFT_RBT)
-MASK_RIGHT_PL = pygame.mask.from_surface(BORDER_RIGHT_PL)
-MASK_RIGHT_RBT = pygame.mask.from_surface(BORDER_RIGHT_RBT)
+MASKS_IMGS = []
+MASKS = []
+load_masks()
 #-------------------------------------------------------------------------
 # Position Markers (Center X)
 #-----------------------------
@@ -121,43 +179,27 @@ MIRROR_POS = (MIRROR_CENTER-MIRROR.get_rect().centerx, MIRROR.get_rect().centery
 CLIP_POS = (CLIP_CENTER-CLIPBOARD.get_rect().centerx,CLIP_TOP-CLIPBOARD.get_rect().centery/2.5)
 
 DASH_IMGS = [(SPEEDOMETER, SPEEDOMETER_POS), (MIRROR, MIRROR_POS),(CLIPBOARD, CLIP_POS)]
+
+SPEEDOMETER_TEXT_POS = (MIRROR_CENTER,SPEEDOMETER_POS[1]+SPEEDOMETER.get_rect().centery)
 #-------------------------------------------------------------------------
 # Dashboard Buttons Definitions
 #------------------------------
-BTN_SCALE = 0.45
-BLINKER_SCALE = 0.5
-SPEEDOMETER_RIGHT = MIRROR_CENTER+SPEEDOMETER.get_rect().centerx
-MENU_BTN_IMG = pygame.image.load(DIR_IMGS + "Dashboard\Buttons/menu_btn.png")
 BTN_IMGS_OFF = []
 BTN_IMGS_ON = []
+load_buttons_images()
 
-load_button_images()
+BTN_BLPS = []
+load_buttons_blueprints()
 
-MENU_BTN_POS = (MIRROR_CENTER/5, DASHBOARD_HOR_TOP-10)
-LIGHTS_BTN_POS = (MIRROR_CENTER/2-BTN_IMGS_OFF[0].get_rect().centerx/2, DASHBOARD_HOR_TOP)
-LEFT_BLINK_POS = (SPEEDOMETER_POS[0]-BTN_IMGS_OFF[1].get_rect().centerx ,DASHBOARD_HOR_TOP-10)
-RIGHT_BLINK_POS = ((SPEEDOMETER_POS[0]+SPEEDOMETER_RIGHT)/2+BTN_IMGS_OFF[2].get_rect().centerx ,DASHBOARD_HOR_TOP-10)
-WIPERS_BTN_POS = (RIGHT_BLINK_POS[0]+BTN_IMGS_OFF[3].get_rect().centerx*1.5, DASHBOARD_HOR_TOP)
-AC_BTN_POS = (WIPERS_BTN_POS[0]+BTN_IMGS_OFF[4].get_rect().centerx, DASHBOARD_HOR_TOP)
-MUSIC_BTN_POS = (CLIP_CENTER-BTN_IMGS_OFF[5].get_rect().centerx/2, DASHBOARD_HOR_TOP)
-
-# Buttons Blueprints for DashboardButton
-MENU_BTN_BLP = [MENU_BTN_IMG,MENU_BTN_IMG,BTN_SCALE,*MENU_BTN_POS]
-LIGHTS_BTN_BLP = [BTN_IMGS_OFF[0],BTN_IMGS_ON[0],BTN_SCALE,*LIGHTS_BTN_POS]
-LEFT_BLINK_BLP = [BTN_IMGS_OFF[1],BTN_IMGS_ON[1],BLINKER_SCALE,*LEFT_BLINK_POS]
-RIGHT_BLINK_BLP = [BTN_IMGS_OFF[2],BTN_IMGS_ON[2],BLINKER_SCALE,*RIGHT_BLINK_POS]
-WIPERS_BTN_BLP = [BTN_IMGS_OFF[3],BTN_IMGS_ON[3],BTN_SCALE,*WIPERS_BTN_POS]
-AC_BTN_BLP = [BTN_IMGS_OFF[4],BTN_IMGS_ON[4],BTN_SCALE,*AC_BTN_POS]
-MUSIC_BTN_BLP = [BTN_IMGS_OFF[5],BTN_IMGS_ON[5],BTN_SCALE,*MUSIC_BTN_POS]
-
-SPEEDOMETER_TEXT_POS = (MIRROR_CENTER,SPEEDOMETER_POS[1]+SPEEDOMETER.get_rect().centery)
 #-------------------------------------------------------------------------
 # Road Definitions
 #-----------------
 LANE_W = 22 # Lane Width in px
 
+MID_LEFT_BLINK_POS_X = MIRROR_CENTER-SPEEDOMETER.get_rect().centerx-BTN_IMGS_OFF[2].get_rect().centerx/2
+
     # Roads
-YAAR_ROAD_BOT_L = (LEFT_BLINK_POS[0] + BTN_IMGS_OFF[1].get_rect().centerx/2, HEIGHT-HEIGHT/3+5)
+YAAR_ROAD_BOT_L = (MID_LEFT_BLINK_POS_X, HEIGHT-HEIGHT/3+5)
 YAAR_ROAD_MID_R = (YAAR_ROAD_BOT_L[0] + 4.2*LANE_W, HEIGHT-HEIGHT/3+5)
 EREZ_ROAD_BOT_L = (MIRROR_CENTER/3+LANE_W, HEIGHT/6.2)
 ELLA_ROAD_TOP_L = (MIRROR_CENTER/3+1,HEIGHT/6.2)
@@ -387,13 +429,15 @@ ESHEL_LANE_BORDERS = [
 #-------------------------------------------------------------------------
 # Road Users Definitions 
 #------------------------
+PED_SCALE = 0.85
+
 RED_CAR = scale_image(pygame.image.load(DIR_IMGS + "Cars/red_car.png"), 0.28)
 YELLOW_CAR = scale_image(pygame.image.load(DIR_IMGS + "Cars/yellow_taxi.png"), 0.15)
 
-RED_GIRL = scale_image(pygame.image.load(DIR_IMGS + "Peds/red_girl_small.png"), 0.85)
-GREEN_GIRL = scale_image(pygame.image.load(DIR_IMGS + "Peds/green_girl_small.png"), 0.85)
-OLD_MAN = scale_image(pygame.image.load(DIR_IMGS + "Peds/old_man_small.png"), 0.85)
-BLOND_BOY = scale_image(pygame.image.load(DIR_IMGS + "Peds/blond_boy_small.png"), 0.85)
+RED_GIRL = scale_image(pygame.image.load(DIR_IMGS + "Peds/red_girl_small.png"), PED_SCALE)
+GREEN_GIRL = scale_image(pygame.image.load(DIR_IMGS + "Peds/green_girl_small.png"), PED_SCALE)
+OLD_MAN = scale_image(pygame.image.load(DIR_IMGS + "Peds/old_man_small.png"), PED_SCALE)
+BLOND_BOY = scale_image(pygame.image.load(DIR_IMGS + "Peds/blond_boy_small.png"), PED_SCALE)
 
 # Pedestrians Paths (made using draw_points)
 #-------------------------------------------
@@ -419,13 +463,12 @@ PED_PATH_ELLA_TILL_ESHEL = [
 DIRECTION_SMOOTH = 5
 
 NORTH = 0
-WEST = 90
-SOUTH = 180
-EAST = 270
-
 NORTH_WEST = 45
+WEST = 90
 SOUTH_WEST = 135
+SOUTH = 180
 SOUTH_EAST = 225
+EAST = 270
 NORTH_EAST = 315
 #-------------------------------------------------------------------------
 # Finish Line Definitions  
@@ -444,7 +487,7 @@ FINISH_LINE_PARKINGS = [
     (NORTH, YAAR_PP_BORDERS[0]),
 
     # 10 - Right PL bottom right spot
-    (SOUTH, PLS_RP_BORDERS[1]),
+    (NORTH, PLS_RP_BORDERS[1]),
 ]
 
 FINISH_LINE_IMGS = [
@@ -490,9 +533,6 @@ def draw_borders():
     Draw the scene borders (roads, lanes, parallel parking spots)
     """
     def draw_road_borders():
-
-        #pygame.draw.rect(WIN,RED,LEFT_PL_BORDER_RECT,5)
-        #pygame.draw.rect(WIN,RED,RIGHT_PL_BORDER_RECT,5)
 
         for r in EREZ_ROAD_BORDERS:
             pygame.draw.rect(WIN, BLUE, r)
@@ -765,3 +805,13 @@ def draw_finish_lines():
             WIN.blit(FINISH_LINE_VERT,pos)
         else:
             pygame.draw.rect(WIN, ORANGE, pos)
+
+def draw_masks():
+    pygame.draw.rect(WIN,RED,LEFT_PL_BORDER_RECT,5)
+    pygame.draw.rect(WIN,RED,RIGHT_PL_BORDER_RECT,5)
+
+    for m in MASKS_IMGS:
+        WIN.blit(m, (0,SCENE_HEIGHT_START))
+
+def print_all_possible_fonts():
+    print(*pygame.font.get_fonts(), sep = "\n")        
