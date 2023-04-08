@@ -1,6 +1,11 @@
 """
 Author: @yaels818
-Description: TraffiCode - Driving challenges (with regards to traffic codes)
+Description: TraffiCode - See your driving from a new perspective
+Practice safe driving skills
+Obey traffic codes
+“The driver on the highway is safe not when he reads the signs, but when He obeys them.” – Aiden Tozer
+“Don’t be the driving force behind traffic accidents.” – Unknown
+“You just have to keep driving down the road. It’s going to bend and curve and you’ll speed up and slow down, but the road keeps going.” – Ellen DeGeneres
 """
 
 # Imports
@@ -13,7 +18,8 @@ from utils import *
 pygame.init()
 
 #-------------------------------------------------------------
-# Class for all borders in the scene (sidewalk, island, lane)
+# TODO: delete this section once no longer needed
+"""
 class Border(pygame.sprite.Sprite):
     
     def __init__(self ,type ,x ,y ,width ,height):
@@ -37,6 +43,29 @@ class Border(pygame.sprite.Sprite):
         elif type == 'lane':
             self.image.fill(constants.GREEN)
 
+def create_scene_borders(borders_list, all_sprite_list):
+
+    
+    top_hori_sidewalk = Border('sidewalk',0, 185, SCENE.get_width(), 5)
+    borders_list.add(top_hori_sidewalk)
+    all_sprite_list.add(top_hori_sidewalk)
+
+    bot_hori_sidewalk_left = Border('sidewalk',0, 380, 243, 5)
+    borders_list.add(bot_hori_sidewalk_left)
+    all_sprite_list.add(bot_hori_sidewalk_left)    
+    
+
+    vert_lane = Border('lane', int(constants.SCENE.get_width()/2), 285, 5, constants.HEIGHT)
+    borders_list.add(vert_lane)
+    all_sprite_list.add(vert_lane) 
+
+def handle_collision_with_borders():
+
+    # Did the player moving caused collision with a border?
+    borders_hit_list = pygame.sprite.spritecollide(player.sprite,borders_list,False)
+
+    print(borders_hit_list)
+"""
 #-------------------------------------------------------------
 
 def draw(player_car):
@@ -230,46 +259,46 @@ def handle_collision_with_finish_line(player_car):
     -------
     None
     """
+    # Get the current finish line's index 
     curr_finish_line = level_tracker.level - 1
 
     img = constants.FINISH_LINE_IMGS[curr_finish_line][0]
     pos = constants.FINISH_LINE_IMGS[curr_finish_line][1]
     
-    # copy the rectangle of the finish line for this level
-    # then move it to the right coordinates
     if img == "HORI":
+        # Copy the rectangle of the finish line for this level
         finish_line_rect = constants.FINISH_LINE_HORI.get_rect().copy()
+        # Move the copy to the correct position
         finish_line_rect.move_ip(pos)
     elif img == "VERT":
+        # Copy the rectangle of the finish line for this level
         finish_line_rect = constants.FINISH_LINE_VERT.get_rect().copy()
+        # Move the copy to the correct position
         finish_line_rect.move_ip(pos)
     else:
-        # img == "PARKING" ==> rect is inside pos
+        # If img == "PARKING" ==> rectangle is stored inside pos
         finish_line_rect = pos
-
-    # check collision
-    player_center = player_car.rect.center
-    direction = player_car.angle
     
-    if img != "PARKING":
-        # check if player_car's center is colliding with finish_line_rect -
-        # if the player crossed the finish line
-        if finish_line_rect.collidepoint(player_car.rect.center):
+    # Check if player_car's center is colliding with finish_line_rect.
+    # Meaning, if the player crossed the finish line
+    if finish_line_rect.collidepoint(player_car.rect.center):
+        if img != "PARKING":
+            # Player gets to advance to the next level
             level_tracker.increase_level()
-    
-        """
-        # check if player_car is completely inside the parking spot
-        if finish_line_rect.contains(player_car.rect):
-            
-            if finish_line_rect.topleft == constants.PLS_RP_BORDERS[0].topleft:
-                if direction != constants.EAST and direction != constants.WEST:
-                    level_tracker.add_parking_inaccurate()
-            elif finish_line_rect == constants.ESHEL_PP_BORDERS[1]:
-                if direction != constants.EAST:
-                    level_tracker.add_parking_inaccurate()
-            
-            level_tracker.increase_level()
-        """
+        else:
+            # If player car is parked
+            if player_car.vel == 0:
+                for direction, p_spot in constants.FINISH_LINE_PARKINGS:
+                    # Identify the current parking spot
+                    if finish_line_rect.topleft == p_spot.topleft:
+                        # Check if the player_car's angle while parked is accurate
+                        # for this specific parking spot
+                        # (depending on level instructions or road direction)
+                        if player_car.angle > direction - constants.DIRECTION_SMOOTH and \
+                            player_car.angle < direction + constants.DIRECTION_SMOOTH:
+                            level_tracker.add_parking_inaccurate()
+                        level_tracker.increase_level()
+                        break
 
 def handle_collisions_with_road_borders(player_car):
     """
@@ -464,36 +493,7 @@ def handle_driving_against_traffic(player_car):
 
 
 #--------------------------------------------------------------
-# Function for drawing path points
-def draw_points(path, win):
-    for point in path:
-        # Draw a red point of radius 5 in the path
-        pygame.draw.circle(win, constants.RED, point, 5)
-    
-def create_scene_borders(borders_list, all_sprite_list):
 
-    """
-    top_hori_sidewalk = Border('sidewalk',0, 185, SCENE.get_width(), 5)
-    borders_list.add(top_hori_sidewalk)
-    all_sprite_list.add(top_hori_sidewalk)
-
-    bot_hori_sidewalk_left = Border('sidewalk',0, 380, 243, 5)
-    borders_list.add(bot_hori_sidewalk_left)
-    all_sprite_list.add(bot_hori_sidewalk_left)    
-    """
-
-    vert_lane = Border('lane', int(constants.SCENE.get_width()/2), 285, 5, constants.HEIGHT)
-    borders_list.add(vert_lane)
-    all_sprite_list.add(vert_lane) 
-
-"""
-def handle_collision_with_borders():
-
-    # Did the player moving caused collision with a border?
-    borders_hit_list = pygame.sprite.spritecollide(player.sprite,borders_list,False)
-
-    print(borders_hit_list)
-"""
 #-------------------------------------------------------------
 # Game Management Objects
 level_tracker = LevelTracker()
@@ -530,7 +530,8 @@ while running:
         # Adds peds every TIME_BETWEEN_PEDS seconds  
         if level_tracker.time_to_add_sprites != 0 and level_tracker.time_to_add_sprites % TIME_BETWEEN_PEDS == 0:
             peds_group.add(Pedestrian())
-        
+            
+
         time_counter = 0
 
     draw(player)
@@ -580,7 +581,6 @@ while running:
     for ped in peds_group:
         #ped.draw_points(constants.WIN)
         ped.move()
-        ped.has_reached_end_point()
         
     handle_collision_with_finish_line(player)
     #handle_collisions_with_road_borders(player)
