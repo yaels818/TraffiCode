@@ -385,48 +385,6 @@ ESHEL_LANE_BORDERS = [
     pygame.Rect((0, ESHEL_ROAD_BOT_R[1]-LANE_W), (YAAR_ROAD_BOT_L[0], 2))
     ]    
 #-------------------------------------------------------------------------
-# Finish Line Definitions  
-#------------------------
-FINISH_LINE_HORI = stretch_image(pygame.image.load(DIR_IMGS + "Dashboard/finish_line.png"),0.5,0.7)
-FINISH_LINE_VERT = pygame.transform.rotate(FINISH_LINE_HORI,90)
-
-FINISH_LINE_IMGS = [
-                    # 1 - Exit right PL entering Rotem
-                    ("HORI", (EREZ_ROTEM_SIDEWK_TOP_R[0]+2*LANE_W, ROTEM_ROAD_BOT_R[1])),
-                    
-                    # 2 - Yaar after right turn from Rotem
-                    ("HORI", (YAAR_ROAD_MID_R[0]-2*LANE_W, YAAR_SIDEW_BOT_L[1]+2*LANE_W)),
-                    
-                    # 3 - Ella top after crosswalk
-                    ("HORI", (SHAKED_SIDEWK_BOT_R[0]-LANE_W, SHAKED_SIDEWK_BOT_R[1]+0.25*LANE_W)),
-                    
-                    # 4 - Left PL top left spot
-                    #(FINISH_LINE_HORI, (0.5*LANE_W, SHAKED_SIDEWK_BOT_R[1]+2.5*LANE_W)),
-                    ("PARKING", PLS_RP_BORDERS[0]),
-
-                    # 5 - Erez entering right RBT
-                    ("VERT", (RBT_RIGHT_CENTER[0]-4.5*LANE_W, RBT_RIGHT_CENTER[1]-LANE_W)),
-                    
-                    # 6 - Yaar bottom before turn to Eshel
-                    ("HORI", (YAAR_ROAD_BOT_L[0], YAAR_ROAD_BOT_L[1])),
-                    
-                    # 7 - Eshel PP middle spot
-                    #(FINISH_LINE_HORI, (4.1*LANE_W, ESHEL_ROAD_BOT_R[1])),
-                    ("PARKING", ESHEL_PP_BORDERS[1]),
-
-                    # 8 - Hadas RBT right exit
-                    ("VERT", (YAAR_ROAD_BOT_L[0], RBT_LEFT_CENTER[1]-LANE_W)),
-
-                    # 9 - Yaar PP top spot
-                    #(FINISH_LINE_VERT, (YAAR_ROAD_MID_R[0], ROTEM_ROAD_BOT_R[1]+2.1*LANE_W)),
-                    ("PARKING", YAAR_PP_BORDERS[0]),
-
-                    # 10 - Right PL bottom right spot
-                    #(FINISH_LINE_HORI, (ROTEM_ROAD_BOT_R[0]+2*LANE_W, ESHEL_ROAD_BOT_R[1]-1.5*LANE_W)),
-                    ("PARKING", PLS_RP_BORDERS[1]),
-
-                    ]
-#-------------------------------------------------------------------------
 # Road Users Definitions 
 #------------------------
 RED_CAR = scale_image(pygame.image.load(DIR_IMGS + "Cars/red_car.png"), 0.28)
@@ -458,6 +416,8 @@ PED_PATH_ELLA_TILL_ESHEL = [
 #-------------------------------------------------------------------------
 # Car Directions Definitions
 #---------------------------
+DIRECTION_SMOOTH = 5
+
 NORTH = 0
 WEST = 90
 SOUTH = 180
@@ -467,6 +427,61 @@ NORTH_WEST = 45
 SOUTH_WEST = 135
 SOUTH_EAST = 225
 NORTH_EAST = 315
+#-------------------------------------------------------------------------
+# Finish Line Definitions  
+#------------------------
+FINISH_LINE_HORI = stretch_image(pygame.image.load(DIR_IMGS + "Dashboard/finish_line.png"),0.5,0.7)
+FINISH_LINE_VERT = pygame.transform.rotate(FINISH_LINE_HORI,90)
+
+FINISH_LINE_PARKINGS = [
+    # 4 - Left PL top left spot
+    (WEST, PLS_RP_BORDERS[0]),
+
+    # 7 - Eshel PP middle spot
+    (EAST, ESHEL_PP_BORDERS[1]),
+
+    # 9 - Yaar PP top spot
+    (NORTH, YAAR_PP_BORDERS[0]),
+
+    # 10 - Right PL bottom right spot
+    (SOUTH, PLS_RP_BORDERS[1]),
+]
+
+FINISH_LINE_IMGS = [
+    # 1 - Exit right PL entering Rotem
+    ("HORI", (EREZ_ROTEM_SIDEWK_TOP_R[0]+2*LANE_W, ROTEM_ROAD_BOT_R[1])),
+    
+    # 2 - Yaar after right turn from Rotem
+    ("HORI", (YAAR_ROAD_MID_R[0]-2*LANE_W, YAAR_SIDEW_BOT_L[1]+2*LANE_W)),
+    
+    # 3 - Ella top after crosswalk
+    ("HORI", (SHAKED_SIDEWK_BOT_R[0]-LANE_W, SHAKED_SIDEWK_BOT_R[1]+0.25*LANE_W)),
+    
+    # 4 - Left PL top left spot
+    #(FINISH_LINE_HORI, (0.5*LANE_W, SHAKED_SIDEWK_BOT_R[1]+2.5*LANE_W)),
+    ("PARKING", FINISH_LINE_PARKINGS[0][1]),
+
+    # 5 - Erez entering right RBT
+    ("VERT", (RBT_RIGHT_CENTER[0]-4.5*LANE_W, RBT_RIGHT_CENTER[1]-LANE_W)),
+    
+    # 6 - Yaar bottom before turn to Eshel
+    ("HORI", (YAAR_ROAD_BOT_L[0], YAAR_ROAD_BOT_L[1])),
+    
+    # 7 - Eshel PP middle spot
+    #(FINISH_LINE_HORI, (4.1*LANE_W, ESHEL_ROAD_BOT_R[1])),
+    ("PARKING", FINISH_LINE_PARKINGS[1][1]),
+
+    # 8 - Hadas RBT right exit
+    ("VERT", (YAAR_ROAD_BOT_L[0], RBT_LEFT_CENTER[1]-LANE_W)),
+
+    # 9 - Yaar PP top spot
+    #(FINISH_LINE_VERT, (YAAR_ROAD_MID_R[0], ROTEM_ROAD_BOT_R[1]+2.1*LANE_W)),
+    ("PARKING", FINISH_LINE_PARKINGS[2][1]),
+
+    # 10 - Right PL bottom right spot
+    #(FINISH_LINE_HORI, (ROTEM_ROAD_BOT_R[0]+2*LANE_W, ESHEL_ROAD_BOT_R[1]-1.5*LANE_W)),
+    ("PARKING", FINISH_LINE_PARKINGS[3][1])]
+
 #-------------------------------------------------------------------------
 # Helper Functions (called outside this module)
 #-----------------------------------------------
