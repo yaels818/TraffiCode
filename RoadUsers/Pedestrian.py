@@ -50,7 +50,7 @@ class Pedestrian(RoadUser):
                 self.PATH = PED_PATH_YAAR_SW_TILL_RBT
             elif dice == 4:
                 self.PATH = PED_PATH_ELLA_TILL_ESHEL
-
+            
         randomize_ped(self)
         start_pos = self.PATH[0]
         RoadUser.__init__(self,start_pos)
@@ -119,6 +119,7 @@ class Pedestrian(RoadUser):
     def move(self):
         # If there is no point to move to
         if self.current_point >= len(self.PATH):
+            self.kill()
             return
 
         # Calculate and shift the car to the needed angle for the next point
@@ -128,11 +129,6 @@ class Pedestrian(RoadUser):
         self.update_path_point()
         super().move()
     
-    def has_reached_end_point(self):
-        print(f"Curr Point: {self.current_point}")
-        print(f"Len path: {len(self.PATH),}")
-        return self.current_point >= len(self.PATH)
-
     def next_level(self, level):
         self.reset()
 
@@ -145,3 +141,4 @@ class Pedestrian(RoadUser):
         RoadUser().reset()
         self.vel = self.max_vel
         self.current_point = 0
+        self.reached_end_point = False
