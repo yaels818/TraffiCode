@@ -18,55 +18,6 @@ from utils import *
 pygame.init()
 
 #-------------------------------------------------------------
-# TODO: delete this section once no longer needed
-"""
-class Border(pygame.sprite.Sprite):
-    
-    def __init__(self ,type ,x ,y ,width ,height):
-        # Call the parent class's constructor
-        super().__init__()
-        
-        self.type = type
-
-        # Make a border, of the type and size specified in the parameters
-        self.image = pygame.Surface([width,height])
-        
-        # (x,y) == top_left of rect
-        self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
-
-        if type == 'sidewalk':
-            self.image.fill(constants.RED)
-        elif type == 'island':
-            self.image.fill(constants.WHITE)
-        elif type == 'lane':
-            self.image.fill(constants.GREEN)
-
-def create_scene_borders(borders_list, all_sprite_list):
-
-    
-    top_hori_sidewalk = Border('sidewalk',0, 185, SCENE.get_width(), 5)
-    borders_list.add(top_hori_sidewalk)
-    all_sprite_list.add(top_hori_sidewalk)
-
-    bot_hori_sidewalk_left = Border('sidewalk',0, 380, 243, 5)
-    borders_list.add(bot_hori_sidewalk_left)
-    all_sprite_list.add(bot_hori_sidewalk_left)    
-    
-
-    vert_lane = Border('lane', int(constants.SCENE.get_width()/2), 285, 5, constants.HEIGHT)
-    borders_list.add(vert_lane)
-    all_sprite_list.add(vert_lane) 
-
-def handle_collision_with_borders():
-
-    # Did the player moving caused collision with a border?
-    borders_hit_list = pygame.sprite.spritecollide(player.sprite,borders_list,False)
-
-    print(borders_hit_list)
-"""
-#-------------------------------------------------------------
 def draw(player_car):
     """
     Draw the level scene, finish line, player car, dashboard, level status. 
