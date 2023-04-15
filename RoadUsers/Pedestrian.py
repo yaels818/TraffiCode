@@ -4,17 +4,14 @@ Description: Pedestrian module, contains pedestrian sprites
 (the player must avoid crashing into them)
 """
 
-import pygame,random
-
-import math
+import pygame, math, random
 
 from RoadUsers import RoadUser
 from constants import RED_GIRL, GREEN_GIRL, OLD_MAN, BLOND_BOY, PED_PATH_ROTEM_SW_TILL_ELLA, PED_PATH_YAAR_SW_TILL_ROTEM_SW, PED_PATH_YAAR_SW_TILL_RBT, PED_PATH_ELLA_TILL_ESHEL
 
 class Pedestrian(RoadUser):
 
-    IMG = None
-    PATH = None
+    path = None
 
     def __init__(self):
         """
@@ -27,33 +24,35 @@ class Pedestrian(RoadUser):
         vel : int
             The velocity of the sprite (default is 1)
         """
-        def randomize_ped(self):
+        def randomize_ped():
 
             dice = random.randint(1,4)
                     
             if dice == 1:
-                self.IMG = RED_GIRL
+                IMG = RED_GIRL
             elif dice == 2:
-                self.IMG = GREEN_GIRL
+                IMG = GREEN_GIRL
             elif dice == 3:
-                self.IMG = OLD_MAN
+                IMG = OLD_MAN
             elif dice == 4:
-                self.IMG = BLOND_BOY
+                IMG = BLOND_BOY
 
             dice = random.randint(1,4)
 
             if dice == 1:
-                self.PATH = PED_PATH_ROTEM_SW_TILL_ELLA
+                path = PED_PATH_ROTEM_SW_TILL_ELLA
             elif dice == 2:
-                self.PATH = PED_PATH_YAAR_SW_TILL_ROTEM_SW
+                path = PED_PATH_YAAR_SW_TILL_ROTEM_SW
             elif dice == 3:
-                self.PATH = PED_PATH_YAAR_SW_TILL_RBT
+                path = PED_PATH_YAAR_SW_TILL_RBT
             elif dice == 4:
-                self.PATH = PED_PATH_ELLA_TILL_ESHEL
+                path = PED_PATH_ELLA_TILL_ESHEL
+
+            return IMG, path
             
-        randomize_ped(self)
-        start_pos = self.PATH[0]
-        RoadUser.__init__(self,start_pos)
+        IMG, self.path = randomize_ped()
+        
+        RoadUser.__init__(self, IMG, self.path[0])
         self.current_point = 0
         # Computer car will be moving at max velocity all the time, no acceleration
         self.vel = 1
@@ -64,18 +63,13 @@ class Pedestrian(RoadUser):
         self.move()
 
     def draw_points(self, win):
-        for point in self.PATH:
+        for point in self.path:
             # Draw a red point of radius 5 in the path
             pygame.draw.circle(win, (255,0,0), point, 5)
-    
-    def draw(self, win):
-        super().draw(win)
-        
-        self.draw_points(win)
         
     def calculate_angle(self):
         # Get coordinates for target point
-        target_x, target_y = self.PATH[self.current_point]
+        target_x, target_y = self.path[self.current_point]
         x_diff = target_x - self.x
         y_diff = target_y - self.y
 
@@ -106,7 +100,7 @@ class Pedestrian(RoadUser):
 
     def update_path_point(self):
             # Get the next target point from the pre-made path
-            target = self.PATH[self.current_point]
+            target = self.path[self.current_point]
 
             # Create a rectangle with the car as top-left corner 
             # (because we have the img but the img doesn't know where it is)
@@ -118,7 +112,7 @@ class Pedestrian(RoadUser):
 
     def move(self):
         # If there is no point to move to
-        if self.current_point >= len(self.PATH):
+        if self.current_point >= len(self.path):
             self.kill()
             return
 
@@ -130,15 +124,8 @@ class Pedestrian(RoadUser):
         super().move()
     
     def next_level(self, level):
-        self.reset()
-
+    
         # Increase computer's vel 0.2 each level - will never go faster than the player's
         self.vel = self.max_vel + (level + 1) * 0.2
 
         self.current_point = 0
-
-    def reset(self):
-        RoadUser().reset()
-        self.vel = self.max_vel
-        self.current_point = 0
-        self.reached_end_point = False
