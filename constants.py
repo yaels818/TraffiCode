@@ -429,15 +429,34 @@ ESHEL_LANE_BORDERS = [
 #-------------------------------------------------------------------------
 # Road Users Definitions 
 #------------------------
+RED_CAR = scale_image(pygame.image.load(DIR_IMGS + "Cars/red_car.png"), 0.28)
+
+PLAYER_START_POS = (RBT_RIGHT_CENTER[0],RBT_LEFT_CENTER[1]+2.5*LANE_W)
+
+CAR_SCALE = 0.15
 PED_SCALE = 0.85
 
-RED_CAR = scale_image(pygame.image.load(DIR_IMGS + "Cars/red_car.png"), 0.28)
-YELLOW_CAR = scale_image(pygame.image.load(DIR_IMGS + "Cars/yellow_taxi.png"), 0.15)
+YELLOW_CAR = scale_image(pygame.image.load(DIR_IMGS + "Cars/yellow_taxi.png"), CAR_SCALE)
+BLUE_VAN = scale_image(pygame.image.load(DIR_IMGS + "Cars/blue_mini_truck.png"), CAR_SCALE)
+WHITE_TRUCK = scale_image(pygame.image.load(DIR_IMGS + "Cars/white_truck.png"), CAR_SCALE)
 
 RED_GIRL = scale_image(pygame.image.load(DIR_IMGS + "Peds/red_girl_small.png"), PED_SCALE)
 GREEN_GIRL = scale_image(pygame.image.load(DIR_IMGS + "Peds/green_girl_small.png"), PED_SCALE)
 OLD_MAN = scale_image(pygame.image.load(DIR_IMGS + "Peds/old_man_small.png"), PED_SCALE)
 BLOND_BOY = scale_image(pygame.image.load(DIR_IMGS + "Peds/blond_boy_small.png"), PED_SCALE)
+
+# Other Cars Paths (made using draw_points)
+#-------------------------------------------
+CAR_PATH_YAAR_TILL_ESHEL = [
+    (396, 217), (417, 311), (413, 418), (413, 418), (7, 414)]
+    
+CAR_PATH_ESHEL_TILL_ROTEM = []
+
+CAR_PATH_ELLA_TILL_EREZ = []
+
+CAR_PATH_ROTEM_TILL_ELLA = []
+
+# ADD PATHS INTO/OUT PARKING LOTS?
 
 # Pedestrians Paths (made using draw_points)
 #-------------------------------------------
