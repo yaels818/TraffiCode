@@ -67,7 +67,6 @@ def handle_collision_with_borders():
     print(borders_hit_list)
 """
 #-------------------------------------------------------------
-
 def draw(player_car):
     """
     Draw the level scene, finish line, player car, dashboard, level status. 
@@ -80,62 +79,7 @@ def draw(player_car):
     Returns
     -------
     None
-    """
-    def draw_scene(curr_level):
-        """
-        Draw the scene for the current level (sky, roads, street names).
-
-        Parameters
-        ----------
-        curr_level : int
-            The number of the current level
-    
-        """
-        # BUG: random is on loop, has to happen only once at the beginning of each level
-
-        sky = constants.SKY_RAINY
-        scene = constants.SCENE_DARK
-
-        """
-        if level_tracker.level_started == False:
-            if curr_level <= 5:
-                #50/50 chance of either sky
-                rand_sky = random.randint(0,1)
-                if rand_sky == 0:
-                    sky = constants.SKY_DAY
-                elif rand_sky == 1:
-                    sky = constants.SKY_SUNNY
-                scene = constants.SCENE
-            elif curr_level > 5 and curr_level < 8:
-                #1:3 chance of each sky
-                rand_sky = random.randint(0,2)
-                if rand_sky == 0:
-                    sky = constants.SKY_DAY
-                    scene = constants.SCENE
-                elif rand_sky == 1:
-                    sky = constants.SKY_SUNNY
-                    scene = constants.SCENE
-                elif rand_sky == 2:
-                    sky = constants.SKY_RAINY
-                    scene = constants.SCENE_DARK
-            else:
-                #50/50 chance of either sky
-                rand_sky = random.randint(0,1)
-                if rand_sky == 0:
-                    sky = constants.SKY_RAINY
-                elif rand_sky == 1:
-                    sky = constants.SKY_NIGHT
-                scene = constants.SCENE_DARK
-            """
-
-        level_imgs = [(sky, (0,0)), (scene, (0, constants.SCENE_HEIGHT_START))]
-        
-        for img, pos in level_imgs:
-            # Draw this img in this position
-            constants.WIN.blit(img, pos)  
-
-        constants.draw_street_names()
-        
+    """    
     def draw_finish_line(curr_level):
         """
         Draw the finish line for the current level.
@@ -191,11 +135,73 @@ def draw(player_car):
     #draw_points(path, win)
     #constants.draw_borders()
     #constants.draw_finish_lines()
+    #constants.draw_masks()
 
     draw_dashboard()
 
     # Display the clipboard area (current level, violations, bonus points)
     level_tracker.display()
+
+def draw_scene(curr_level):
+    """
+    Draw the scene for the current level (sky, roads, street names).
+
+    Parameters
+    ----------
+    curr_level : int
+        The number of the current level
+
+    """
+    # BUG: random is on loop, has to happen only once at the beginning of each level
+
+    
+    scene = constants.SCENE_LIGHT
+
+    if curr_level <= 3:
+        sky = constants.SKY_DAY
+    elif curr_level <= 5:
+        sky = constants.SKY_SUNNY
+
+
+    """
+    if level_tracker.level_started == False:
+        if curr_level <= 5:
+            #50/50 chance of either sky
+            rand_sky = random.randint(0,1)
+            if rand_sky == 0:
+                sky = constants.SKY_DAY
+            elif rand_sky == 1:
+                sky = constants.SKY_SUNNY
+            scene = constants.SCENE_LIGHT
+        elif curr_level > 5 and curr_level < 8:
+            #1:3 chance of each sky
+            rand_sky = random.randint(0,2)
+            if rand_sky == 0:
+                sky = constants.SKY_DAY
+                scene = constants.SCENE_LIGHT
+            elif rand_sky == 1:
+                sky = constants.SKY_SUNNY
+                scene = constants.SCENE_LIGHT
+            elif rand_sky == 2:
+                sky = constants.SKY_RAINY
+                scene = constants.SCENE_DARK
+        else:
+            #50/50 chance of either sky
+            rand_sky = random.randint(0,1)
+            if rand_sky == 0:
+                sky = constants.SKY_RAINY
+            elif rand_sky == 1:
+                sky = constants.SKY_NIGHT
+            scene = constants.SCENE_DARK
+        """
+
+    level_imgs = [(sky, (0,0)), (scene, (0, constants.SCENE_HEIGHT_START))]
+    
+    for img, pos in level_imgs:
+        # Draw this img in this position
+        constants.WIN.blit(img, pos)  
+
+    constants.draw_street_names()
 
 #--------------------------------------------------------------
 def move_player(player_car):
@@ -296,7 +302,7 @@ def handle_collision_with_finish_line(player_car):
                         # (depending on level instructions or road direction)
                         if player_car.angle > direction - constants.DIRECTION_SMOOTH and \
                             player_car.angle < direction + constants.DIRECTION_SMOOTH:
-                            level_tracker.add_parking_inaccurate()
+                            level_tracker.add_accurate_parking()
                         level_tracker.increase_level()
                         break
 
@@ -330,15 +336,15 @@ def handle_collisions_with_road_borders(player_car):
     # player is on the right side of the scene
     if player_car.x > VERT_MID_POINT:
         # count mask collisions
-        # check if player_car is completely inside the parking lot
+        # check if player_car is completely inside the right parking lot
         if constants.RIGHT_PL_BORDER_RECT.contains(player_car.rect):
-            if check_mask_collisions(player_car, constants.MASK_RIGHT_PL):
+            if check_mask_collisions(player_car, constants.MASKS[2]):
                 level_tracker.add_parking_lot_hit()
         else:
             dis_right_rbt = math.sqrt((constants.RBT_RIGHT_CENTER[0]-player_car.x)**2 + \
                                     (constants.RBT_RIGHT_CENTER[1]-player_car.y)**2)
             if dis_right_rbt < constants.RBT_OUTER_RAD:
-                if check_mask_collisions(player_car, constants.MASK_RIGHT_RBT):
+                if check_mask_collisions(player_car, constants.MASKS[3]):
                     level_tracker.add_roundabout_hit()
             else:
         # count regular collisions
@@ -362,13 +368,13 @@ def handle_collisions_with_road_borders(player_car):
         #if player_car.x < constants.ELLA_ROAD_TOP_L[0] and player_car.y > constants.SHAKED_SIDEWK_BOT_R[1]:
         # check if player_car is completely inside the parking lot
         if constants.LEFT_PL_BORDER_RECT.contains(player_car.rect):
-            if check_mask_collisions(player_car, constants.MASK_LEFT_PL):
+            if check_mask_collisions(player_car, constants.MASKS[0]):
                 level_tracker.add_parking_lot_hit()
         else:
             dis_left_rbt = math.sqrt((constants.RBT_LEFT_CENTER[0]-player_car.x)**2 + \
                                     (constants.RBT_LEFT_CENTER[1]-player_car.y)**2)
             if dis_left_rbt < constants.RBT_OUTER_RAD:
-                if check_mask_collisions(player_car, constants.MASK_LEFT_RBT):
+                if check_mask_collisions(player_car, constants.MASKS[1]):
                     level_tracker.add_roundabout_hit()
             else:
         # count regular collisions
@@ -496,7 +502,7 @@ def handle_driving_against_traffic(player_car):
 
 #-------------------------------------------------------------
 # Game Management Objects
-level_tracker = LevelTracker()
+level_tracker = LevelTracker(4)
 clock = pygame.time.Clock()
 time_counter = 0
 TIME_BETWEEN_PEDS = 2
@@ -509,13 +515,12 @@ ped = Pedestrian()
 buttons_list = DashboardButton.create_buttons_list()
 buttons_group = pygame.sprite.Group(buttons_list)
 
-other_cars_list = pygame.sprite.Group()
-other_cars_list.add(other)
-
+other_cars_group = pygame.sprite.Group(other)
 peds_group = pygame.sprite.Group()
 
 #create_scene_borders(borders_list, playerGroup)
 #-------------------------------------------------------------------------
+
 # Main Game Loop
 running = True
 while running:
@@ -526,9 +531,9 @@ while running:
     # Run a seperate, in-game counter
     time_counter += 1
     if time_counter == constants.FPS:
-        level_tracker.increase_time_to_add_sprites()
+        level_tracker.increase_timer_to_add_sprites()
         # Adds peds every TIME_BETWEEN_PEDS seconds  
-        if level_tracker.time_to_add_sprites != 0 and level_tracker.time_to_add_sprites % TIME_BETWEEN_PEDS == 0:
+        if level_tracker.timer_to_add_sprites != 0 and level_tracker.timer_to_add_sprites % TIME_BETWEEN_PEDS == 0:
             peds_group.add(Pedestrian())
             
 
@@ -537,7 +542,7 @@ while running:
     draw(player)
     buttons_group.draw(constants.WIN)
 
-    #other_cars_list.draw(constants.WIN)
+    other_cars_group.draw(constants.WIN)
     peds_group.draw(constants.WIN)
 
     for event in pygame.event.get():
@@ -562,8 +567,9 @@ while running:
             # Get current mouse position
             m_x, m_y = pygame.mouse.get_pos()
             pos = pygame.mouse.get_pos()
-            #other.draw_points(constants.WIN)
+            
             other.path_exp.append(pos)
+            
             # Check if one of the dashboard buttons was pressed
             for button in buttons_list:
                 dis = math.sqrt((button.rect.centerx-m_x)**2 + (button.rect.centery-m_y)**2)
@@ -571,27 +577,38 @@ while running:
                 if (dis < constants.RADIUS):
                     button.button_pressed()
             
-    #other.draw_points(constants.WIN)
     move_player(player)
     
-    for car in other_cars_list:
-        #car.move()
-        pass
+    for car in other_cars_group:
+        car.draw_points(constants.WIN)
+        car.move()
+        
 
     for ped in peds_group:
         #ped.draw_points(constants.WIN)
         ped.move()
-        
+    
+    # Check collision between player and any of the peds. 
+    # If there is collision, remove the ped and track the violation. 
+    for item in pygame.sprite.spritecollide(player,peds_group,True):
+            level_tracker.add_ped_hit()
+
     handle_collision_with_finish_line(player)
-    #handle_collisions_with_road_borders(player)
-    #handle_driving_against_traffic(player)
-    #handle_parallel_parking(player, constants.YAAR_PP_BORDERS[0].center)
+    handle_collisions_with_road_borders(player)
+    handle_driving_against_traffic(player)
 
     # Update the window with everything we have drawn
     pygame.display.update()
 
-print(other.path_exp)
+    
+    # If player finished the last level
+    if level_tracker.game_finished():
+        blit_text_center(constants.WIN, constants.MAIN_FONT, "YOU WON THE GAME!")
+        pygame.time.delay(3000)
+        level_tracker.reset()
+        #player.reset()
+    
 
-#print(*pygame.font.get_fonts(), sep = "\n")
+print(other.path_exp)
 
 pygame.quit()   # Close the game cleanly
