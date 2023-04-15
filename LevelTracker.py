@@ -13,7 +13,7 @@ class LevelTracker():
     
     LEVELS = 10
 
-    def __init__(self):
+    def __init__(self, start_level = 1):
         """
         Parameters
         ----------
@@ -28,11 +28,11 @@ class LevelTracker():
             (increases every seconds)
         
         """
-        self.level = 1
+        self.level = start_level
         self.level_started = False
         self.level_start_time = 0
 
-        self.time_to_add_sprites = 0 
+        self.timer_to_add_sprites = 0 
 
         self.peds_hits = 0
         self.cars_hits = 0
@@ -65,8 +65,8 @@ class LevelTracker():
     def game_finished(self):
         return self.level > self.LEVELS
 
-    def increase_time_to_add_sprites(self):
-        self.time_to_add_sprites += 1
+    def increase_timer_to_add_sprites(self):
+        self.timer_to_add_sprites += 1
 
     def add_ped_hit(self):
         self.peds_hits += 1
@@ -96,6 +96,8 @@ class LevelTracker():
         self.level = 1
         self.level_started = False
         self.level_start_time = 0
+
+        self.timer_to_add_sprites = 0 
 
         self.peds_hits = 0
         self.cars_hits = 0
