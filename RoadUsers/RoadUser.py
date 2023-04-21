@@ -1,33 +1,39 @@
-import math
-import pygame
+"""
+Author: @yaels818
+Description: RoadUser module, contains RoadUser sprites
+(inherited by PlayerCar, OtherCar and Pedestrian)
+"""
 
-from utils import blit_rotate_center
+import pygame, math
+
 from constants import BLUE, ELLA_ROAD_TOP_L, DASHBOARD_HOR_TOP, DASHBOARD_VERT_LEFT
+from utils import blit_rotate_center
+
 class RoadUser(pygame.sprite.Sprite):
 
-    def __init__(self, start_pos):
+    def __init__(self, IMG, START_POS):
         # Call the parent class's constructor
         pygame.sprite.Sprite.__init__(self)
 
-        self.image = self.IMG
-        self.start_pos = start_pos
-        self.rect = self.image.get_rect(topleft = start_pos)
+        self.image = IMG
+        self.start_pos = START_POS
+        self.rect = self.image.get_rect(topleft = START_POS)
 
         self.max_vel = 2
         self.acceleration = 0.01
-        self.rotation_vel = 2
+        self.rotation_vel = 1.5
 
         self.vel = 0
         self.angle = 0
-        self.x, self.y = start_pos
+        self.x, self.y = START_POS
         
     def draw(self, win):
         """
         Draw the sprite image of the car in its current position and current angle.
         Update the bounding rectangle of the car accordingly.
         """
-        self.rect = blit_rotate_center(win,self.image, (self.x, self.y), self.angle)
-        pygame.draw.rect(win,BLUE,self.rect,1)
+        self.rect = blit_rotate_center(win, self.image, (self.x, self.y), self.angle)
+        pygame.draw.rect(win, BLUE, self.rect,1)
 
     def rotate(self, left = False, right = False):
         """
@@ -41,13 +47,13 @@ class RoadUser(pygame.sprite.Sprite):
             self.angle += self.rotation_vel
             # Bind angle to stay within 0 and 360
             if self.angle >= 360:
-                self.angle = self.angle - 360   
+                self.angle -= 360   
             
         elif right:
             self.angle -= self.rotation_vel
             # Bind angle to stay within 0 and 360
             if self.angle <= 0:
-                self.angle = self.angle + 360
+                self.angle += 360
     
     def stay_within_scene_borders(self, new_x, new_y):
         """
@@ -98,14 +104,8 @@ class RoadUser(pygame.sprite.Sprite):
         new_x = self.x - horizontal
 
         # Make sure the new position can't be beyond scene borders
-        self.stay_within_scene_borders(new_x,new_y)
+        self.stay_within_scene_borders(new_x, new_y)
 
         # Update the car bounding rect
-        self.rect.topleft = (self.x,self.y)
-
-    def reset(self):
-        self.x, self.y = self.start_pos
-        self.angle = 0
-        self.vel = 0
-
+        self.rect.topleft = (self.x, self.y) 
     
