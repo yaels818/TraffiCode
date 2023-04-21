@@ -1,75 +1,111 @@
-import pygame
-import math
+"""
+Author: @yaels818
+Description: OtherCar module, contains other car sprites 
+(the player must avoid crashing into them)
+"""
+
+import pygame, math, random
 
 from RoadUsers import RoadUser
-from constants import YELLOW_CAR, RBT_RIGHT_CENTER, RBT_LEFT_CENTER, LANE_W, WEST
+from constants import WEST, YELLOW_CAR, WHITE_TRUCK, BLUE_VAN ,CAR_PATH_YAAR_TILL_ESHEL, CAR_PATH_ESHEL_TILL_ROTEM, CAR_PATH_ELLA_TILL_EREZ, CAR_PATH_ROTEM_TILL_ELLA
 
 class OtherCar(RoadUser):
 
-    IMG = YELLOW_CAR
     path_exp = []
-    path = [(460, 440), (460, 130)]
+    path = None
 
     def __init__(self):
-        start_pos = (460, 440)
-        RoadUser.__init__(self,start_pos)
-        self.current_point = 0
-        # Computer car will be moving at max velocity all the time, no acceleration
-        self.vel = 1.5
-        self.angle = WEST
 
+        def randomize_car():
+
+            """
+            dice = random.randint(1,3)
+                    
+            if dice == 1:
+                IMG = YELLOW_CAR
+            elif dice == 2:
+                IMG = WHITE_TRUCK
+            elif dice == 3:
+                IMG = BLUE_VAN
+
+            
+            dice = random.randint(1,4)
+
+            if dice == 1:
+                path = CAR_PATH_YAAR_TILL_ESHEL
+            elif dice == 2:
+                path = CAR_PATH_ESHEL_TILL_ROTEM
+            elif dice == 3:
+                path = CAR_PATH_ELLA_TILL_EREZ
+            elif dice == 4:
+                path = CAR_PATH_ROTEM_TILL_ELLA
+            """
+
+            IMG = YELLOW_CAR
+            path = CAR_PATH_ROTEM_TILL_ELLA
+            
+            return IMG, path
+
+        IMG, self.path = randomize_car()
+        
+        RoadUser.__init__(self, IMG, self.path[0])
+
+        self.current_point = 0
+        self.vel = self.max_vel
+        
     def reduce_speed(self):
         # Reduce the velocity by half the acceleration, if negative then just stop moving 
         self.vel = max(self.vel - self.acceleration/2, 0)
-        self.move()
-
-    def bounce(self):
-        # Bounce back from a wall
-        self.vel = -self.vel/3
-        #self.vel = 0
         self.move()
 
     def draw_points(self, win):
         for point in self.path:
             # Draw a red point of radius 5 in the path
             pygame.draw.circle(win, (255,0,0), point, 5)
-    
-    def draw(self, win):
-        super().draw(win)
-        
-        self.draw_points(win)
         
     def calculate_angle(self):
         # Get coordinates for target point
         target_x, target_y = self.path[self.current_point]
+
+        # Calculate displacement between the sprite and the target point
         x_diff = target_x - self.x
         y_diff = target_y - self.y
 
         if y_diff == 0:
-            # If there is no y difference then the car is horizontal to the point, so either 90 or 270 degrees
+            # If there is no y difference 
+            # => the car is horizontal to the point 
+            # (so either 90 or 270 degrees)
             desired_radian_angle = math.pi / 2
         else:
             # The angle between the car and the target point
+            # (will always return an acute angle = less than 90 degrees)
             desired_radian_angle = math.atan(x_diff / y_diff) # arctan()
 
-        # If the target is downwards from the car
+        # If the target is downwards from the sprite
+        # => the needed turn to get to the target point 
+        # has to be more extreme than the calculated acute angle
         if target_y > self.y:
             # Correct the angle to make sure the car will be heading in the correct direction
             desired_radian_angle += math.pi
 
         difference_in_angle = self.angle - math.degrees(desired_radian_angle)
 
-        # If the difference is drastic, then there is a more efficient angle to get to the target point
+        # If the difference is drastic 
+        # => there is a more efficient angle to get to the target point
         if difference_in_angle >= 180:
             difference_in_angle -= 360
-
-        # Make sure the car doesnt over/undershoot the angle (avoid stuttering and over-corrections)
+            
+        # Make sure the car doesn't over/undershoot the angle 
+        # (avoid stuttering and over-corrections)
         if difference_in_angle > 0:
-            # If the diff is less than rotation_vel we will snap immediately to the diff angle and stay on it
-            self.angle -= min(self.rotation_vel, abs(difference_in_angle))
+            # If the diff is less than rotation_vel 
+            # => we will snap immediately to the diff angle and stay on it
+            self.angle -= max(self.rotation_vel, difference_in_angle)
         else:
-            self.angle += min(self.rotation_vel, abs(difference_in_angle))    
-
+            self.angle += max(self.rotation_vel, abs(difference_in_angle)) 
+            
+        #print(self.angle)   
+        
     def update_path_point(self):
             # Get the next target point from the pre-made path
             target = self.path[self.current_point]
@@ -85,6 +121,7 @@ class OtherCar(RoadUser):
     def move(self):
         # If there is no point to move to
         if self.current_point >= len(self.path):
+            #self.kill()
             return
 
         # Calculate and shift the car to the needed angle for the next point
@@ -93,16 +130,10 @@ class OtherCar(RoadUser):
         # See if we need to move to the next point
         self.update_path_point()
         super().move()
-    
+           
     def next_level(self, level):
-        self.reset()
-
+        
         # Increase computer's vel 0.2 each level - will never go faster than the player's
         self.vel = self.max_vel + (level + 1) * 0.2
 
-        self.current_point = 0
-
-    def reset(self):
-        RoadUser().reset()
-        self.vel = self.max_vel
         self.current_point = 0
