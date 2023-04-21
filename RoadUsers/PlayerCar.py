@@ -1,6 +1,7 @@
 """
 Author: @yaels818
-Description: PlayerCar module, contains the player's car sprite 
+Description: PlayerCar module, contains the player's car sprite
+            (inherits from RoadUser).
 """
 
 import pygame
