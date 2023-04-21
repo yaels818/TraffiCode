@@ -117,7 +117,7 @@ def draw(player_car):
     #draw_points(path, win)
     #constants.draw_borders()
     #constants.draw_finish_lines()
-    constants.draw_masks()
+    #constants.draw_masks()
 
     draw_dashboard()
 
@@ -225,6 +225,14 @@ def handle_collision_with_finish_line(player_car):
                         if player_car.angle > direction - constants.DIRECTION_SMOOTH and \
                             player_car.angle < direction + constants.DIRECTION_SMOOTH:
                             level_tracker.add_accurate_parking()
+                        else:
+                            # If direction for this parking spot is NORTH, 
+                            # we need to check both 0 and 360 degrees
+                            if direction == constants.NORTH:
+                                if player_car.angle > (direction+360) - constants.DIRECTION_SMOOTH and \
+                                    player_car.angle < (direction+360) + constants.DIRECTION_SMOOTH:
+                                    level_tracker.add_accurate_parking()
+                        
                         level_tracker.increase_level()
                         break
 
@@ -424,7 +432,7 @@ def handle_driving_against_traffic(player_car):
 
 #-------------------------------------------------------------
 # Game Management Objects
-level_tracker = LevelTracker(10)
+level_tracker = LevelTracker(9)
 clock = pygame.time.Clock()
 time_counter = 0
 TIME_BETWEEN_PEDS = 2
@@ -502,12 +510,12 @@ while running:
     
     for car in other_cars_group:
         car.draw_points(constants.WIN)
-        car.move()
+        car.move_sprite()
         
 
     for ped in peds_group:
-        #ped.draw_points(constants.WIN)
-        ped.move()
+        #ped.draw_points(constants.PINK)
+        ped.move_sprite()
     
     # Check collision between player and any of the peds. 
     # If there is collision, remove the ped and track the violation. 
@@ -527,6 +535,7 @@ while running:
         blit_text_center(constants.WIN, constants.MAIN_FONT, "YOU WON THE GAME!")
         pygame.time.delay(3000)
         level_tracker.reset()
+        player.reset()
         peds_group.empty()
         other_cars_group.empty()
 
