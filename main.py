@@ -31,6 +31,37 @@ def draw(player_car):
     -------
     None
     """    
+    def draw_scene(curr_level):
+        """
+        Draw the scene for the current level (sky, roads, street names).
+
+        Parameters
+        ----------
+        curr_level : int
+            The number of the current level
+
+        """
+        
+        scene = constants.SCENE_LIGHT
+
+        if curr_level <= 3:
+            sky = constants.SKY_DAY
+        elif curr_level <= 5:
+            sky = constants.SKY_SUNNY
+        elif curr_level <= 8:
+            sky = constants.SKY_RAINY
+        else:
+            sky = constants.SKY_NIGHT
+            scene = constants.SCENE_DARK
+
+        level_imgs = [(sky, (0,0)), (scene, (0, constants.SCENE_HEIGHT_START))]
+        
+        for img, pos in level_imgs:
+            # Draw this img in this position
+            constants.WIN.blit(img, pos)  
+
+        constants.draw_street_names()
+    
     def draw_finish_line(curr_level):
         """
         Draw the finish line for the current level.
@@ -81,79 +112,18 @@ def draw(player_car):
 
     draw_finish_line(level_tracker.level)
     
-    player_car.draw(constants.WIN)
+    player_car.draw()
 
     #draw_points(path, win)
     #constants.draw_borders()
     #constants.draw_finish_lines()
-    #constants.draw_masks()
+    constants.draw_masks()
 
     draw_dashboard()
 
     # Display the clipboard area (current level, violations, bonus points)
     level_tracker.display()
-
-def draw_scene(curr_level):
-    """
-    Draw the scene for the current level (sky, roads, street names).
-
-    Parameters
-    ----------
-    curr_level : int
-        The number of the current level
-
-    """
-    # BUG: random is on loop, has to happen only once at the beginning of each level
-
     
-    scene = constants.SCENE_LIGHT
-
-    if curr_level <= 3:
-        sky = constants.SKY_DAY
-    elif curr_level <= 5:
-        sky = constants.SKY_SUNNY
-
-
-    """
-    if level_tracker.level_started == False:
-        if curr_level <= 5:
-            #50/50 chance of either sky
-            rand_sky = random.randint(0,1)
-            if rand_sky == 0:
-                sky = constants.SKY_DAY
-            elif rand_sky == 1:
-                sky = constants.SKY_SUNNY
-            scene = constants.SCENE_LIGHT
-        elif curr_level > 5 and curr_level < 8:
-            #1:3 chance of each sky
-            rand_sky = random.randint(0,2)
-            if rand_sky == 0:
-                sky = constants.SKY_DAY
-                scene = constants.SCENE_LIGHT
-            elif rand_sky == 1:
-                sky = constants.SKY_SUNNY
-                scene = constants.SCENE_LIGHT
-            elif rand_sky == 2:
-                sky = constants.SKY_RAINY
-                scene = constants.SCENE_DARK
-        else:
-            #50/50 chance of either sky
-            rand_sky = random.randint(0,1)
-            if rand_sky == 0:
-                sky = constants.SKY_RAINY
-            elif rand_sky == 1:
-                sky = constants.SKY_NIGHT
-            scene = constants.SCENE_DARK
-        """
-
-    level_imgs = [(sky, (0,0)), (scene, (0, constants.SCENE_HEIGHT_START))]
-    
-    for img, pos in level_imgs:
-        # Draw this img in this position
-        constants.WIN.blit(img, pos)  
-
-    constants.draw_street_names()
-
 #--------------------------------------------------------------
 def move_player(player_car):
     """
@@ -202,6 +172,7 @@ def move_player(player_car):
     # If player did not press on gas, the car should lose speed naturally 
     if not gas_pressed:
         player_car.reduce_speed(emergency_brake = False)
+#--------------------------------------------------------------
 
 def handle_collision_with_finish_line(player_car):
     """
@@ -270,8 +241,9 @@ def handle_collisions_with_road_borders(player_car):
         
         # Check if the player car is colliding any of the masks
         poi = player_car.check_collision_with_mask(mask)
+        # If there is some point of intersection 
         if poi != None:
-            player_car.bounce()
+            player_car.vel = 0
             pygame.draw.circle(constants.WIN, constants.GREEN, poi, 2)
             return True
         return False
@@ -448,12 +420,11 @@ def handle_driving_against_traffic(player_car):
                 if direction > 90 and direction < 270:
                     level_tracker.add_driving_against_traffic()
 
-
 #--------------------------------------------------------------
 
 #-------------------------------------------------------------
 # Game Management Objects
-level_tracker = LevelTracker(4)
+level_tracker = LevelTracker(10)
 clock = pygame.time.Clock()
 time_counter = 0
 TIME_BETWEEN_PEDS = 2
@@ -487,7 +458,6 @@ while running:
         if level_tracker.timer_to_add_sprites != 0 and level_tracker.timer_to_add_sprites % TIME_BETWEEN_PEDS == 0:
             peds_group.add(Pedestrian())
             
-
         time_counter = 0
 
     draw(player)
@@ -509,9 +479,9 @@ while running:
                 if not level_tracker.level_started:
                     level_tracker.start_level()
             if keys[pygame.K_q]:
-                buttons_list[1].button_pressed() # left blinker
+                buttons_list[2].button_pressed() # left blinker
             if keys[pygame.K_e]:
-                buttons_list[2].button_pressed() # right blinker
+                buttons_list[3].button_pressed() # right blinker
 
         # If player clicked with left mouse button 
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -545,8 +515,8 @@ while running:
             level_tracker.add_ped_hit()
 
     handle_collision_with_finish_line(player)
-    handle_collisions_with_road_borders(player)
-    handle_driving_against_traffic(player)
+    #handle_collisions_with_road_borders(player)
+    #handle_driving_against_traffic(player)
 
     # Update the window with everything we have drawn
     pygame.display.update()
@@ -557,8 +527,8 @@ while running:
         blit_text_center(constants.WIN, constants.MAIN_FONT, "YOU WON THE GAME!")
         pygame.time.delay(3000)
         level_tracker.reset()
-        #player.reset()
-    
+        peds_group.empty()
+        other_cars_group.empty()
 
 print(other.path_exp)
 
