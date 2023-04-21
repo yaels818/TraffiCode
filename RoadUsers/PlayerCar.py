@@ -17,12 +17,6 @@ class PlayerCar(RoadUser):
             self.vel = max(self.vel - self.acceleration/2, 0)
             self.move()
 
-    def bounce(self):
-        # Bounce back from a wall
-        self.vel = -self.vel/3
-        #self.vel = 0
-        self.move()
-
     def check_collision_with_mask(self, mask, x = 0, y = SCENE_HEIGHT_START):
         car_mask = pygame.mask.from_surface(self.image)
 
