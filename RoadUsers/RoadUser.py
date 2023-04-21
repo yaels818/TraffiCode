@@ -6,7 +6,7 @@ Description: RoadUser module, contains RoadUser sprites
 
 import pygame, math
 
-from constants import BLUE, ELLA_ROAD_TOP_L, DASHBOARD_HOR_TOP, DASHBOARD_VERT_LEFT
+from constants import WIN, BLUE, ELLA_ROAD_TOP_L, DASHBOARD_HOR_TOP, DASHBOARD_VERT_LEFT
 from utils import blit_rotate_center
 
 class RoadUser(pygame.sprite.Sprite):
@@ -27,13 +27,13 @@ class RoadUser(pygame.sprite.Sprite):
         self.angle = 0
         self.x, self.y = START_POS
         
-    def draw(self, win):
+    def draw(self):
         """
         Draw the sprite image of the car in its current position and current angle.
         Update the bounding rectangle of the car accordingly.
         """
-        self.rect = blit_rotate_center(win, self.image, (self.x, self.y), self.angle)
-        pygame.draw.rect(win, BLUE, self.rect,1)
+        self.rect = blit_rotate_center(WIN, self.image, (self.x, self.y), self.angle)
+        pygame.draw.rect(WIN, BLUE, self.rect, 1)
 
     def rotate(self, left = False, right = False):
         """
