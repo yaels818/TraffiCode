@@ -74,17 +74,11 @@ def load_masks():
     """
     BORDERS_DIR = DIR_IMGS + "Borders\Scene_1/"
 
-    LEFT_PL = scale_image(pygame.image.load(BORDERS_DIR + "mask_left_pl.png"),SCENE_SCALE)
-    LEFT_RBT = scale_image(pygame.image.load(BORDERS_DIR + "mask_left_rbt_full.png"),SCENE_SCALE)
-    RIGHT_PL = scale_image(pygame.image.load(BORDERS_DIR + "mask_right_pl.png"),SCENE_SCALE)
-    RIGHT_RBT = scale_image(pygame.image.load(BORDERS_DIR + "mask_right_rbt_full.png"),SCENE_SCALE)
+    MASKS_IMGS_PATHS = [
+        "mask_left_pl", "mask_left_rbt_full", "mask_right_pl", "mask_right_rbt_full"]
 
-    MASKS_IMGS = [
-        LEFT_PL,    # 1 
-        LEFT_RBT,   # 2
-        RIGHT_PL,   # 3
-        RIGHT_RBT   # 4
-        ]
+    for path in MASKS_IMGS_PATHS:
+        MASKS_IMGS.append(scale_image(pygame.image.load(BORDERS_DIR + path + ".png"),SCENE_SCALE))
 
     for m in MASKS_IMGS:
         MASKS.append(pygame.mask.from_surface(m))
@@ -121,7 +115,7 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GRAY = (59, 56, 56)
 RED = (255, 0, 0)
-GREEN = (0, 255, 0)
+GREEN = (64, 156, 98)
 BLUE = (0, 0, 255)
 PINK = (255, 174, 201)
 ORANGE = (255,127,39)
@@ -190,7 +184,6 @@ load_buttons_images()
 
 BTN_BLPS = []
 load_buttons_blueprints()
-
 #-------------------------------------------------------------------------
 # Road Definitions
 #-----------------
@@ -696,8 +689,8 @@ def draw_borders():
         """
 
             # Roundabouts - outer ring
-        #pygame.draw.circle(WIN,RED,RBT_LEFT_CENTER,RADIUS+1.5*LANE_W,1)
-        #pygame.draw.circle(WIN,RED,RBT_RIGHT_CENTER,RADIUS+1.5*LANE_W,1)
+        pygame.draw.circle(WIN,RED,RBT_LEFT_CENTER,RADIUS+1.5*LANE_W,1)
+        pygame.draw.circle(WIN,RED,RBT_RIGHT_CENTER,RADIUS+1.5*LANE_W,1)
             # Roundabouts - inner ring
         pygame.draw.circle(WIN,RED,RBT_LEFT_CENTER,RADIUS-1.3*LANE_W,1)
         pygame.draw.circle(WIN,RED,RBT_RIGHT_CENTER,RADIUS-1.3*LANE_W,1)
@@ -832,8 +825,8 @@ def draw_finish_lines():
             pygame.draw.rect(WIN, ORANGE, pos)
 
 def draw_masks():
-    pygame.draw.rect(WIN,RED,LEFT_PL_BORDER_RECT,5)
-    pygame.draw.rect(WIN,RED,RIGHT_PL_BORDER_RECT,5)
+    #pygame.draw.rect(WIN,RED,LEFT_PL_BORDER_RECT,5)
+    #pygame.draw.rect(WIN,RED,RIGHT_PL_BORDER_RECT,5)
 
     for m in MASKS_IMGS:
         WIN.blit(m, (0,SCENE_HEIGHT_START))
