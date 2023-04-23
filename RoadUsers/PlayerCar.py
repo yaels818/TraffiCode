@@ -21,7 +21,38 @@ class PlayerCar(RoadUser):
             The player's car object
         """
         RoadUser.__init__(self, RED_CAR, PLAYER_START_POS)
+    
+    def rotate(self, left = False, right = False):
+        """
+        Rotate the car between 0 and 360 degrees. 
+        0/360 ==> car is facing up  ^
+        90 ==> car is facing left   <
+        180 ==> car is facing down  V
+        270 ==> car is facing right >
+        """
+        if left:
+            self.angle += self.rotation_vel
+            # Bind angle to stay within 0 and 360
+            if self.angle >= 360:
+                self.angle -= 360   
+            
+        elif right:
+            self.angle -= self.rotation_vel
+            # Bind angle to stay within 0 and 360
+            if self.angle <= 0:
+                self.angle += 360
 
+    def move_forward(self):
+        # Increase velocity without going over maximum velocity
+        self.vel = min(self.vel + self.acceleration, self.max_vel)
+        self.move()
+
+    def move_backward(self):
+        # We want the max velocity backwards to be half of the max velocity forward
+        # (Reverse gear cant reach top speed like forward gears)
+        self.vel = max(self.vel - self.acceleration, -self.max_vel / 2)
+        self.move()
+                    
     def reduce_speed(self, emergency_brake = False):
         """
         Reduce player's car velocity (brake).
