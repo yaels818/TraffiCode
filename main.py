@@ -114,7 +114,6 @@ def draw(player_car):
     
     player_car.draw()
 
-    #draw_points(path, win)
     #constants.draw_borders()
     #constants.draw_finish_lines()
     #constants.draw_masks()
@@ -258,11 +257,6 @@ def handle_collisions_with_road_borders(player_car):
 
     # middle is between Yaar and Hadas
     VERT_MID_POINT = constants.YAAR_ROAD_BOT_L[0]
-
-    #player_car_rect = player_car.rect
-    #pygame.draw.circle(constants.WIN, constants.GREEN, player_car.rect.center, 2)
-    #player_car_rect.inflate_ip(-0.5,-0.5)
-    #pygame.draw.rect(constants.WIN,constants.PINK, player_car_rect,4)
 
     # player is on the right side of the scene
     if player_car.x > VERT_MID_POINT:
@@ -464,15 +458,14 @@ while running:
         level_tracker.increase_timer_to_add_sprites()
         # Adds peds every TIME_BETWEEN_PEDS seconds  
         if level_tracker.timer_to_add_sprites != 0 and level_tracker.timer_to_add_sprites % TIME_BETWEEN_PEDS == 0:
-            peds_group.add(Pedestrian())
+            #peds_group.add(Pedestrian())
+            pass
             
         time_counter = 0
 
     draw(player)
     buttons_group.draw(constants.WIN)
-
-    other_cars_group.draw(constants.WIN)
-    peds_group.draw(constants.WIN)
+    peds_group.draw(constants.WIN)       
 
     for event in pygame.event.get():
         # If player clicked X on the window
@@ -505,16 +498,16 @@ while running:
                 #pygame.draw.circle(WIN, RED, (button.rect.centerx, button.rect.centery), RADIUS)
                 if (dis < constants.RADIUS):
                     button.button_pressed()
-            
+
     move_player(player)
     
     for car in other_cars_group:
-        car.draw_points(constants.WIN)
+        car.draw()
+        car.draw_points(constants.RED)
         car.move_sprite()
-        
 
     for ped in peds_group:
-        #ped.draw_points(constants.PINK)
+        ped.draw_points(constants.PINK)
         ped.move_sprite()
     
     # Check collision between player and any of the peds. 
