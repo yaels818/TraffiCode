@@ -433,13 +433,11 @@ TIME_BETWEEN_PEDS = 2
 
 # Sprites (moving objects)
 player = PlayerCar()
-other = OtherCar()
-ped = Pedestrian()
 
 buttons_list = DashboardButton.create_buttons_list()
 buttons_group = pygame.sprite.Group(buttons_list)
 
-other_cars_group = pygame.sprite.Group(other)
+other_cars_group = pygame.sprite.Group()
 peds_group = pygame.sprite.Group()
 
 #create_scene_borders(borders_list, playerGroup)
@@ -457,10 +455,16 @@ while running:
     if time_counter == constants.FPS:
         level_tracker.increase_timer_to_add_sprites()
         # Adds peds every TIME_BETWEEN_PEDS seconds  
-        if level_tracker.timer_to_add_sprites != 0 and level_tracker.timer_to_add_sprites % TIME_BETWEEN_PEDS == 0:
-            #peds_group.add(Pedestrian())
+        if level_tracker.timer_to_add_sprites != 0 and \
+            level_tracker.timer_to_add_sprites % TIME_BETWEEN_PEDS == 0:
+            peds_group.add(Pedestrian())
             pass
-            
+        # Adds peds every TIME_BETWEEN_PEDS seconds  
+        if level_tracker.timer_to_add_sprites != 0 and \
+            level_tracker.timer_to_add_sprites % TIME_BETWEEN_PEDS == 0:
+            other_cars_group.add(OtherCar())
+            pass
+
         time_counter = 0
 
     draw(player)
@@ -490,7 +494,7 @@ while running:
             m_x, m_y = pygame.mouse.get_pos()
             pos = pygame.mouse.get_pos()
             
-            other.path_exp.append(pos)
+            #other.path_exp.append(pos)
             
             # Check if one of the dashboard buttons was pressed
             for button in buttons_list:
@@ -503,11 +507,11 @@ while running:
     
     for car in other_cars_group:
         car.draw()
-        car.draw_points(constants.RED)
+        #car.draw_points(constants.RED)
         car.move_sprite()
 
     for ped in peds_group:
-        ped.draw_points(constants.PINK)
+        #ped.draw_points(constants.PINK)
         ped.move_sprite()
     
     # Check collision between player and any of the peds. 
@@ -532,6 +536,6 @@ while running:
         peds_group.empty()
         other_cars_group.empty()
 
-print(other.path_exp)
+#print(other.path_exp)
 
 pygame.quit()   # Close the game cleanly
