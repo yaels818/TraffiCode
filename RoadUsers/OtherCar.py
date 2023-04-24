@@ -4,24 +4,23 @@ Description: OtherCar module, contains other car sprites
 (the player must avoid crashing into them)
 """
 
-import math, random
+import random
 
 from RoadUsers import RoadUser
-from constants import DIRECTION_SMOOTH, EAST, SOUTH, YELLOW_CAR, WHITE_TRUCK, BLUE_VAN ,\
-    CAR_PATH_YAAR_TILL_ESHEL, CAR_PATH_ESHEL_TILL_ROTEM, \
-    CAR_PATH_ELLA_TILL_EREZ, CAR_PATH_ROTEM_TILL_ELLA, WIN
-from utils import blit_rotate_center
+from constants import YELLOW_CAR, WHITE_TRUCK, BLUE_VAN ,\
+    CAR_PATH_YAAR_TILL_LEFT_PL, CAR_PATH_ESHEL_TILL_ROTEM, \
+    CAR_PATH_ELLA_TILL_RIGHT_PL, CAR_PATH_ROTEM_TILL_SHAKED
 
 class OtherCar(RoadUser):
 
-    path_exp = []
+    #path_exp = []
     path = None
 
     def __init__(self):
 
         def randomize_car():
 
-            """
+            
             dice = random.randint(1,3)
                     
             if dice == 1:
@@ -35,17 +34,13 @@ class OtherCar(RoadUser):
             dice = random.randint(1,4)
 
             if dice == 1:
-                path = CAR_PATH_YAAR_TILL_ESHEL
+                path = CAR_PATH_YAAR_TILL_LEFT_PL
             elif dice == 2:
                 path = CAR_PATH_ESHEL_TILL_ROTEM
             elif dice == 3:
-                path = CAR_PATH_ELLA_TILL_EREZ
+                path = CAR_PATH_ELLA_TILL_RIGHT_PL
             elif dice == 4:
-                path = CAR_PATH_ROTEM_TILL_ELLA
-            """
-
-            IMG = YELLOW_CAR
-            path = CAR_PATH_ROTEM_TILL_ELLA
+                path = CAR_PATH_ROTEM_TILL_SHAKED
             
             return IMG, path
 
