@@ -7,13 +7,14 @@ Notes:
 """
 # Imports
 import time
-from constants import WIN, CLIP_FONT, DASH_FONT, BLACK, RED, ORANGE, GREEN, CLIP_LEFT, CLIP_TOP, CLIP_CENTER, MIRROR_CENTER,MIRROR_POS, RBT_RIGHT_CENTER
+from constants import WIN, CLIP_FONT, DASH_FONT, BLACK, RED, ORANGE, GREEN, \
+    CLIP_LEFT, CLIP_TOP, CLIP_CENTER, MIRROR_CENTER,MIRROR_POS, RBT_RIGHT_CENTER
 #-------------------------------------------------------------------------
 class LevelTracker():
     
     LEVELS = 10
 
-    def __init__(self, start_level = 1):
+    def __init__(self, start_level = 1, sprites_vel = 0.5, time_bet_peds = 5, time_bet_cars = 6):
         """
         Parameters
         ----------
@@ -33,6 +34,10 @@ class LevelTracker():
         self.level_start_time = 0
 
         self.timer_to_add_sprites = 0 
+        self.peds_vel = sprites_vel
+        self.cars_vel = sprites_vel + 0.2
+        self.time_between_peds = time_bet_peds
+        self.time_between_cars = time_bet_cars
 
         self.peds_hits = 0
         self.cars_hits = 0
@@ -50,6 +55,18 @@ class LevelTracker():
         self.level += 1
         self.level_started = False
         self.level_start_time = 0
+
+        # If this is an even-number level (2, 4, 6, 8, 10, etc..)
+        if self.level % 2 == 0:
+            # Increase the peds and other cars velocity
+            self.peds_vel += 0.1
+            self.cars_vel += 0.1
+        else:
+            # Decrease time between generating peds and cars sprites
+            if self.time_between_peds > 2:
+                self.time_between_peds -= 1
+            if self.time_between_cars > 2:
+                self.time_between_cars -= 1
 
     def start_level(self):
         self.level_started = True
@@ -92,12 +109,16 @@ class LevelTracker():
     def add_accurate_parking(self):
         self.accurate_parking += 1
 
-    def reset(self):
-        self.level = 1
+    def reset(self, start_level = 1, sprites_vel = 0.5, time_bet_peds = 5, time_bet_cars = 6):
+        self.level = start_level
         self.level_started = False
         self.level_start_time = 0
 
         self.timer_to_add_sprites = 0 
+        self.peds_vel = sprites_vel
+        self.cars_vel = sprites_vel + 0.2
+        self.time_between_peds = time_bet_peds
+        self.time_between_cars = time_bet_cars
 
         self.peds_hits = 0
         self.cars_hits = 0
