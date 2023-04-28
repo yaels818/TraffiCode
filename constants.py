@@ -75,7 +75,7 @@ def load_masks():
     BORDERS_DIR = DIR_IMGS + "Borders\Scene_1/"
 
     MASKS_IMGS_PATHS = [
-        "mask_left_pl", "mask_left_rbt_full", "mask_right_pl", "mask_right_rbt_full"]
+        "mask_left_pl_wider_minus_wall", "mask_left_rbt_full", "mask_right_pl", "mask_right_rbt_full"]
 
     for path in MASKS_IMGS_PATHS:
         MASKS_IMGS.append(scale_image(pygame.image.load(BORDERS_DIR + path + ".png"),SCENE_SCALE))
