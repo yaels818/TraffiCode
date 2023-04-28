@@ -1,28 +1,103 @@
-# Outsource Imports
-import pygame
-import os
-
-# Local Imports
+"""
+Author: @yaels818
+Description: Constants module, contains all constant definitions needed for the game, 
+            and helper functions to draw them (some for dev only).
+Notes: 
+    Rect class (used to make rectangles in pygame): 
+        Rect(left, top, width, height) -> Rect
+        Rect((left, top), (width, height)) -> Rect
+"""
+# Imports
+import pygame, os
 from utils import scale_image, stretch_image
+#-------------------------------------------------------------------------
+# Helper Function (called within this module)
+#--------------------------------------------
+def load_buttons_images():
+    """
+    Load all the images (on and off) for the dashboard buttons. 
+    """
+    BTNS_DIR_IMGS = "Assets\Images\Dashboard\Buttons/"
 
-def load_button_images():
-    
-    BTNS_PATH = "Assets\Images\Dashboard\Buttons/"
+    MENU_BTN_IMG = pygame.image.load(BTNS_DIR_IMGS + "menu_btn.png")
+
+    BTN_IMGS_OFF.append(MENU_BTN_IMG)
+    BTN_IMGS_ON.append(MENU_BTN_IMG)
+
+    # Go over all the images in the directories,
+    # load and add them to their lists
     for i in range(1,7):
-        image_off = pygame.image.load(BTNS_PATH + "OFF/btn" + str(i) + ".png")
-        image_on = pygame.image.load(BTNS_PATH + "ON/btn" + str(i) + ".png")
+        image_off = pygame.image.load(BTNS_DIR_IMGS + "OFF/btn" + str(i) + ".png")
+        image_on = pygame.image.load(BTNS_DIR_IMGS + "ON/btn" + str(i) + ".png")
+
         BTN_IMGS_OFF.append(image_off)
         BTN_IMGS_ON.append(image_on)
 
+def load_buttons_blueprints():
+    """
+    Load buttons blueprints for DashboardButton
+    """
+    # Buttons Blueprints for DashboardButton
+    BTN_SCALE = 0.45
+    BLINKER_SCALE = 0.5
+
+    BLINKER_INDEX = 2
+
+    SPEEDOMETER_RIGHT = MIRROR_CENTER+SPEEDOMETER.get_rect().centerx
+
+    y = DASHBOARD_HOR_TOP
+    i = 1
+
+    MENU_BTN_POS = (MIRROR_CENTER/5, y-10)    
+    LIGHTS_BTN_POS = (MIRROR_CENTER/2-BTN_IMGS_OFF[i].get_rect().centerx/2, y)
+    LEFT_BLINK_POS = (SPEEDOMETER_POS[0]-BTN_IMGS_OFF[i+1].get_rect().centerx ,y-10)
+    RIGHT_BLINK_POS = ((SPEEDOMETER_POS[0]+SPEEDOMETER_RIGHT)/2+BTN_IMGS_OFF[i+2].get_rect().centerx ,y-10)
+    WIPERS_BTN_POS = (RIGHT_BLINK_POS[0]+BTN_IMGS_OFF[i+3].get_rect().centerx*1.5, y)
+    AC_BTN_POS = (WIPERS_BTN_POS[0]+BTN_IMGS_OFF[i+4].get_rect().centerx, y)
+    MUSIC_BTN_POS = (CLIP_CENTER-BTN_IMGS_OFF[i+5].get_rect().centerx/2, y)
+
+    BTNS_POSITIONS = [
+        MENU_BTN_POS, LIGHTS_BTN_POS, LEFT_BLINK_POS, RIGHT_BLINK_POS,
+        WIPERS_BTN_POS, AC_BTN_POS, MUSIC_BTN_POS]
+
+    for i in range(len(BTNS_POSITIONS)):
+        if i == BLINKER_INDEX or i == BLINKER_INDEX+1:
+            scale = BLINKER_SCALE
+        else:
+            scale = BTN_SCALE
+
+        BTN_BLPS.append([BTN_IMGS_OFF[i], BTN_IMGS_ON[i], scale, *BTNS_POSITIONS[i]])
+
+def load_masks():
+    """
+    Generate masks for all the complex areas in the game
+    """
+    BORDERS_DIR = DIR_IMGS + "Borders\Scene_1/"
+
+    MASKS_IMGS_PATHS = [
+        "mask_left_pl_wider_minus_wall", "mask_left_rbt_full", "mask_right_pl", "mask_right_rbt_full"]
+
+    for path in MASKS_IMGS_PATHS:
+        MASKS_IMGS.append(scale_image(pygame.image.load(BORDERS_DIR + path + ".png"),SCENE_SCALE))
+
+    for m in MASKS_IMGS:
+        MASKS.append(pygame.mask.from_surface(m))
+
+#-------------------------------------------------------------------------
+# Directory Paths
+#----------------
+DIR_IMGS = "Assets\Images/"
 #-------------------------------------------------------------------------
 # Screen Definitions
+#-------------------
 WIDTH, HEIGHT = 1200, 600
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 pygame.display.set_caption("TraffiCode")
-pygame.display.set_icon(scale_image(pygame.image.load("Assets\Images\gameIcon.png"),0.2))
+pygame.display.set_icon(scale_image(pygame.image.load(DIR_IMGS + "gameIcon.png"),0.2))
 #-------------------------------------------------------------------------
 # Font Definitions
+#-----------------
 pygame.font.init()
 MAIN_FONT = pygame.font.SysFont("centurygothic", 36)
 DASH_FONT = pygame.font.SysFont("erasdemiitc", 26)
@@ -30,107 +105,94 @@ CLIP_FONT = pygame.font.SysFont("erasdemiitc", 19)
 STREETS_FONT = pygame.font.SysFont("erasdemiitc", 12)
 #-------------------------------------------------------------------------
 # Other Definitions
+#------------------
 FPS = 60    # Frame per second
-
 RADIUS = 45
-
+#-------------------------------------------------------------------------
 # Color Definitions (RGB)
+#------------------------
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
-RED = (255, 0, 0)
-GREEN = (0, 255, 0)
-BLUE = (0, 0, 255)
 GRAY = (59, 56, 56)
+RED = (255, 0, 0)
+GREEN = (64, 156, 98)
+BLUE = (0, 0, 255)
 PINK = (255, 174, 201)
 ORANGE = (255,127,39)
 #-------------------------------------------------------------------------
-# Position Markers - center x
+# Asset Definitions - Scene
+#---------------------------
+SCENE_SCALE = 1.4
+
+SKY_DAY = scale_image(pygame.image.load(DIR_IMGS + "Backgrounds/" + "day_sky.jpg"),0.25)
+SKY_NIGHT = scale_image(pygame.image.load(DIR_IMGS + "Backgrounds/" + "night_sky.jpg"),0.5)
+SKY_RAINY = scale_image(pygame.image.load(DIR_IMGS + "Backgrounds/" + "rainy_sky.jpg"),0.3)
+SKY_SUNNY = scale_image(pygame.image.load(DIR_IMGS + "Backgrounds/" + "sunny_sky.jpg"),0.25)
+
+SCENE_LIGHT = scale_image(pygame.image.load(DIR_IMGS + "Scenes\scene_1_light.png"),SCENE_SCALE)
+SCENE_DARK = scale_image(pygame.image.load(DIR_IMGS + "Scenes\scene_1_dark.png"),SCENE_SCALE)
+
+# Asset Definitions - Scene Masks
+#---------------------------------
+MASKS_IMGS = []
+MASKS = []
+load_masks()
+#-------------------------------------------------------------------------
+# Position Markers (Center X)
+#-----------------------------
 SCENE_HEIGHT_START = HEIGHT/12
 SCENE_CENTER = (WIDTH - WIDTH/4.7)/2
-MIRROR_CENTER = (WIDTH/2 + (WIDTH - WIDTH/4.7)/2)/2
+
 DASHBOARD_HOR_TOP = HEIGHT-HEIGHT/7
 DASHBOARD_VERT_LEFT = WIDTH - WIDTH/4.5
+
 CLIP_LEFT = WIDTH - WIDTH/4.7
 CLIP_CENTER = WIDTH - WIDTH/8.5 
 CLIP_TOP = HEIGHT/7.5
+
+MIRROR_CENTER = (WIDTH/2 + (WIDTH - WIDTH/4.7)/2)/2
 LIGHTS_BTN_CENTER = WIDTH-CLIP_CENTER
 #-------------------------------------------------------------------------
+# Asset Definitions - Dashboard
+#------------------------------
+DASH_RECTS = [
+    # Horizontal
+    pygame.Rect(0, DASHBOARD_HOR_TOP, WIDTH,HEIGHT/4),
+    
+    # Vertical
+    pygame.Rect(WIDTH - WIDTH/4.5, 0, WIDTH/4, HEIGHT) 
 
-PATH = "Assets\Images/"
+    ]
 
-# Asset Definitions - Scene
-SKY_DAY = scale_image(pygame.image.load(PATH + "Backgrounds/" + "day_sky.jpg"),0.25)
-SKY_NIGHT = scale_image(pygame.image.load(PATH + "Backgrounds/" + "night_sky.jpg"),0.5)
-SKY_RAINY = scale_image(pygame.image.load(PATH + "Backgrounds/" + "rainy_sky.jpg"),0.3)
-SKY_SUNNY = scale_image(pygame.image.load(PATH + "Backgrounds/" + "sunny_sky.jpg"),0.25)
+SPEEDOMETER = scale_image(pygame.image.load(DIR_IMGS + "Dashboard/speedometer.png"),0.3)
+MIRROR = scale_image(pygame.image.load(DIR_IMGS + "Dashboard/rear_view_mirror.png"),0.25)
+CLIPBOARD = stretch_image(pygame.image.load(DIR_IMGS + "Dashboard/clipboard.png"),0.55,0.8)
 
-SCENE = scale_image(pygame.image.load(PATH + "Scenes\scene_1_light.png"),1.4)
-SCENE_DARK = scale_image(pygame.image.load(PATH + "Scenes\scene_1_dark.png"),1.4)
-LEVEL_IMGS = [(SKY_DAY, (0,0)), (SCENE, (0, SCENE_HEIGHT_START))]
-
-# Asset Definitions - Scene Masks
-BORDER_LEFT_PL = scale_image(pygame.image.load(PATH + "Borders\Scene_1/" + "mask_left_pl_wider.png"),1.4)
-BORDER_LEFT_RBT = scale_image(pygame.image.load(PATH + "Borders\Scene_1/" + "mask_left_rbt_full.png"),1.4)
-BORDER_RIGHT_PL = scale_image(pygame.image.load(PATH + "Borders\Scene_1/" + "mask_right_pl.png"),1.4)
-BORDER_RIGHT_RBT = scale_image(pygame.image.load(PATH + "Borders\Scene_1/" + "mask_right_rbt_full.png"),1.4)
-
-MASK_LEFT_PL = pygame.mask.from_surface(BORDER_LEFT_PL)
-MASK_LEFT_RBT = pygame.mask.from_surface(BORDER_LEFT_RBT)
-MASK_RIGHT_PL = pygame.mask.from_surface(BORDER_RIGHT_PL)
-MASK_RIGHT_RBT = pygame.mask.from_surface(BORDER_RIGHT_RBT)
-
-#-------------------------------------------------------------------------
-DASHBOARD_RECT_HOR = pygame.Rect(0, DASHBOARD_HOR_TOP, WIDTH,HEIGHT/4)
-DASHBOARD_RECT_VER = pygame.Rect(WIDTH - WIDTH/4.5, 0, WIDTH/4, HEIGHT) 
-SPEEDOMETER = scale_image(pygame.image.load(PATH + "Dashboard/speedometer.png"),0.3)
-MIRROR = scale_image(pygame.image.load(PATH + "Dashboard/rear_view_mirror.png"),0.25)
-CLIPBOARD = stretch_image(pygame.image.load(PATH + "Dashboard/clipboard.png"),0.55,0.8)
-
-# Position Definitions - center
 SPEEDOMETER_POS = (MIRROR_CENTER-SPEEDOMETER.get_rect().centerx, DASHBOARD_HOR_TOP-SPEEDOMETER.get_rect().centery/2)
 MIRROR_POS = (MIRROR_CENTER-MIRROR.get_rect().centerx, MIRROR.get_rect().centery/3)
 CLIP_POS = (CLIP_CENTER-CLIPBOARD.get_rect().centerx,CLIP_TOP-CLIPBOARD.get_rect().centery/2.5)
 
 DASH_IMGS = [(SPEEDOMETER, SPEEDOMETER_POS), (MIRROR, MIRROR_POS),(CLIPBOARD, CLIP_POS)]
 
-#-------------------------------------------------------------------------
-# Dashboard Buttons Definitions
-BTN_SCALE = 0.45
-BLINKER_SCALE = 0.5
-SPEEDOMETER_RIGHT = MIRROR_CENTER+SPEEDOMETER.get_rect().centerx
-MENU_BTN_IMG = pygame.image.load("Assets\Images\Dashboard\Buttons/menu_btn.png")
-BTN_IMGS_OFF = []
-BTN_IMGS_ON = []
-
-load_button_images()
-
-MENU_BTN_POS = (MIRROR_CENTER/5, DASHBOARD_HOR_TOP-10)
-LIGHTS_BTN_POS = (MIRROR_CENTER/2-BTN_IMGS_OFF[0].get_rect().centerx/2, DASHBOARD_HOR_TOP)
-LEFT_BLINK_POS = (SPEEDOMETER_POS[0]-BTN_IMGS_OFF[1].get_rect().centerx ,DASHBOARD_HOR_TOP-10)
-RIGHT_BLINK_POS = ((SPEEDOMETER_POS[0]+SPEEDOMETER_RIGHT)/2+BTN_IMGS_OFF[2].get_rect().centerx ,DASHBOARD_HOR_TOP-10)
-WIPERS_BTN_POS = (RIGHT_BLINK_POS[0]+BTN_IMGS_OFF[3].get_rect().centerx*1.5, DASHBOARD_HOR_TOP)
-AC_BTN_POS = (WIPERS_BTN_POS[0]+BTN_IMGS_OFF[4].get_rect().centerx, DASHBOARD_HOR_TOP)
-MUSIC_BTN_POS = (CLIP_CENTER-BTN_IMGS_OFF[5].get_rect().centerx/2, DASHBOARD_HOR_TOP)
-
-# Buttons Blueprints for DashboardButton
-MENU_BTN_BLP = [MENU_BTN_IMG,MENU_BTN_IMG,BTN_SCALE,*MENU_BTN_POS]
-LIGHTS_BTN_BLP = [BTN_IMGS_OFF[0],BTN_IMGS_ON[0],BTN_SCALE,*LIGHTS_BTN_POS]
-LEFT_BLINK_BLP = [BTN_IMGS_OFF[1],BTN_IMGS_ON[1],BLINKER_SCALE,*LEFT_BLINK_POS]
-RIGHT_BLINK_BLP = [BTN_IMGS_OFF[2],BTN_IMGS_ON[2],BLINKER_SCALE,*RIGHT_BLINK_POS]
-WIPERS_BTN_BLP = [BTN_IMGS_OFF[3],BTN_IMGS_ON[3],BTN_SCALE,*WIPERS_BTN_POS]
-AC_BTN_BLP = [BTN_IMGS_OFF[4],BTN_IMGS_ON[4],BTN_SCALE,*AC_BTN_POS]
-MUSIC_BTN_BLP = [BTN_IMGS_OFF[5],BTN_IMGS_ON[5],BTN_SCALE,*MUSIC_BTN_POS]
-
 SPEEDOMETER_TEXT_POS = (MIRROR_CENTER,SPEEDOMETER_POS[1]+SPEEDOMETER.get_rect().centery)
 #-------------------------------------------------------------------------
+# Dashboard Buttons Definitions
+#------------------------------
+BTN_IMGS_OFF = []
+BTN_IMGS_ON = []
+load_buttons_images()
 
-# Road Users Definitions 
-RED_CAR = scale_image(pygame.image.load(PATH + "Cars/red_car.png"), 0.28)
+BTN_BLPS = []
+load_buttons_blueprints()
 #-------------------------------------------------------------------------
 # Road Definitions
+#-----------------
 LANE_W = 22 # Lane Width in px
 
-YAAR_ROAD_BOT_L = (LEFT_BLINK_POS[0] + BTN_IMGS_OFF[1].get_rect().centerx/2, HEIGHT-HEIGHT/3+5)
+MID_LEFT_BLINK_POS_X = MIRROR_CENTER-SPEEDOMETER.get_rect().centerx-BTN_IMGS_OFF[2].get_rect().centerx/2
+
+    # Roads
+YAAR_ROAD_BOT_L = (MID_LEFT_BLINK_POS_X, HEIGHT-HEIGHT/3+5)
 YAAR_ROAD_MID_R = (YAAR_ROAD_BOT_L[0] + 4.2*LANE_W, HEIGHT-HEIGHT/3+5)
 EREZ_ROAD_BOT_L = (MIRROR_CENTER/3+LANE_W, HEIGHT/6.2)
 ELLA_ROAD_TOP_L = (MIRROR_CENTER/3+1,HEIGHT/6.2)
@@ -147,25 +209,26 @@ RBT_LEFT_CENTER = (MIRROR_CENTER/2+LANE_W, SHAKED_SIDEWK_BOT_R[1]+LANE_W)
 RBT_RIGHT_CENTER = (MIRROR_CENTER*1.5-2*LANE_W, EREZ_ROTEM_SIDEWK_TOP_R[1]+LANE_W)
 RBT_OUTER_RAD = RADIUS+1.7*LANE_W
 RBT_INNER_RAD = RADIUS-1.3*LANE_W
-
-#-------------------------------------------------------------------------
-# Car Directions Definitions
-NORTH = 0
-WEST = 90
-SOUTH = 180
-EAST = 270
-
-NORTH_WEST = 45
-SOUTH_WEST = 135
-SOUTH_EAST = 225
-NORTH_EAST = 315
-
 #-------------------------------------------------------------------------
 # Borders Definitions
+#--------------------
+    # Parking Lots Outside Borders
 LEFT_PL_BORDER_RECT = pygame.Rect((0, SHAKED_SIDEWK_BOT_R[1]+2*LANE_W), (SHAKED_SIDEWK_BOT_R[0], ESHEL_ROAD_BOT_R[1]-2*LANE_W-(SHAKED_SIDEWK_BOT_R[1]+2*LANE_W)))
 RIGHT_PL_BORDER_RECT = pygame.Rect((EREZ_ROTEM_SIDEWK_TOP_R[0], SHAKED_SIDEWK_BOT_R[1]+2*LANE_W), (CLIP_LEFT-LANE_W-(EREZ_ROTEM_SIDEWK_TOP_R[0]), ESHEL_ROAD_BOT_R[1]-(SHAKED_SIDEWK_BOT_R[1]+1.5*LANE_W)))
 
-# Sidewalk Borders
+    # Reverse Parking Borders
+PLS_RP_BORDERS = [
+    # Horizontal
+        # Left PL, top left spot (FINISH_LINE_IMGS #4)
+    pygame.Rect((0.35*LANE_W, SHAKED_SIDEWK_BOT_R[1]+2.3*LANE_W), (2*LANE_W, LANE_W)),
+    
+    # Vertical
+        # Right PL, bottom right spot (FINISH_LINE_IMGS #5)
+    pygame.Rect((ROTEM_ROAD_BOT_R[0]+2.75*LANE_W, ESHEL_ROAD_BOT_R[1]-2.25*LANE_W), (LANE_W, 2*LANE_W)),
+    
+    ]
+
+    # Sidewalk Borders
 EREZ_ROAD_BORDERS = [
     # Horizontal
         # Top (border with sky)
@@ -291,7 +354,7 @@ ESHEL_ROAD_BORDERS = [
         
     ]
 
-# Parallel Parking Borders
+    # Parallel Parking Borders
 YAAR_PP_BORDERS = [
     # Vertical
         # Top spot
@@ -310,7 +373,7 @@ ESHEL_PP_BORDERS = [
     pygame.Rect((6.1*LANE_W, ESHEL_ROAD_BOT_R[1]), (2*LANE_W, LANE_W))
     ]
 
-# Solid Lane borders
+    # Solid Lane borders
 SOLID_LANE_BORDERS = [
     # Vertical - Erez
     pygame.Rect((YAAR_ROAD_BOT_L[0]+2.2*LANE_W,EREZ_ROTEM_SIDEWK_TOP_R[1]-LANE_W), (2, EREZ_ROTEM_SIDEWK_TOP_R[1]-(EREZ_ROTEM_SIDEWK_TOP_R[1]-LANE_W))),
@@ -320,7 +383,7 @@ SOLID_LANE_BORDERS = [
     pygame.Rect((YAAR_ROAD_BOT_L[0], ESHEL_ROAD_BOT_R[1]-1*LANE_W), (2*LANE_W, 2))
     ]
        
-# Lane Borders
+    # Lane Borders
 EREZ_LANE_BORDERS = [
         # Horizontal - Top
     pygame.Rect((MIRROR_CENTER/3+LANE_W, HEIGHT/5.1), (EREZ_ROTEM_SIDEWK_TOP_R[0]-(MIRROR_CENTER/3), 2)),
@@ -355,33 +418,169 @@ SHAKED_LANE_BORDERS = [
 ESHEL_LANE_BORDERS = [
     # Horizontal
     pygame.Rect((0, ESHEL_ROAD_BOT_R[1]-LANE_W), (YAAR_ROAD_BOT_L[0], 2))
+    ]    
+#-------------------------------------------------------------------------
+# Road Users Definitions 
+#------------------------
+RED_CAR = scale_image(pygame.image.load(DIR_IMGS + "Cars/red_car.png"), 0.28)
+
+PLAYER_START_POS = (RBT_RIGHT_CENTER[0]+0.2*LANE_W,RBT_LEFT_CENTER[1]+2.5*LANE_W)
+
+CAR_SCALE = 0.15
+PED_SCALE = 0.85
+
+YELLOW_CAR = scale_image(pygame.image.load(DIR_IMGS + "Cars/yellow_taxi.png"), CAR_SCALE)
+BLUE_VAN = scale_image(pygame.image.load(DIR_IMGS + "Cars/blue_mini_truck.png"), CAR_SCALE)
+WHITE_TRUCK = scale_image(pygame.image.load(DIR_IMGS + "Cars/white_truck.png"), CAR_SCALE)
+
+RED_GIRL = scale_image(pygame.image.load(DIR_IMGS + "Peds/red_girl_small.png"), PED_SCALE)
+GREEN_GIRL = scale_image(pygame.image.load(DIR_IMGS + "Peds/green_girl_small.png"), PED_SCALE)
+OLD_MAN = scale_image(pygame.image.load(DIR_IMGS + "Peds/old_man_small.png"), PED_SCALE)
+BLOND_BOY = scale_image(pygame.image.load(DIR_IMGS + "Peds/blond_boy_small.png"), PED_SCALE)
+
+# Other Cars Paths (made using draw_points)
+#-------------------------------------------
+CAR_PATH_YAAR_TILL_LEFT_PL = [
+    # Yaar
+    (395, 215), (418, 309), 
+    # Eshel
+    (418, 430), (314, 397), (123, 410), 
+    # Left PL
+    (120, 329), (94, 324)] 
+    
+CAR_PATH_ESHEL_TILL_ROTEM = [
+    # Eshel
+    (62, 443), (175, 425), (452, 422), 
+    # Yaar
+    (450, 270), 
+    # Rotem
+    (774, 270)]
+
+CAR_PATH_ELLA_TILL_RIGHT_PL = [
+    # Ella
+    (180, 128), (180, 282), 
+    # Left RBT
+    (232, 282), (244, 308), (269, 326),
+    (310, 314), (333, 295), (341, 271),
+    # Yaar 
+    (436, 270), (451, 246), (451, 174),
+    # Erez
+    (455, 117), (620, 117), (605, 182), 
+    # Right RBT
+    (692, 161), (705, 197), (742, 216), 
+    # Rotem
+    (742, 270), (671, 264),
+    # Right PL 
+    (671, 333), (671, 386), (857, 378), (851, 333)
     ]
-       
+
+CAR_PATH_ROTEM_TILL_SHAKED = [
+    # Right RBT
+    (772, 200), (807, 182), (817, 147),
+    (800, 102), (753, 83), (710, 100), 
+    (688, 140),
+    # Erez
+    (633, 140), (633, 85), (400, 90),
+    # Ella
+    (181, 90), (183, 127), (175, 258),
+    # Shaked
+    (6, 245)
+    ]
+
+# Pedestrians Paths (made using draw_points)
+#-------------------------------------------
+PED_PATH_ROTEM_SW_TILL_ELLA = [
+    (496, 209), (500, 164), (470, 130), (425, 128), (395, 128),
+    (369, 129), (335, 127), (307, 130), (287, 130), (262, 131),
+    (231, 130), (203, 167), (174, 167), (144, 168), (101, 176),
+    (47, 173), (22, 174)]
+
+PED_PATH_YAAR_SW_TILL_RBT = [
+    (551, 153), (587, 179), (630, 185), (671, 186), (702, 199),
+    (737, 184), (764, 185), (794, 181), (822, 183), (841, 199)] 
+
+PED_PATH_YAAR_SW_TILL_ROTEM_SW = [
+    (552, 425), (523, 297), (516, 238), (535, 202), (550, 151)]
+
+PED_PATH_ELLA_TILL_ESHEL = [
+    (131, 163), (190, 230), (211, 288), (231, 360), (239, 422),
+    (277, 457), (335, 460), (395, 457)]
+#-------------------------------------------------------------------------
+# Car Directions Definitions
+#---------------------------
+DIRECTION_SMOOTH = 5
+
+NORTH = 0
+NORTH_WEST = 45
+WEST = 90
+SOUTH_WEST = 135
+SOUTH = 180
+SOUTH_EAST = 225
+EAST = 270
+NORTH_EAST = 315
 #-------------------------------------------------------------------------
 # Finish Line Definitions  
-FINISH_LINE_HORI = stretch_image(pygame.image.load(PATH + "Dashboard/finish_line.png"),0.5,0.7)
+#------------------------
+FINISH_LINE_HORI = stretch_image(pygame.image.load(DIR_IMGS + "Dashboard/finish_line.png"),0.5,0.7)
 FINISH_LINE_VERT = pygame.transform.rotate(FINISH_LINE_HORI,90)
 
+FINISH_LINE_PARKINGS = [
+    # 4 - Left PL top left spot
+    (WEST, PLS_RP_BORDERS[0]),
+
+    # 7 - Eshel PP middle spot
+    (EAST, ESHEL_PP_BORDERS[1]),
+
+    # 9 - Yaar PP top spot
+    (NORTH, YAAR_PP_BORDERS[0]),
+
+    # 10 - Right PL bottom right spot
+    (NORTH, PLS_RP_BORDERS[1]),
+]
 
 FINISH_LINE_IMGS = [
-                    # exit right pl - enter Rotem
-                    (FINISH_LINE_HORI, (EREZ_ROTEM_SIDEWK_TOP_R[0]+2*LANE_W, ROTEM_ROAD_BOT_R[1])),
-                    
-                    # Yaar after turn right from Rotem
-                     
-                    ]
+    # 1 - Exit right PL entering Rotem
+    ("HORI", (EREZ_ROTEM_SIDEWK_TOP_R[0]+2*LANE_W, ROTEM_ROAD_BOT_R[1])),
+    
+    # 2 - Yaar after right turn from Rotem
+    ("HORI", (YAAR_ROAD_MID_R[0]-2*LANE_W, YAAR_SIDEW_BOT_L[1]+2*LANE_W)),
+    
+    # 3 - Ella top after crosswalk
+    ("HORI", (SHAKED_SIDEWK_BOT_R[0]-LANE_W, SHAKED_SIDEWK_BOT_R[1]+0.25*LANE_W)),
+    
+    # 4 - Left PL top left spot
+    #(FINISH_LINE_HORI, (0.5*LANE_W, SHAKED_SIDEWK_BOT_R[1]+2.5*LANE_W)),
+    ("PARKING", FINISH_LINE_PARKINGS[0][1]),
+
+    # 5 - Erez entering right RBT
+    ("VERT", (RBT_RIGHT_CENTER[0]-4.5*LANE_W, RBT_RIGHT_CENTER[1]-LANE_W)),
+    
+    # 6 - Yaar bottom before turn to Eshel
+    ("HORI", (YAAR_ROAD_BOT_L[0], YAAR_ROAD_BOT_L[1])),
+    
+    # 7 - Eshel PP middle spot
+    #(FINISH_LINE_HORI, (4.1*LANE_W, ESHEL_ROAD_BOT_R[1])),
+    ("PARKING", FINISH_LINE_PARKINGS[1][1]),
+
+    # 8 - Hadas RBT right exit
+    ("VERT", (YAAR_ROAD_BOT_L[0], RBT_LEFT_CENTER[1]-LANE_W)),
+
+    # 9 - Yaar PP top spot
+    #(FINISH_LINE_VERT, (YAAR_ROAD_MID_R[0], ROTEM_ROAD_BOT_R[1]+2.1*LANE_W)),
+    ("PARKING", FINISH_LINE_PARKINGS[2][1]),
+
+    # 10 - Right PL bottom right spot
+    #(FINISH_LINE_HORI, (ROTEM_ROAD_BOT_R[0]+2*LANE_W, ESHEL_ROAD_BOT_R[1]-1.5*LANE_W)),
+    ("PARKING", FINISH_LINE_PARKINGS[3][1])]
+
 #-------------------------------------------------------------------------
-
+# Helper Functions (called outside this module)
+#-----------------------------------------------
 def draw_borders():
-
+    """
+    Draw the scene borders (roads, lanes, parallel parking spots)
+    """
     def draw_road_borders():
-        """
-        Rect(left, top, width, height) -> Rect
-        Rect((left, top), (width, height)) -> Rect
-        """
-
-        #pygame.draw.rect(WIN,RED,LEFT_PL_BORDER_RECT,5)
-        #pygame.draw.rect(WIN,RED,RIGHT_PL_BORDER_RECT,5)
 
         for r in EREZ_ROAD_BORDERS:
             pygame.draw.rect(WIN, BLUE, r)
@@ -520,8 +719,8 @@ def draw_borders():
         """
 
             # Roundabouts - outer ring
-        #pygame.draw.circle(WIN,RED,RBT_LEFT_CENTER,RADIUS+1.5*LANE_W,1)
-        #pygame.draw.circle(WIN,RED,RBT_RIGHT_CENTER,RADIUS+1.5*LANE_W,1)
+        pygame.draw.circle(WIN,RED,RBT_LEFT_CENTER,RADIUS+1.5*LANE_W,1)
+        pygame.draw.circle(WIN,RED,RBT_RIGHT_CENTER,RADIUS+1.5*LANE_W,1)
             # Roundabouts - inner ring
         pygame.draw.circle(WIN,RED,RBT_LEFT_CENTER,RADIUS-1.3*LANE_W,1)
         pygame.draw.circle(WIN,RED,RBT_RIGHT_CENTER,RADIUS-1.3*LANE_W,1)
@@ -600,7 +799,7 @@ def draw_borders():
         for r in ESHEL_PP_BORDERS:
             pygame.draw.rect(WIN, ORANGE, r)
 
-        
+        """
         # Yaar - Horizontal
             # Top spot
         pygame.draw.line(WIN, BLUE, (YAAR_ROAD_MID_R[0], ROTEM_ROAD_BOT_R[1]+4*LANE_W), (YAAR_ROAD_MID_R[0]+LANE_W, ROTEM_ROAD_BOT_R[1]+4*LANE_W), 1)
@@ -613,13 +812,16 @@ def draw_borders():
         pygame.draw.line(WIN, BLUE, (4.1*LANE_W,ESHEL_ROAD_BOT_R[1]), (4.1*LANE_W, ESHEL_ROAD_BOT_R[1]+LANE_W), 1) 
             # Right
         pygame.draw.line(WIN, BLUE, (6.1*LANE_W,ESHEL_ROAD_BOT_R[1]), (6.1*LANE_W, ESHEL_ROAD_BOT_R[1]+LANE_W), 1) 
-        
+        """
+
     draw_road_borders()
     draw_lane_borders()
     draw_parallel_parking_borders()
 
 def draw_street_names():
-
+    """
+    Draw all the street names 
+    """
     STREETS = [ ("HaErez", (RBT_LEFT_CENTER[0]-2*LANE_W,EREZ_ROTEM_SIDEWK_TOP_R[1]-2*LANE_W)),
                 ("HaErez", (YAAR_ROAD_MID_R[0],EREZ_ROTEM_SIDEWK_TOP_R[1]-LANE_W)),
                 ("HaHadas", (RBT_LEFT_CENTER[0]-2.2*LANE_W,EREZ_ROTEM_SIDEWK_TOP_R[1]+3*LANE_W)), 
@@ -634,7 +836,30 @@ def draw_street_names():
     for streetName, pos in STREETS:
         street_text = STREETS_FONT.render(streetName,1,PINK)
         if streetName == "HaElla":
+            # rotate the text from horizontal to vertical
             street_text = pygame.transform.rotate(street_text,90)
             
         street_text_pos = (pos[0]+street_text.get_rect().centerx, pos[1]+street_text.get_rect().centery)
         WIN.blit(street_text, street_text_pos)  
+
+def draw_finish_lines():
+    """
+    Draw all the finish lines
+    """
+    for img, pos in FINISH_LINE_IMGS:
+        if img == "HORI":
+            WIN.blit(FINISH_LINE_HORI, pos)
+        elif img == "VERT":
+            WIN.blit(FINISH_LINE_VERT,pos)
+        else:
+            pygame.draw.rect(WIN, ORANGE, pos)
+
+def draw_masks():
+    #pygame.draw.rect(WIN,RED,LEFT_PL_BORDER_RECT,5)
+    #pygame.draw.rect(WIN,RED,RIGHT_PL_BORDER_RECT,5)
+
+    for m in MASKS_IMGS:
+        WIN.blit(m, (0,SCENE_HEIGHT_START))
+
+def print_all_possible_fonts():
+    print(*pygame.font.get_fonts(), sep = "\n")        
