@@ -13,9 +13,7 @@ from constants import RED_GIRL, GREEN_GIRL, OLD_MAN, BLOND_BOY, \
 
 class Pedestrian(RoadUser):
 
-    path = None
-
-    def __init__(self):
+    def __init__(self, vel):
         """
         Initialize the pedestrian.
 
@@ -29,9 +27,9 @@ class Pedestrian(RoadUser):
             """
             Choose the ped's image and path by random. 
             """
-            # Pick a random number to decide the ped's image
+            # Pick a random number to 
+            # decide the ped's image
             dice = random.randint(1,4)
-                    
             if dice == 1:
                 IMG = RED_GIRL
             elif dice == 2:
@@ -41,9 +39,9 @@ class Pedestrian(RoadUser):
             elif dice == 4:
                 IMG = BLOND_BOY
 
-            # Pick a random number to decide the ped's path
+            # Pick a random number to 
+            # decide the ped's path
             dice = random.randint(1,4)
-
             if dice == 1:
                 path = PED_PATH_ROTEM_SW_TILL_ELLA
             elif dice == 2:
@@ -52,12 +50,12 @@ class Pedestrian(RoadUser):
                 path = PED_PATH_YAAR_SW_TILL_RBT
             elif dice == 4:
                 path = PED_PATH_ELLA_TILL_ESHEL
-            
+
             return IMG, path
 
         # Pick ped's image and path by random    
         IMG, self.path = randomize_ped()
-        
+
         # Initialize the pedestrian
         RoadUser.__init__(self, IMG, self.path[0])
 
@@ -65,11 +63,4 @@ class Pedestrian(RoadUser):
         self.current_point = 0
 
         # Ped's initial velocity
-        self.vel = 1
-    
-    def next_level(self, level):
-    
-        # Increase the ped's vel 0.2 each level
-        self.vel = self.max_vel + (level + 1) * 0.2
-
-        self.current_point = 0
+        self.vel = vel
