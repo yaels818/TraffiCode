@@ -33,7 +33,7 @@ class RoadUser(pygame.sprite.Sprite):
         Update the bounding rectangle of the car accordingly.
         """
         self.rect = blit_rotate_center(WIN, self.image, (self.x, self.y), self.angle)
-        pygame.draw.rect(WIN, BLUE, self.rect, 1)
+        #pygame.draw.rect(WIN, BLUE, self.rect, 1)
     
     def stay_within_scene_borders(self, new_x, new_y):
         """
@@ -91,9 +91,6 @@ class RoadUser(pygame.sprite.Sprite):
         # Get the next target point and move towards it
         self.update_path_point()
         self.move()
-        
-        # (aim for the sprite's rect center to reach the target point)
-        #self.rect.center = (self.x, self.y) 
 
     def reduce_sprite_speed(self):
         """
