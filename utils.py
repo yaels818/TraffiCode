@@ -32,12 +32,12 @@ def blit_rotate_center(win, image, top_left, angle):
     return new_rect
 
 
-def blit_text_center(win, font, text):
+def blit_text_center(win, font, color, text):
     """
     Display text on in the center of the screen
     """
     # 1 is for anti-aliasing (always put 1), last parameter is RGB for text color
-    render = font.render(text, 1, (200, 200, 200))
+    render = font.render(text, 1, color)
 
     # Show render at the center of the window (get x,y for top-left position of the render)
-    win.blit(render, (win.get_width()/2 - render.get_width()/2, win.get_height()/2 - render.get_height()/2 - 30))
+    win.blit(render, (win.get_width()/2 - render.get_width()/2, win.get_height()/2 - render.get_height()/2))
