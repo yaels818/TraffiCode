@@ -14,13 +14,11 @@ from constants import YELLOW_CAR, WHITE_TRUCK, BLUE_VAN ,\
 class OtherCar(RoadUser):
 
     #path_exp = []
-    path = None
 
-    def __init__(self):
+    def __init__(self, vel):
 
         def randomize_car():
-
-            
+     
             dice = random.randint(1,3)
                     
             if dice == 1:
@@ -49,11 +47,5 @@ class OtherCar(RoadUser):
         RoadUser.__init__(self, IMG, self.path[0])
 
         self.current_point = 0
-        self.vel = 1
-
-    def next_level(self, level):
-        
-        # Increase computer's vel 0.2 each level - will never go faster than the player's
-        self.vel = self.max_vel + (level + 1) * 0.2
-        self.current_point = 0
+        self.vel = vel
         
