@@ -16,8 +16,9 @@ Some of the things you will find inside the world of TraffiCode:
 - good old-fashioned reverse parking ⚓
 - surprises ✨😉
 
-The game contains 10 different levels with increasing difficulty to keep things interesting and keep you in driving shape - <br>
-in each level the cars and pedestrians will either increase in numbers or in speed, forcing you to adapt and get increasingly better too. <br>
+The game contains 10 different levels with increasing difficulty to keep things interesting and keep you in driving shape.
+
+Each level the cars and pedestrians will either increase in numbers or in speed, forcing you to adapt and get increasingly better too! <br>
 
 --------------------------
 For more details about the game and the development process, <br>
@@ -37,7 +38,7 @@ check out the game's [Wiki 👇📚](https://github.com/yaels818/TraffiCode/wiki
    - If you got back a line that starts with something like this (```Python 3.10.2```) **-> great, skip ahead to 2.**
    - Download **Python** from https://www.python.org/downloads/
 
-2. Unless you know you already installed **Pygame** on your computer:
+2. Unless you know you have already installed **Pygame** on your computer:
    - Pull ip the command prompt, type in ``` pip install pygame ```
 
 3. Download the code from this repository to your computer and extract the files
