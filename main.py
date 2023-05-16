@@ -29,19 +29,19 @@ def draw_game(player_car):
     """    
     def draw_scene(curr_level):
         """
-        Draw the scene for the current level (sky, roads, street names).
+        Draw the scene for the current level (sky, scene/roads, street names).
 
         Parameters
         ----------
         curr_level : int
             The number of the current level
-
         """
         
         scene = constants.SCENE_LIGHT
 
+        # Set the sky according to the current level (morning, noon, afternoon, night)
         if curr_level <= 3:
-            sky = constants.SKY_DAY
+            sky = constants.SKY_DAY 
         elif curr_level <= 5:
             sky = constants.SKY_SUNNY
         elif curr_level <= 8:
@@ -52,8 +52,8 @@ def draw_game(player_car):
 
         level_imgs = [(sky, (0,0)), (scene, (0, constants.SCENE_HEIGHT_START))]
         
+        # Draw each image in its position
         for img, pos in level_imgs:
-            # Draw this img in this position
             constants.WIN.blit(img, pos)  
 
         constants.draw_street_names()
@@ -63,24 +63,25 @@ def draw_game(player_car):
         Draw the finish line for the current level.
 
         Finish line is either a line to be crossed, 
-        or a parking spot to be filled, by the player's car.
+        or a parking spot to be occupied by the player's car.
 
         Parameters
         ----------
         curr_level : int
             The number of the current level
-    
         """
         # Get the current level's finish line's image and position
         img = constants.FINISH_LINE_IMGS[curr_level-1][0]
         pos = constants.FINISH_LINE_IMGS[curr_level-1][1]
 
+        # Draw the respective finish line for this level -
+        # finish line is either horizontal or vertical or a parking spot
         if img == "HORI":
             constants.WIN.blit(constants.FINISH_LINE_HORI, pos)
         elif img == "VERT":
             constants.WIN.blit(constants.FINISH_LINE_VERT,pos)
         else:
-            # If finish line is a parking spot
+            # If finish line is a parking spot - draw a rectangle
             pygame.draw.rect(constants.WIN, constants.ORANGE, pos)
 
     def draw_dashboard():
@@ -103,13 +104,14 @@ def draw_game(player_car):
         velocity_text_pos = (constants.SPEEDOMETER_TEXT_POS[0]-velocity_text.get_rect().centerx,constants.SPEEDOMETER_TEXT_POS[1]-velocity_text.get_rect().centery)
         constants.WIN.blit(velocity_text, velocity_text_pos) 
 
-    
+
     draw_scene(level_tracker.level)
 
     draw_finish_line(level_tracker.level)
     
     player_car.draw()
 
+    #TODO: delete helper functions
     #constants.draw_borders()
     #constants.draw_finish_lines()
     #constants.draw_masks()
@@ -122,7 +124,7 @@ def draw_game(player_car):
 #--------------------------------------------------------------
 def move_player(player_car):
     """
-    Move the player_car according to the keyboard keys pressed 
+    Move the player's car according to the keyboard keys pressed 
 
     Parameters
     ----------
@@ -133,7 +135,7 @@ def move_player(player_car):
     -------
     None
     """
-    # Get which keyboard keys are pressed
+    # Get which keyboard keys are being pressed
     keys = pygame.key.get_pressed()
     
     gas_pressed = False
@@ -156,22 +158,27 @@ def move_player(player_car):
         if not reverse_gear:
             player_car.rotate(left = True)
         else:
+            # If player is moving in reverse gear 
+            # -> lateral direction is reversed
             player_car.rotate(right = True)
 
     if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
         if not reverse_gear:
             player_car.rotate(right = True)
         else:
+            # If player is moving in reverse gear 
+            # -> lateral direction is reversed
             player_car.rotate(left = True)
 
-    # If player did not press on gas, the car should lose speed naturally 
+    # If the player did not press for gas
+    # -> the car should naturally lose speed (gradually) 
     if not gas_pressed:
         player_car.reduce_speed(emergency_brake = False)
 #--------------------------------------------------------------
 
 def handle_collision_with_finish_line(player_car):
     """
-    Check if player reached the current level's finish line
+    Check if player's car reached the current level's finish line
 
     Parameters
     ----------
@@ -199,11 +206,11 @@ def handle_collision_with_finish_line(player_car):
         # Move the copy to the correct position
         finish_line_rect.move_ip(pos)
     else:
-        # If img == "PARKING" ==> rectangle is stored inside pos
+        # If img == "PARKING" ==> rectangle is already stored inside pos
         finish_line_rect = pos
     
-    # Check if player_car's center is colliding with finish_line_rect.
-    # Meaning, if the player crossed the finish line
+    # Check if player_car's center is colliding with finish_line_rect
+    # (if the player crossed the finish line)
     if finish_line_rect.collidepoint(player_car.rect.center):
         if img != "PARKING":
             # Player gets to advance to the next level
@@ -221,40 +228,77 @@ def handle_collision_with_finish_line(player_car):
                             player_car.angle < direction + constants.DIRECTION_SMOOTH:
                             level_tracker.add_accurate_parking()
                         else:
-                            # If direction for this parking spot is NORTH, 
-                            # we need to check both 0 and 360 degrees
+                            # If direction for this parking spot is NORTH
+                            # ==> We need to check both 0 and 360 degrees
                             if direction == constants.NORTH:
                                 if player_car.angle > (direction+360) - constants.DIRECTION_SMOOTH and \
                                     player_car.angle < (direction+360) + constants.DIRECTION_SMOOTH:
                                     level_tracker.add_accurate_parking()
                         
+                        # Player gets to advance to the next level
+                        # (even if the paraking is not accurate)
                         level_tracker.increase_level()
                         break
 
 def handle_collisions_with_road_borders(player_car):
     """
+    Check if player's car hit any road borders 
+    (parking lot walls, roundabout borders, sidewalk borders, solid lane borders)
+
+    Parameters
+    ----------
+    player_car : PlayerCar
+        The car the player drives
     
+    Returns
+    -------
+    None
     """
     def check_mask_collisions(player_car, mask):
         """
-        Check if player_car is colliding with any of the masks defined for this level.
-        Because using masks is heavy on the CPU (due to pixel-by-pixel comparison),
-        run the check on them only when the player is within their area.
+        Check if the player's car is colliding with any of the masks 
+        defined for this level (parking lot walls, roundabout borders).
+
+        Parameters
+        ----------
+        player_car : PlayerCar
+            The car the player drives
+        
+        mask : Mask
+            The contours of the area's borders
+        
+        Returns
+        -------
+        Boolean
+
+        Notes
+        -------
+        Masks are a good solution for enforcing more complex borders 
+        like roundabouts and parking lot walls, but the main drawback is 
+        that this method is very heavy on the CPU (due to pixel-by-pixel comparison).
+        To limit the stress to the CPU as much as possible, 
+        we run the check on the masks only when the player is actually 
+        within their area.         
         """
         
-        # Check if the player car is colliding any of the masks
+        # Check if the player car is colliding with the given mask
+        # (poi = point of intersection)
         poi = player_car.check_collision_with_mask(mask)
-        # If there is some point of intersection 
+
+        # If there is a collision
         if poi != None:
+            # Stop the player's car (like it hit a wall)
             player_car.vel = 0
+            # Draw the point of intersection
             pygame.draw.circle(constants.WIN, constants.RED, poi, 2)
             return True
         return False
 
-    # middle is between Yaar and Hadas
+    # Middle is the line between Yaar and Hadas 
+    # (from top to bottom)
     VERT_MID_POINT = constants.YAAR_ROAD_BOT_L[0]
 
-    # player is on the right side of the scene
+    # If player is on the RIGHT side of the scene
     if player_car.x > VERT_MID_POINT:
         # count mask collisions
         # check if player_car is completely inside the right parking lot
