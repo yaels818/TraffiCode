@@ -306,7 +306,7 @@ def handle_collisions_with_road_borders(player_car):
         rbt_x = constants.RBT_RIGHT_CENTER[0]
         rbt_y = constants.RBT_RIGHT_CENTER[1]
         rbt_mask = constants.MASKS[3]
-        
+
     # If player is on the LEFT side of the scene
     else:
         area_rect = constants.LEFT_PL_BORDER_RECT
@@ -315,51 +315,60 @@ def handle_collisions_with_road_borders(player_car):
         rbt_y = constants.RBT_LEFT_CENTER[1]
         rbt_mask = constants.MASKS[1]
 
-    # count mask collisions
-    # check if player_car is completely inside the right parking lot
+    # Track mask collisions
+    # ----------------------
+    # Check if player_car is within this side's parking lot
     if area_rect.contains(player_car.rect):
         if check_mask_collisions(player_car, pl_mask):
             level_tracker.add_parking_lot_hit()
     else:
+        # Calculate the distance between player_car and the center of this side's roundabout
         dist_rbt = math.sqrt((rbt_x-player_car.x)**2 + (rbt_y-player_car.y)**2)
+        # Check if player_car is within this side's roundabout
         if dist_rbt < constants.RBT_OUTER_RAD:
             if check_mask_collisions(player_car, rbt_mask):
                 level_tracker.add_roundabout_hit()
+    
+    # Track rect collisions
+    # ----------------------
         else:
+            # Check if player_car is colliding with these roads' sidewalks
+            # (These are horizontal so doesn't matter if RIGHT or LEFT)
             if player_car.rect.collidelist(constants.EREZ_ROAD_BORDERS) != -1:
-                print("collision, EREZ")
+                #print("collision, EREZ")
                 level_tracker.add_sidewalk_hit()
             elif player_car.rect.collidelist(constants.ESHEL_ROAD_BORDERS) != -1:
-                    print("collision, ESHEL")
-                    level_tracker.add_sidewalk_hit()
+                #print("collision, ESHEL")
+                level_tracker.add_sidewalk_hit()
             else:
-                # count sidewalk collisions
+                # If player is on the RIGHT side of the scene
                 if player_car.x > VERT_MID_POINT:
-
+                    
                     if player_car.rect.collidelist(constants.ROTEM_ROAD_BORDERS) != -1:
-                        print("collision, ROTEM")
+                        #print("collision, ROTEM")
                         level_tracker.add_sidewalk_hit()
 
                     elif player_car.rect.collidelist(constants.YAAR_ROAD_BORDERS) != -1:
-                        print("collision, YAAR")
+                        #print("collision, YAAR")
                         level_tracker.add_sidewalk_hit()
 
-                # count solid lanes collisions
                     elif player_car.rect.collidelist(constants.SOLID_LANE_BORDERS) != -1:
-                        print("collision, SOLID")
+                        #print("collision, SOLID")
                         level_tracker.add_over_solid_lane()
+                        
+                # If player is on the LEFT side of the scene
                 else:
 
                     if player_car.rect.collidelist(constants.HADAS_ROAD_BORDERS) != -1:
-                        print("collision, HADAS")
+                        #print("collision, HADAS")
                         level_tracker.add_sidewalk_hit()
                 
                     elif player_car.rect.collidelist(constants.ELLA_ROAD_BORDERS) != -1:
-                        print("collision, ELLA")
+                        #print("collision, ELLA")
                         level_tracker.add_sidewalk_hit()
 
                     elif player_car.rect.collidelist(constants.SHAKED_ROAD_BORDERS) != -1:
-                        print("collision, SHAKED")
+                        #print("collision, SHAKED")
                         level_tracker.add_sidewalk_hit()
 
 def handle_driving_against_traffic(player_car):
