@@ -1,11 +1,7 @@
 """
 Author: @yaels818
-Description: TraffiCode - See your driving from a new perspective
-Practice safe driving skills
-Obey traffic codes
-“The driver on the highway is safe not when he reads the signs, but when He obeys them.” – Aiden Tozer
-“Don’t be the driving force behind traffic accidents.” – Unknown
-“You just have to keep driving down the road. It’s going to bend and curve and you’ll speed up and slow down, but the road keeps going.” – Ellen DeGeneres
+Description: TraffiCode - Practice your driving from a new perspective, 
+
 """
 
 # Imports
@@ -18,7 +14,7 @@ from utils import *
 pygame.init()
 
 #-------------------------------------------------------------
-def draw(player_car):
+def draw_game(player_car):
     """
     Draw the level scene, finish line, player car, dashboard, level status. 
 
@@ -465,7 +461,7 @@ while running:
 
         time_counter = 0
 
-    draw(player)
+    draw_game(player)
     buttons_group.draw(constants.WIN)
     peds_group.draw(constants.WIN)       
 
