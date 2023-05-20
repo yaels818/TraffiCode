@@ -41,8 +41,6 @@ def load_buttons_blueprints():
     BTN_SCALE = 0.45
     BLINKER_SCALE = 0.5
 
-    BLINKER_INDEX = 2
-
     SPEEDOMETER_RIGHT = MIRROR_CENTER+SPEEDOMETER.get_rect().centerx
 
     y = DASHBOARD_HOR_TOP
@@ -53,15 +51,15 @@ def load_buttons_blueprints():
     LEFT_BLINK_POS = (SPEEDOMETER_POS[0]-BTN_IMGS_OFF[i+1].get_rect().centerx ,y-10)
     RIGHT_BLINK_POS = ((SPEEDOMETER_POS[0]+SPEEDOMETER_RIGHT)/2+BTN_IMGS_OFF[i+2].get_rect().centerx ,y-10)
     WIPERS_BTN_POS = (RIGHT_BLINK_POS[0]+BTN_IMGS_OFF[i+3].get_rect().centerx*1.5, y)
-    AC_BTN_POS = (WIPERS_BTN_POS[0]+BTN_IMGS_OFF[i+4].get_rect().centerx, y)
+    PARKING_BTN_POS = (WIPERS_BTN_POS[0]+BTN_IMGS_OFF[i+4].get_rect().centerx, y)
     MUSIC_BTN_POS = (CLIP_CENTER-BTN_IMGS_OFF[i+5].get_rect().centerx/2, y)
 
     BTNS_POSITIONS = [
         MENU_BTN_POS, LIGHTS_BTN_POS, LEFT_BLINK_POS, RIGHT_BLINK_POS,
-        WIPERS_BTN_POS, AC_BTN_POS, MUSIC_BTN_POS]
+        WIPERS_BTN_POS, PARKING_BTN_POS, MUSIC_BTN_POS]
 
     for i in range(len(BTNS_POSITIONS)):
-        if i == BLINKER_INDEX or i == BLINKER_INDEX+1:
+        if i == LEFT_BLINK_INDEX or i == RIGHT_BLINK_INDEX:
             scale = BLINKER_SCALE
         else:
             scale = BTN_SCALE
@@ -181,6 +179,14 @@ SPEEDOMETER_TEXT_POS = (MIRROR_CENTER,SPEEDOMETER_POS[1]+SPEEDOMETER.get_rect().
 BTN_IMGS_OFF = []
 BTN_IMGS_ON = []
 load_buttons_images()
+
+MENU_BTN_INDEX = 0    
+LIGHTS_BTN_INDEX = 1
+LEFT_BLINK_INDEX = 2
+RIGHT_BLINK_INDEX = 3
+WIPERS_BTN_INDEX = 4
+PARKING_BTN_INDEX = 5
+MUSIC_BTN_INDEX = 6
 
 BTN_BLPS = []
 load_buttons_blueprints()
