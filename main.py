@@ -169,7 +169,7 @@ def move_player(player_car):
         player_car.reduce_speed(emergency_brake = False)
 #--------------------------------------------------------------
 
-def handle_collision_with_finish_line(player_car):
+def handle_collision_with_finish_line(player_car, parking_button):
     """
     Check if player's car reached the current level's finish line.
 
@@ -207,7 +207,7 @@ def handle_collision_with_finish_line(player_car):
             level_tracker.increase_level()
         else:
             # If player car is parked
-            if player_car.vel == 0:
+            if parking_button.pressed:
                 for direction, p_spot in constants.FINISH_LINE_PARKINGS:
                     # Identify the current parking spot
                     if finish_line_rect.topleft == p_spot.topleft:
@@ -550,9 +550,12 @@ while running:
                     level_tracker.start_level()
             # Activate blinkers by key press
             if keys[pygame.K_q]:
-                buttons_list[2].button_pressed() # Left blinker
+                buttons_list[constants.LEFT_BLINK_INDEX].button_pressed() 
             if keys[pygame.K_e]:
-                buttons_list[3].button_pressed() # Right blinker
+                buttons_list[constants.RIGHT_BLINK_INDEX].button_pressed()
+            # Activate parking by key press
+            if keys[pygame.K_p]:
+                buttons_list[constants.PARKING_BTN_INDEX].button_pressed()
 
         # If player clicked the left mouse button 
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -599,7 +602,7 @@ while running:
 
     # Handle collisions between player and static objects
     # ----------------------------------------------------
-    handle_collision_with_finish_line(player)
+    handle_collision_with_finish_line(player, buttons_list[constants.PARKING_BTN_INDEX])
     #handle_collisions_with_road_borders(player)
     handle_driving_against_traffic(player)
 
