@@ -56,16 +56,16 @@ class LevelTracker():
     def increase_level(self):
 
         if self.tracking_table == []:
-            self.tracking_table.append(["level", 
-                                    "level_time",
-                                    "peds_hits", 
-                                    "cars_hits", 
-                                    "sidewalk_hits", 
-                                    "over_solid_lane", 
-                                    "against_traffic",
-                                    "roundabout_hits", 
-                                    "parking_lot_hits", 
-                                    "accurate_parking"])
+            self.tracking_table.append(["Level", 
+                                    "Time (Seconds)",
+                                    "Peds hits", 
+                                    "Cars hits", 
+                                    "Sidewalk hits", 
+                                    "Over solid lane", 
+                                    "Against traffic",
+                                    "Roundabout hits", 
+                                    "Parking lot hits", 
+                                    "Accurate parking ( /4)"])
 
         self.tracking_table.append([self.level, 
                                     self.get_level_time(),
