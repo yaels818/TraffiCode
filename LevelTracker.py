@@ -7,7 +7,7 @@ Notes:
 """
 # Imports
 import time
-from constants import WIN, CLIP_FONT, DASH_FONT, BLACK, RED, ORANGE, GREEN, \
+from constants import WIN, CLIP_FONT, DASH_FONT, BLACK, RED, ORANGE, GREEN, GRAY, \
     CLIP_LEFT, CLIP_TOP, CLIP_CENTER, MIRROR_CENTER,MIRROR_POS, RBT_RIGHT_CENTER
 #-------------------------------------------------------------------------
 class LevelTracker():
@@ -159,10 +159,10 @@ class LevelTracker():
 
         self.tracking_table = []
     
-    def display(self):
+    def display_score(self):
         """
-        This method will be called automatically to display 
-        the current feedback on top of the clipboard at the right side of the game window.
+        This method will be called to display the current score 
+        (on top of the clipboard at the right side of the game window).
         """
 
         # generate texts to display
@@ -218,3 +218,46 @@ class LevelTracker():
             # Draw this img in this position
             WIN.blit(txt, pos)  
         
+    def display_instructions(self):
+        """
+        This method will be called to display the instructions for the current level
+        (on top of the clipboard at the right side of the game window).
+        """
+
+        TEXT_LINES = [  "Cross the finish line.", 
+                        "Mind the traffic codes.",
+                        "Try not to drive ",
+                        "against traffic."]
+
+        PARK_LINES = [  "Park in the orange spot.",
+                        "Press P when ",
+                        "you are done."]
+        
+        # generate texts to display
+        timer_text = DASH_FONT.render(f"Time: {self.get_level_time()} sec", 1, BLACK)
+        level_text = CLIP_FONT.render(f"Level {self.level}", 1, BLACK)
+
+        # define position for each text, center by text rect center
+        timer_text_pos = (MIRROR_CENTER-timer_text.get_rect().centerx,MIRROR_POS[1]+timer_text.get_rect().centery)
+        level_text_pos = (CLIP_LEFT+0.5*level_text.get_rect().centerx,CLIP_TOP+level_text.get_rect().centery/8)
+        
+        texts_to_display = [(level_text, level_text_pos),
+                            (timer_text, timer_text_pos)]
+
+        line_space = -2
+
+        if self.level in [4,7,9,10]:
+            lines = PARK_LINES
+        else:
+            lines = TEXT_LINES
+        
+        for line in lines:
+            t = CLIP_FONT.render(line, 1, GRAY)
+            pos = (CLIP_CENTER-t.get_rect().centerx, RBT_RIGHT_CENTER[1]+line_space*t.get_rect().centery)
+            line_space += 2.5
+            texts_to_display.append((t,pos))
+            
+
+        for txt, pos in texts_to_display:
+            # Draw this img in this position
+            WIN.blit(txt, pos)  
