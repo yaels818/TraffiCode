@@ -11,6 +11,7 @@ from RoadUsers import PlayerCar, OtherCar, Pedestrian
 from utils import *
 from export_scores import export_data_to_file
 
+# Initializations
 pygame.init()
 pygame.mixer.init()
 
@@ -95,10 +96,15 @@ def draw_game(player_car):
             # Draw this img in this position
             constants.WIN.blit(img, pos)
 
-        # Draw the dashboard text (how fast the player's car is moving)
-        # (Round to the first significant digit, units are px/sec)
+        # Get the player's velocity (in px/sec) and round it to the first significant digit and double by 10 
+        # (To get a reasonable km/hr velocity)
         velocity_text = constants.DASH_FONT.render(f"{round(round(player.vel,1)*10.0)}", 1, (255, 255, 255))
+
+        # Calculate the position for the velocity text
+        # (Center of the speedometer)
         velocity_text_pos = (constants.SPEEDOMETER_TEXT_POS[0]-velocity_text.get_rect().centerx,constants.SPEEDOMETER_TEXT_POS[1]-velocity_text.get_rect().centery)
+        
+        # Draw the dashboard text (how fast the player's car is moving)
         constants.WIN.blit(velocity_text, velocity_text_pos) 
 
 
@@ -115,8 +121,12 @@ def draw_game(player_car):
 
     draw_dashboard()
 
-    # Display the clipboard area (current level, violations, bonus points)
-    level_tracker.display()
+    # If the player started moving
+    # -> Display on the clipboard area
+    if level_tracker.level_started:
+        level_tracker.display_score()
+    else:
+        level_tracker.display_instructions()
     
 #--------------------------------------------------------------
 def move_player(player_car):
@@ -177,10 +187,26 @@ def handle_collision_with_finish_line(player_car, parking_button):
     ----------
     player_car : PlayerCar
         The car the player drives
+
+    parking_button : DashboardButton
+        The parking button on the dashboard
+
+    Notes
+    -----
+    1. Finish line can either be a line to cross or a parking spot to park in.
+    2. If it is a line - check if player crossed it (in any direction).
+    3. If it is a parking spot - if parking button is pressed, 
+    check if player is inside it and if the car's angle is accurate 
+    in relation with the spot's direction 
+    (depending on level instructions or road direction).
+    4. The angle does not have to be 100% accurate - we use some smoothing 
+    to allow a small degree of inaccuracy that is still acceptable (=considered accurate).
+    5. If the angle is accurate - player gets bonus points. 
     """
     # Get the current finish line's index 
     curr_finish_line = level_tracker.level - 1
 
+    # Get the current finish line's image and position
     img = constants.FINISH_LINE_IMGS[curr_finish_line][0]
     pos = constants.FINISH_LINE_IMGS[curr_finish_line][1]
     
@@ -195,15 +221,15 @@ def handle_collision_with_finish_line(player_car, parking_button):
         # Move the copy to the correct position
         finish_line_rect.move_ip(pos)
     else:
-        # If img == "PARKING" ==> rectangle is already stored inside pos
+        # If img == "PARKING" 
+        # ==> Rectangle is already stored inside pos
         finish_line_rect = pos
     
     # Check if player_car's center is colliding with finish_line_rect
-    # (if the player crossed the finish line)
     if finish_line_rect.collidepoint(player_car.rect.center):
         if img != "PARKING":
+            # Player crossed the finish line
             success_sound.play()
-            # Player gets to advance to the next level
             level_tracker.increase_level()
         else:
             # If player car is parked
@@ -212,8 +238,7 @@ def handle_collision_with_finish_line(player_car, parking_button):
                     # Identify the current parking spot
                     if finish_line_rect.topleft == p_spot.topleft:
                         # Check if the player_car's angle while parked is accurate
-                        # for this specific parking spot
-                        # (depending on level instructions or road direction)
+                        # for this specific parking spot 
                         if player_car.angle > direction - constants.DIRECTION_SMOOTH and \
                             player_car.angle < direction + constants.DIRECTION_SMOOTH:
                             level_tracker.add_accurate_parking()
@@ -493,11 +518,14 @@ crash_ped_sound.set_volume(0.3)
 
 success_sound = pygame.mixer.Sound("Assets\Sounds/success.wav")
 success_sound.set_volume(0.3)
+
+is_background_music = True
+buttons_list[constants.MUSIC_BTN_INDEX].button_pressed()
 #-------------------------------------------------------------------------
 
 # Main Game Loop
-running = True
-while running:
+is_game_running = True
+while is_game_running:
     # Limit our window to this max speed 
     # (display this amount of Frames Per Second so the game 
     # would run at the same speed on computers with different processing power)
@@ -536,7 +564,7 @@ while running:
         # If player clicked X on the game window
         if event.type == pygame.QUIT:   
             # Stop the game loop
-            running = False
+            is_game_running = False
             break 
 
         # If player pressed a keyboard key
@@ -573,6 +601,8 @@ while running:
                 #pygame.draw.circle(WIN, RED, (button.rect.centerx, button.rect.centery), RADIUS)
                 if (dis < constants.RADIUS):
                     button.button_pressed()
+                    if button == buttons_list[constants.MUSIC_BTN_INDEX]:
+                        is_background_music = buttons_list[constants.MUSIC_BTN_INDEX].pressed
 
     # Move all the sprites (player, other cars, peds)
     # -----------------------------------------------
@@ -592,13 +622,15 @@ while running:
     # Check collision between player and any of the peds. 
     # If there is collision, remove the ped and track the violation. 
     for item in pygame.sprite.spritecollide(player,peds_group,True):
-            level_tracker.add_ped_hit()
-            crash_ped_sound.play()
+        level_tracker.add_ped_hit()
+        crash_ped_sound.play()
+        pygame.time.delay(2000) # 3 seconds delay to the game (moment of silence)
+        
 
     # Check collision between player and any of the cars. 
     # If there is collision, remove the car and track the violation. 
     for item in pygame.sprite.spritecollide(player,other_cars_group,True):
-            level_tracker.add_car_hit()
+        level_tracker.add_car_hit()
 
     # Handle collisions between player and static objects
     # ----------------------------------------------------
@@ -613,10 +645,10 @@ while running:
     # If player finished the last level
     # ----------------------------------------------------
     if level_tracker.game_finished():
-        text = "THANK YOU FOR PLAYING, YOU WON THE GAME!"
+        text = "THANKS FOR PLAYING, YOU FINISHED THE GAME!"
         blit_text_center(constants.WIN, constants.MAIN_FONT, constants.ORANGE, text)
         pygame.display.update()
-        pygame.time.delay(3000)
+        pygame.time.delay(4000)
 
         # 
         export_data_to_file(level_tracker.tracking_table)
