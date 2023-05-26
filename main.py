@@ -38,11 +38,11 @@ def draw_game(player_car):
         scene = constants.SCENE_LIGHT
 
         # Set the sky according to the current level (morning, noon, afternoon, night)
-        if curr_level <= 3:
+        if curr_level <= constants.LAST_LEVEL_SKY_DAY:
             sky = constants.SKY_DAY 
-        elif curr_level <= 5:
+        elif curr_level <= constants.LAST_LEVEL_SKY_SUNNY:
             sky = constants.SKY_SUNNY
-        elif curr_level <= 8:
+        elif curr_level <= constants.LAST_LEVEL_SKY_RAINY:
             sky = constants.SKY_RAINY
         else:
             sky = constants.SKY_NIGHT
@@ -128,6 +128,31 @@ def draw_game(player_car):
     else:
         level_tracker.display_instructions()
     
+def draw_menu():
+    
+    def check_clicked(btn):
+        if btn.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
+            return True
+        else:
+            return False
+
+    command = -1
+    pygame.draw.rect(constants.WIN, 'black', [100, 100, 300, 300])
+    pygame.draw.rect(constants.WIN, 'green', [100, 100, 300, 300], 5)
+    pygame.draw.rect(constants.WIN, 'white', [120, 120, 260, 40], 0, 5)
+    pygame.draw.rect(constants.WIN, 'gray', [120, 120, 260, 40], 5, 5)
+    text = "MENU"
+    pos = (135, 127)
+    blit_text_in_pos(constants.WIN, constants.MAIN_FONT, constants.WHITE, text, pos)
+    pygame.display.update()
+    # menu exit button
+    exit_menu_btn = pygame.rect.Rect((120, 350), (260, 40))
+    pygame.draw.rect(constants.WIN, 'light gray', exit_menu_btn, 0, 5)
+    pygame.display.update()
+
+    if check_clicked(exit_menu_btn):
+        command = 0
+    return command
 #--------------------------------------------------------------
 def move_player(player_car):
     """
@@ -491,13 +516,38 @@ def handle_driving_against_traffic(player_car):
                     level_tracker.add_driving_against_traffic()
 
 #--------------------------------------------------------------
+def handle_dash_button_press(btn_index):
+    
+    buttons_list[btn_index].button_pressed() 
+
+    if btn_index == constants.MENU_BTN_INDEX:
+        if buttons_list[btn_index].pressed:
+            pass
+    elif btn_index == constants.MUSIC_BTN_INDEX:
+        if buttons_list[btn_index].pressed:
+            pygame.mixer.music.play(-1)
+        else:
+            pygame.mixer.music.fadeout(2000)
+    elif btn_index == constants.LEFT_BLINK_INDEX or btn_index == constants.RIGHT_BLINK_INDEX:
+        if buttons_list[btn_index].pressed:
+            car_blinker_sound.play()
+    elif btn_index == constants.LIGHTS_BTN_INDEX:
+        if buttons_list[btn_index].pressed and level_tracker.level > constants.LAST_LEVEL_SKY_RAINY:
+            pass
+    elif btn_index == constants.WIPERS_BTN_INDEX:
+        if buttons_list[btn_index].pressed and \
+            level_tracker.level > constants.LAST_LEVEL_SKY_SUNNY and \
+                level_tracker.level <= constants.LAST_LEVEL_SKY_RAINY:
+            pass
 
 #-------------------------------------------------------------
 # Game Management Objects
 level_tracker = LevelTracker(1)
 clock = pygame.time.Clock()
 time_counter = 0
+is_menu = False
 
+#-------------------------------------------------------------
 # Sprites (moving objects)
 player = PlayerCar()
 
@@ -507,12 +557,15 @@ buttons_group = pygame.sprite.Group(buttons_list)
 other_cars_group = pygame.sprite.Group()
 peds_group = pygame.sprite.Group()
 
+#-------------------------------------------------------------
 # Sounds
-"""
-pygame.mixer.music.load("Sounds/bgm.wav")
+buttons_list[constants.MUSIC_BTN_INDEX].button_pressed()
+pygame.mixer.music.load("Assets\Sounds/city_medium_traffic.mp3")
 pygame.mixer.music.set_volume(0.2)
 pygame.mixer.music.play(-1)
-"""
+
+car_blinker_sound = pygame.mixer.Sound("Assets\Sounds/car_blinker.mp3")
+car_blinker_sound.set_volume(0.3)
 
 crash_ped_sound = pygame.mixer.Sound("Assets\Sounds/tires_squeal.wav")
 crash_ped_sound.set_volume(0.3)
@@ -520,11 +573,9 @@ crash_ped_sound.set_volume(0.3)
 success_sound = pygame.mixer.Sound("Assets\Sounds/success.wav")
 success_sound.set_volume(0.3)
 
-is_background_music = True
-buttons_list[constants.MUSIC_BTN_INDEX].button_pressed()
 #-------------------------------------------------------------------------
-
 # Main Game Loop
+#-------------------------------------------------------------------------
 is_game_running = True
 while is_game_running:
     # Limit our window to this max speed 
@@ -555,9 +606,16 @@ while is_game_running:
 
     # Draw the game elements, buttons and pedestrians
     # ------------------------------------------------
+    """
+    if is_menu:
+        menu_command = draw_menu()
+        if menu_command != -1:
+            is_menu = False
+    else:
+    """
     draw_game(player)
     buttons_group.draw(constants.WIN)
-    peds_group.draw(constants.WIN)       
+    peds_group.draw(constants.WIN)     
 
     # Track input events
     # ------------------------------------------------
@@ -579,12 +637,12 @@ while is_game_running:
                     level_tracker.start_level()
             # Activate blinkers by key press
             if keys[pygame.K_q]:
-                buttons_list[constants.LEFT_BLINK_INDEX].button_pressed() 
+                handle_dash_button_press(constants.LEFT_BLINK_INDEX)
             if keys[pygame.K_e]:
-                buttons_list[constants.RIGHT_BLINK_INDEX].button_pressed()
+                handle_dash_button_press(constants.RIGHT_BLINK_INDEX)
             # Activate parking by key press
             if keys[pygame.K_p]:
-                buttons_list[constants.PARKING_BTN_INDEX].button_pressed()
+                handle_dash_button_press(constants.PARKING_BTN_INDEX)
 
         # If player clicked the left mouse button 
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -596,14 +654,14 @@ while is_game_running:
             #other.path_exp.append(pos)
             
             # Check if one of the dashboard buttons was pressed
+            btn_index = 0
             for button in buttons_list:
                 # Calculate the distance between mouse position and the center of the button
                 dis = math.sqrt((button.rect.centerx-m_x)**2 + (button.rect.centery-m_y)**2)
                 #pygame.draw.circle(WIN, RED, (button.rect.centerx, button.rect.centery), RADIUS)
                 if (dis < constants.RADIUS):
-                    button.button_pressed()
-                    if button == buttons_list[constants.MUSIC_BTN_INDEX]:
-                        is_background_music = buttons_list[constants.MUSIC_BTN_INDEX].pressed
+                    handle_dash_button_press(btn_index)
+                btn_index += 1
 
     # Move all the sprites (player, other cars, peds)
     # -----------------------------------------------
@@ -636,7 +694,6 @@ while is_game_running:
     # If there is collision, remove the car and track the violation. 
     for item in pygame.sprite.spritecollide(player,other_cars_group,True):
         level_tracker.add_car_hit()
-        crash_ped_sound.play()
 
     # Handle collisions between player and static objects
     # ----------------------------------------------------
