@@ -318,7 +318,8 @@ def handle_collisions_with_road_borders(player_car):
     # If player is on the LEFT side of the scene
     else:
         area_rect = constants.LEFT_PL_BORDER_RECT
-        pl_mask = constants.MASKS[0]
+        #pl_mask = constants.MASKS[0]   # Disabled left pl mask - known issue
+        pl_mask = constants.MASKS[1]
         rbt_x = constants.RBT_LEFT_CENTER[0]
         rbt_y = constants.RBT_LEFT_CENTER[1]
         rbt_mask = constants.MASKS[1]
@@ -493,7 +494,7 @@ def handle_driving_against_traffic(player_car):
 
 #-------------------------------------------------------------
 # Game Management Objects
-level_tracker = LevelTracker(10)
+level_tracker = LevelTracker(1)
 clock = pygame.time.Clock()
 time_counter = 0
 
@@ -624,6 +625,10 @@ while is_game_running:
     for item in pygame.sprite.spritecollide(player,peds_group,True):
         level_tracker.add_ped_hit()
         crash_ped_sound.play()
+        text = "OH NO, YOU HIT A PEDESTRIAN!"
+        pos = (5, constants.SCENE_HEIGHT_START)
+        blit_text_in_pos(constants.WIN, constants.DASH_FONT, constants.RED, text, pos)
+        pygame.display.update()
         pygame.time.delay(2000) # 3 seconds delay to the game (moment of silence)
         
 
@@ -631,11 +636,12 @@ while is_game_running:
     # If there is collision, remove the car and track the violation. 
     for item in pygame.sprite.spritecollide(player,other_cars_group,True):
         level_tracker.add_car_hit()
+        crash_ped_sound.play()
 
     # Handle collisions between player and static objects
     # ----------------------------------------------------
     handle_collision_with_finish_line(player, buttons_list[constants.PARKING_BTN_INDEX])
-    #handle_collisions_with_road_borders(player)
+    handle_collisions_with_road_borders(player)
     handle_driving_against_traffic(player)
 
     # Update the window with everything we have drawn
@@ -646,7 +652,8 @@ while is_game_running:
     # ----------------------------------------------------
     if level_tracker.game_finished():
         text = "THANKS FOR PLAYING, YOU FINISHED THE GAME!"
-        blit_text_center(constants.WIN, constants.MAIN_FONT, constants.ORANGE, text)
+        pos = (constants.SCENE_CENTER, (constants.HEIGHT - constants.SCENE_HEIGHT_START)/2)
+        blit_text_in_pos(constants.WIN, constants.MAIN_FONT, constants.ORANGE, text, pos)
         pygame.display.update()
         pygame.time.delay(4000)
 
