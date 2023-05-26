@@ -248,6 +248,13 @@ class LevelTracker():
 
         if self.level in [4,7,9,10]:
             lines = PARK_LINES
+            if self.level == 4:
+                lines.append("")
+                lines.append("No need to park")
+                lines.append("in reverse.")
+            elif self.level == 10:
+                lines.append("")
+                lines.append("Park in reverse.")
         else:
             lines = TEXT_LINES
         
