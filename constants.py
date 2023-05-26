@@ -130,6 +130,10 @@ SKY_SUNNY = scale_image(pygame.image.load(DIR_IMGS + "Backgrounds/" + "sunny_sky
 SCENE_LIGHT = scale_image(pygame.image.load(DIR_IMGS + "Scenes\scene_1_light.png"),SCENE_SCALE)
 SCENE_DARK = scale_image(pygame.image.load(DIR_IMGS + "Scenes\scene_1_dark.png"),SCENE_SCALE)
 
+LAST_LEVEL_SKY_DAY = 3
+LAST_LEVEL_SKY_SUNNY = 5
+LAST_LEVEL_SKY_RAINY = 8
+
 # Asset Definitions - Scene Masks
 #---------------------------------
 MASKS_IMGS = []
