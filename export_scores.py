@@ -25,9 +25,9 @@ def export_data_to_file(data):
 
     Notes
     -----
-    If the directory for the player's scores has not been created yet - create it. 
-    If a score file for today's date has not been created yet - create a new file. 
-    If there is already a score file for today's date - append the latest game scores to it. 
+    1. If the directory for the player's scores has not been created yet - create it. 
+    2. If a score file for today's date has not been created yet - create a new file. 
+    3. If there is already a score file for today's date - append the latest game scores to it. 
     """
 
     def fixed_length(text, length):
@@ -75,11 +75,13 @@ def export_data_to_file(data):
 
     # Fill file with the tracker's info
     with open(path , "at") as file:
+        # Get current time in hour:minutes:seconds format and print it to the file
         play_time = now.strftime("%H:%M:%S")
         print("#" * FULL_ROW_LEN, file = file)
         print(f">> Game finished at: {play_time}", file = file)
         print("#" * FULL_ROW_LEN, file = file)
 
+        # Get the headers for each column and print them in a single line to the file
         print("# ", end = " ", file = file)
         header = data.pop(0)
         for col in header:
@@ -87,6 +89,7 @@ def export_data_to_file(data):
         print(file = file)
         print("-" * FULL_ROW_LEN, file = file)
 
+        # Get the data for each column and print it to the file
         for row in data:
             print("# ", end = " ", file = file)
             for col in row:
