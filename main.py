@@ -426,8 +426,13 @@ def handle_driving_against_traffic(player_car):
     direction = player_car.angle
 
     # If player is on the RIGHT side of the scene
+    #-------------------------------------------------------------
     if player_center[0] > VERT_MID_POINT:
+
+        area_rect = constants.RIGHT_PL_BORDER_RECT
+
         # player is at the top-right of the screen
+        #-----------------------------------------
         if player_center[1] < HORI_MID_POINT:
             # Erez, right side (top)
             if player_center >= constants.SOLID_LANE_BORDERS[0].topright and \
@@ -436,7 +441,7 @@ def handle_driving_against_traffic(player_car):
 
                 if direction > constants.SOUTH_WEST and direction < constants.NORTH_EAST:
                     level_tracker.add_driving_against_traffic()
-                    
+            
             # Erez, right side (bottom)
             elif player_center >= constants.SOLID_LANE_BORDERS[0].topright and \
                 player_center <= constants.EREZ_LANE_BORDERS[1].topleft and \
@@ -444,6 +449,14 @@ def handle_driving_against_traffic(player_car):
                 #print("b")
                 if direction < constants.SOUTH or direction > constants.NORTH_EAST:
                     level_tracker.add_driving_against_traffic()
+
+            # entering Yaar from Erez #TODO : DEBUG HERE  
+            elif player_center >= constants.YAAR_ROAD_BORDERS[4].topleft and \
+                player_center <= constants.SOLID_LANE_BORDERS[1].bottomright:
+                
+                if direction < constants.WEST or direction > constants.SOUTH_EAST:
+                    level_tracker.add_driving_against_traffic()
+                    #print("x")
 
             # entering Erez from Yaar  #TODO : DEBUG HERE  
             elif player_center >= constants.SOLID_LANE_BORDERS[1].bottomright and \
@@ -453,7 +466,11 @@ def handle_driving_against_traffic(player_car):
                     level_tracker.add_driving_against_traffic()   
         
         # player is at the bottom-right
+        #-----------------------------------------
         else:
+            if area_rect.contains(player_car.rect):
+                return
+
             # Rotem (top)
             if player_center >= constants.ROTEM_ROAD_BORDERS[0].topleft and \
                 player_center <= constants.ROTEM_LANE_BORDERS[0].bottomright and \
@@ -471,9 +488,14 @@ def handle_driving_against_traffic(player_car):
                 if direction < constants.SOUTH or direction > constants.NORTH_EAST:
                     level_tracker.add_driving_against_traffic()
                   
-    # player is on the left side
+    # If player is on the LEFT side of the scene
+    #-------------------------------------------------------------
     else:
+
+        area_rect = constants.LEFT_PL_BORDER_RECT
+
         # player is at the top-left of the screen
+        #-----------------------------------------
         if player_center[1] < HORI_MID_POINT:
             
             # Erez, left side
@@ -483,13 +505,6 @@ def handle_driving_against_traffic(player_car):
                 if direction < constants.NORTH_WEST or direction > constants.SOUTH:
                     level_tracker.add_driving_against_traffic()
         
-            # entering Yaar from Erez #TODO : DEBUG HERE  
-            elif player_center >= constants.YAAR_ROAD_BORDERS[4].topleft and \
-                player_center <= constants.SOLID_LANE_BORDERS[1].bottomright:
-                
-                if direction < constants.WEST or direction > constants.SOUTH_EAST:
-                    level_tracker.add_driving_against_traffic()
-                    #print("x")
             # entering Hadas from Erez
             elif player_center >= constants.HADAS_ROAD_BORDERS[0].topleft and \
                 player_center <= constants.HADAS_ROAD_BORDERS[2].bottomright:
@@ -505,7 +520,12 @@ def handle_driving_against_traffic(player_car):
                     level_tracker.add_driving_against_traffic()
         
         # player is at the bottom-left
+        #-----------------------------------------
         else:
+
+            if area_rect.contains(player_car.rect):
+                return
+
             # entering Yaar from Hadas or Erez
             
             # entering Ella from Left PL or Eshel
