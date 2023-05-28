@@ -32,8 +32,9 @@ If you 👍 or 👎 the game, please let me know by filling this form: https://f
 $${\color{lightgreen}Happy \space Driving!}$$
 
 --------------------------
+## How to play:
 
-For more details about the game and the development process, <br>
+For more details about how to play and the development process of the game, <br>
 check out the game's [Wiki 👇📚](https://github.com/yaels818/TraffiCode/wiki).
 
 <a href="https://github.com/yaels818/TraffiCode/wiki"> 
