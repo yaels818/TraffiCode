@@ -23,7 +23,7 @@ Each level the cars and pedestrians will either increase in numbers or in speed,
 --------------------------
 ## How to get the game:
 
-1. Download the code from this repository to your computer
+1. Download the code from this repository to your computer (click on the green ``` Code ``` button at the top of this page, then download as ZIP)
 2. Extract the files
 3. Double click on ``` main.exe ```
 
