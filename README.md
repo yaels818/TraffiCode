@@ -21,30 +21,24 @@ The game contains 10 different levels with increasing difficulty to keep things 
 Each level the cars and pedestrians will either increase in numbers or in speed, forcing you to adapt and get increasingly better too! <br>
 
 --------------------------
+## How to get the game:
+
+1. Download the code from this repository to your computer
+2. Extract the files
+3. Double click on ``` main.exe ```
+
+If you 👍 or 👎 the game, please let me know by filling this form: https://forms.gle/CdAKHoRpUDxjbPyN9
+
+$${\color{lightgreen}Happy \space Driving!}$$
+
+--------------------------
+
 For more details about the game and the development process, <br>
 check out the game's [Wiki 👇📚](https://github.com/yaels818/TraffiCode/wiki).
 
 <a href="https://github.com/yaels818/TraffiCode/wiki"> 
 <img height="50" src="https://user-images.githubusercontent.com/99403939/235144228-e987b659-cf03-4b52-8cec-413e8da22a43.png" /></a>
 
---------------------------
-
-## How to play:
-
-> The game is currently only available to play via .py files, meaning you need to have **Python** and **Pygame** installed on your computer.
-
-1. Check if you already have **Python** on your computer:
-   - Pull up the command prompt, type in ```python``` and press enter.
-   - If you got back a line that starts with something like this (```Python 3.10.2```) **-> great, skip ahead to 2.**
-   - Download **Python** from https://www.python.org/downloads/
-
-2. Unless you know you have already installed **Pygame** on your computer:
-   - Pull ip the command prompt, type in ``` pip install pygame ```
-
-3. Download the code from this repository to your computer and extract the files
-4. Run the game from ``` main.py ```
-
-$${\color{lightgreen}Happy \space Driving!}$$
 --------------------------
 
 ## Sneak peek 👀
