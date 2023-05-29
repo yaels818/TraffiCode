@@ -29,10 +29,11 @@ Each level the cars and pedestrians will either increase in numbers or in speed,
 
 If you 👍 or 👎 the game, please let me know by filling this form: https://forms.gle/CdAKHoRpUDxjbPyN9
 
+🚩 Check out [How to Play](https://github.com/yaels818/TraffiCode/wiki/How-to-play) and [Known Issues](https://github.com/yaels818/TraffiCode/wiki/Known-Issues). 
+
 $${\color{lightgreen}Happy \space Driving!}$$
 
 --------------------------
-## How to play:
 
 For more details about how to play and the development process of the game, <br>
 check out the game's [Wiki 👇📚](https://github.com/yaels818/TraffiCode/wiki).
