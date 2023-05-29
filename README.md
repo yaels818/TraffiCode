@@ -27,9 +27,12 @@ Each level the cars and pedestrians will either increase in numbers or in speed,
 2. Extract the files
 3. Double click on ``` main.exe ```
 
+🚩 Check out [How to Play](https://github.com/yaels818/TraffiCode/wiki/How-to-play) and [Known Issues](https://github.com/yaels818/TraffiCode/wiki/Known-Issues). 
+
 If you 👍 or 👎 the game, please let me know by filling this form: https://forms.gle/CdAKHoRpUDxjbPyN9
 
-🚩 Check out [How to Play](https://github.com/yaels818/TraffiCode/wiki/How-to-play) and [Known Issues](https://github.com/yaels818/TraffiCode/wiki/Known-Issues). 
+👑 First players to finish the game and leave a review will be rewarded with eternal digital glory in the [TraffiCode Hall of Fame!](https://github.com/yaels818/TraffiCode/wiki/Hall-of-Fame) 🏆  
+
 
 $${\color{lightgreen}Happy \space Driving!}$$
 
