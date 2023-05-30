@@ -10,6 +10,7 @@ from LevelTracker import LevelTracker
 from RoadUsers import PlayerCar, OtherCar, Pedestrian
 from utils import *
 from export_scores import export_data_to_file
+from export_scores_csv import export_data_to_csv_file
 
 # Initializations
 pygame.init()
@@ -127,9 +128,8 @@ def draw_game(player_car):
         level_tracker.display_score()
     else:
         level_tracker.display_instructions()
-    
-def draw_menu():
-    
+
+def draw_popup_menu():
     def check_clicked(btn):
         if btn.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
             return True
@@ -152,7 +152,19 @@ def draw_menu():
 
     if check_clicked(exit_menu_btn):
         command = 0
-    return command
+    return command    
+
+def draw_start_or_end_screen(is_start_screen):
+    if is_start_screen:
+        #Display the menu background
+        background = constants.SKY_NIGHT
+    else:
+        background = constants.SKY_DAY
+
+    background = background.convert()
+    constants.WIN.blit(background, (0, 0))
+    pygame.display.flip()
+
 #--------------------------------------------------------------
 def move_player(player_car):
     """
@@ -172,17 +184,17 @@ def move_player(player_car):
     if keys[pygame.K_SPACE]:
         player_car.reduce_speed(emergency_brake = True)
 
-    if keys[pygame.K_w] or keys[pygame.K_UP]:
+    if keys[pygame.K_w]:
         gas_pressed = True 
         reverse_gear = False
         player_car.move_forward()
 
-    if keys[pygame.K_s] or keys[pygame.K_DOWN]:
+    if keys[pygame.K_s]:
         gas_pressed = True 
         reverse_gear = True
         player_car.move_backward() 
 
-    if keys[pygame.K_a] or keys[pygame.K_LEFT]:
+    if keys[pygame.K_a]:
         if not reverse_gear:
             player_car.rotate(left = True)
         else:
@@ -190,7 +202,7 @@ def move_player(player_car):
             # -> lateral direction is reversed
             player_car.rotate(right = True)
 
-    if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
+    if keys[pygame.K_d]:
         if not reverse_gear:
             player_car.rotate(right = True)
         else:
@@ -561,11 +573,15 @@ def handle_dash_button_press(btn_index):
             pass
 
 #-------------------------------------------------------------
+# Screens Management
+is_start_screen = True
+is_finish_screen = False
+
+#-------------------------------------------------------------
 # Game Management Objects
-level_tracker = LevelTracker(1)
+level_tracker = LevelTracker(10)
 clock = pygame.time.Clock()
 time_counter = 0
-is_menu = False
 
 #-------------------------------------------------------------
 # Sprites (moving objects)
@@ -580,31 +596,49 @@ peds_group = pygame.sprite.Group()
 #-------------------------------------------------------------
 # Sounds
 buttons_list[constants.MUSIC_BTN_INDEX].button_pressed()
-pygame.mixer.music.load("Assets\Sounds/city_medium_traffic.mp3")
-pygame.mixer.music.set_volume(0.2)
+pygame.mixer.music.load(constants.MAIN_SOUND_TRAFFIC)
+pygame.mixer.music.set_volume(constants.MAIN_SOUND_VOL)
 pygame.mixer.music.play(-1)
 
-car_blinker_sound = pygame.mixer.Sound("Assets\Sounds/car_blinker.mp3")
-car_blinker_sound.set_volume(0.3)
+car_blinker_sound = pygame.mixer.Sound(constants.SOUND_CAR_BLINKER)
+car_blinker_sound.set_volume(constants.SOUND_EFFECT_VOL)
 
-crash_ped_sound = pygame.mixer.Sound("Assets\Sounds/tires_squeal.wav")
-crash_ped_sound.set_volume(0.3)
+crash_ped_sound = pygame.mixer.Sound(constants.SOUND_TIRES_SQUEAL)
+crash_ped_sound.set_volume(constants.SOUND_EFFECT_VOL)
 
-success_sound = pygame.mixer.Sound("Assets\Sounds/success.wav")
-success_sound.set_volume(0.3)
+success_sound = pygame.mixer.Sound(constants.SOUND_SUCCESS)
+success_sound.set_volume(constants.SOUND_EFFECT_VOL)
 
 #-------------------------------------------------------------------------
 # Main Game Loop
 #-------------------------------------------------------------------------
 is_game_running = True
 while is_game_running:
+    
+    # Game Start Screen 
+    # ------------------------------------------------
+    while is_start_screen:
+        
+        draw_start_or_end_screen(is_start_screen)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                is_start_screen = False
+                is_game_running = False
+                break
+            
+            #Pressing space starts the game ( runs main )
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    is_start_screen = False
+    
     # Limit our window to this max speed 
     # (display this amount of Frames Per Second so the game 
     # would run at the same speed on computers with different processing power)
     clock.tick(constants.FPS)   
 
-    # Run a seperate, in-game counter 
-    # ------------------------------------------------
+    # Run a seperate, in-game counter for sprite groups
+    # --------------------------------------------------
     time_counter += 1
     # Check if a full cycle is done (1 sec)
     if time_counter == constants.FPS:
@@ -626,13 +660,6 @@ while is_game_running:
 
     # Draw the game elements, buttons and pedestrians
     # ------------------------------------------------
-    """
-    if is_menu:
-        menu_command = draw_menu()
-        if menu_command != -1:
-            is_menu = False
-    else:
-    """
     draw_game(player)
     buttons_group.draw(constants.WIN)
     peds_group.draw(constants.WIN)     
@@ -728,19 +755,43 @@ while is_game_running:
     # If player finished the last level
     # ----------------------------------------------------
     if level_tracker.game_finished():
-        text = "THANKS FOR PLAYING, YOU FINISHED THE GAME!"
-        pos = (constants.SCENE_CENTER, (constants.HEIGHT - constants.SCENE_HEIGHT_START)/2)
-        blit_text_in_pos(constants.WIN, constants.MAIN_FONT, constants.ORANGE, text, pos)
-        pygame.display.update()
-        pygame.time.delay(4000)
+        is_finish_screen = True
+        pygame.mixer.music.fadeout(2000)
+        pygame.mixer.music.load(constants.MAIN_SOUND_BOSSA)
+        pygame.mixer.music.set_volume(constants.MAIN_SOUND_VOL)
+        pygame.mixer.music.play(-1)
 
-        # 
-        export_data_to_file(level_tracker.tracking_table)
-        
-        level_tracker.reset()
-        player.reset()
-        peds_group.empty()
-        other_cars_group.empty()
+        # Game Finish Screen 
+        # ------------------------------------------------
+        while is_finish_screen:
+            draw_start_or_end_screen(is_start_screen)
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    #export_data_to_file(level_tracker.tracking_table)
+                    export_data_to_csv_file(level_tracker.tracking_table)
+                    is_finish_screen = False
+                    is_game_running = False
+                    break
+                
+                #Pressing space restarts the game
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        #export_data_to_file(level_tracker.tracking_table)
+                        export_data_to_csv_file(level_tracker.tracking_table)
+
+                        pygame.mixer.music.fadeout(2000)
+                        pygame.mixer.music.load(constants.MAIN_SOUND_TRAFFIC)
+                        pygame.mixer.music.set_volume(constants.MAIN_SOUND_VOL)
+                        pygame.mixer.music.play(-1)
+
+                        level_tracker.reset()
+                        player.reset()
+                        peds_group.empty()
+                        other_cars_group.empty()
+
+                        is_start_screen = True
+                        is_finish_screen = False
 
 #print(other.path_exp)
 
