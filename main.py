@@ -17,7 +17,7 @@ pygame.init()
 pygame.mixer.init()
 
 #-------------------------------------------------------------
-def draw_game(player_car):
+def draw_game(player_car, is_menu_button_pressed):
     """
     Draw the level scene, finish line, player car, dashboard, level status. 
 
@@ -108,7 +108,6 @@ def draw_game(player_car):
         # Draw the dashboard text (how fast the player's car is moving)
         constants.WIN.blit(velocity_text, velocity_text_pos) 
 
-
     draw_scene(level_tracker.level)
 
     draw_finish_line(level_tracker.level)
@@ -125,7 +124,10 @@ def draw_game(player_car):
     # If the player started moving
     # -> Display on the clipboard area
     if level_tracker.level_started:
-        level_tracker.display_score()
+        if is_menu_button_pressed:
+            level_tracker.display_instructions()
+        else:
+            level_tracker.display_score()
     else:
         level_tracker.display_instructions()
 
@@ -552,10 +554,7 @@ def handle_dash_button_press(btn_index):
     
     buttons_list[btn_index].button_pressed() 
 
-    if btn_index == constants.MENU_BTN_INDEX:
-        if buttons_list[btn_index].pressed:
-            pass
-    elif btn_index == constants.MUSIC_BTN_INDEX:
+    if btn_index == constants.MUSIC_BTN_INDEX:
         if buttons_list[btn_index].pressed:
             pygame.mixer.music.play(-1)
         else:
@@ -576,7 +575,6 @@ def handle_dash_button_press(btn_index):
 # Screens Management
 is_start_screen = True
 is_finish_screen = False
-
 #-------------------------------------------------------------
 # Game Management Objects
 level_tracker = LevelTracker(10)
@@ -660,7 +658,7 @@ while is_game_running:
 
     # Draw the game elements, buttons and pedestrians
     # ------------------------------------------------
-    draw_game(player)
+    draw_game(player, buttons_list[constants.MENU_BTN_INDEX].pressed)
     buttons_group.draw(constants.WIN)
     peds_group.draw(constants.WIN)     
 
