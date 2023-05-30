@@ -85,6 +85,7 @@ def load_masks():
 # Directory Paths
 #----------------
 DIR_IMGS = "Assets\Images/"
+DIR_SOUNDS = "Assets\Sounds/"
 #-------------------------------------------------------------------------
 # Screen Definitions
 #-------------------
@@ -101,6 +102,19 @@ MAIN_FONT = pygame.font.SysFont("centurygothic", 36)
 DASH_FONT = pygame.font.SysFont("erasdemiitc", 26)
 CLIP_FONT = pygame.font.SysFont("erasdemiitc", 19)
 STREETS_FONT = pygame.font.SysFont("erasdemiitc", 12)
+#-------------------------------------------------------------------------
+# Sound Definitions
+#------------------
+MAIN_SOUND_VOL = 0.2
+SOUND_EFFECT_VOL = 0.3
+
+MAIN_SOUND_TRAFFIC = DIR_SOUNDS + "city_medium_traffic.mp3"
+MAIN_SOUND_BOSSA = DIR_SOUNDS + "8bit_bossa_nova.mp3"
+
+SOUND_CAR_BLINKER = DIR_SOUNDS + "car_blinker.mp3"
+SOUND_TIRES_SQUEAL = DIR_SOUNDS + "tires_squeal.wav"
+SOUND_SUCCESS = DIR_SOUNDS + "success.wav"
+
 #-------------------------------------------------------------------------
 # Other Definitions
 #------------------
