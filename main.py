@@ -774,7 +774,7 @@ while is_game_running:
                     is_game_running = False
                     break
                 
-                #Pressing space restarts the game
+                # Pressing space restarts the game
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
                         #export_data_to_file(level_tracker.tracking_table)
@@ -784,6 +784,11 @@ while is_game_running:
                         pygame.mixer.music.load(constants.MAIN_SOUND_TRAFFIC)
                         pygame.mixer.music.set_volume(constants.MAIN_SOUND_VOL)
                         pygame.mixer.music.play(-1)
+
+                        for button in buttons_list:
+                            if button.pressed:
+                                if button != buttons_list[constants.MUSIC_BTN_INDEX]:
+                                    button.button_pressed()
 
                         level_tracker.reset()
                         player.reset()
