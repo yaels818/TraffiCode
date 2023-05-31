@@ -1,5 +1,62 @@
+"""
+Author: @yaels818
+Description: export_scores module, contains functions needed to export the 
+                player's scores into html file.
+Notes: 
+    
+"""
+# Imports
 import os
 import datetime
+import csv
+import pandas as pd
+
+DIR = "player scores"
+CSS_PATH = DIR + "/main.css"
+
+def export_scores_to_csv(data, curr_time):
+    
+    # Create file name with current time in hour_minutes_seconds format
+    file_name = "game_finished_at" + "_" + curr_time.strftime("%d_%m_%y") + "_" + curr_time.strftime("%H_%M")
+
+    cvs_file_path = DIR + "/" + file_name + ".csv"
+
+    # Fill file with the tracker's info
+    with open(cvs_file_path, "w", newline = '') as cvs_file:
+
+        # Get the headers for each column and print them in a single line to the file
+        writer = csv.writer(cvs_file)
+
+        header = data.pop(0)
+        writer.writerow(header)
+
+        writer.writerows(data)
+
+    return cvs_file_path
+
+def export_csv_to_html(file_path,curr_time):
+
+    df = pd.read_csv(file_path)
+
+    path_html = file_path.strip(".csv") + ".html"
+
+    date_time = curr_time.strftime("%d/%m/%y %H:%M:%S")
+
+    html_string = '''
+    <html>
+        <head>
+            <link rel="stylesheet" href="main.css">
+            <title>TraffiCode Score</title>
+            <h1>Game finished at: {time}</h1>
+        </head>
+        <table>
+            {table}
+    </html>
+    '''
+
+    # OUTPUT AN HTML FILE
+    with open(path_html, 'w') as html_file:
+        html_file.write(html_string.format(time = date_time, table=df.to_html(index=False,border=False)))
 
 def export_data_to_file(data):
     """
@@ -30,70 +87,26 @@ def export_data_to_file(data):
     3. If there is already a score file for today's date - append the latest game scores to it. 
     """
 
-    def fixed_length(text, length):
-        """
-        Make given text fit given length.
-        Here we use it to make our table's columns with a fixed length. 
-
-        Parameters
-        ----------
-        text : string
-            The text we want to fit. 
-        
-        length : int
-            The length we want to text to match.
-        """
-
-        # If text is too long
-        if len(text) > length:
-            # Cut off the extra characters
-            text = text[:length]
-        # If text is too short     
-        elif len(text) < length:
-            # Pad text with spaces, then remove extras
-            text = (text + " " * length)[:length] 
-        return text
-
-    DIR = "player scores"
-
+    """
     # If the directory for the score files does not exist yet 
-    # --> Create the directory for the score files
+    # --> Create the directory
     try:
         os.mkdir(DIR)
     except FileExistsError:
         #print("Directory " + DIR + " already exists")
         pass
+    """
+    
+    # Get current time and date
+    curr_time = datetime.datetime.now()
 
-    # 
-    now = datetime.datetime.now()
-    file_name = "player_stats" + "_" + now.strftime("%d_%m_%y") + ".txt"
+    cvs_file_path = export_scores_to_csv(data,curr_time)
 
-    path = DIR + "/" + file_name
+    export_csv_to_html(cvs_file_path,curr_time)
 
-    COL_LEN = 22
-    FULL_ROW_LEN = 253
-
-    # Fill file with the tracker's info
-    with open(path , "at") as file:
-        # Get current time in hour:minutes:seconds format and print it to the file
-        play_time = now.strftime("%H:%M:%S")
-        print("#" * FULL_ROW_LEN, file = file)
-        print(f">> Game finished at: {play_time}", file = file)
-        print("#" * FULL_ROW_LEN, file = file)
-
-        # Get the headers for each column and print them in a single line to the file
-        print("# ", end = " ", file = file)
-        header = data.pop(0)
-        for col in header:
-            print(fixed_length(col, COL_LEN), end = " # ", file = file)
-        print(file = file)
-        print("-" * FULL_ROW_LEN, file = file)
-
-        # Get the data for each column and print it to the file
-        for row in data:
-            print("# ", end = " ", file = file)
-            for col in row:
-                print(fixed_length(str(col), COL_LEN), end = " # ", file = file)
-            print(file = file)
-        print("#" * FULL_ROW_LEN, file = file)
-        print(file = file)
+    # Delete all index files, then we can delete the directory
+    try:
+        os.remove(cvs_file_path)
+    except OSError as error:
+        print(error)
+        
