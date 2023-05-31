@@ -29,9 +29,9 @@ Each level the cars and pedestrians will either increase in numbers or in speed,
 
 🚩 Check out [How to Play](https://github.com/yaels818/TraffiCode/wiki/How-to-play) and [Known Issues](https://github.com/yaels818/TraffiCode/wiki/Known-Issues). 
 
-If you 👍 or 👎 the game, please let me know by filling this form: https://forms.gle/CdAKHoRpUDxjbPyN9
+If you 👍 or 👎 the game, please let me know: [Feedback form in Hebrew](https://forms.gle/CdAKHoRpUDxjbPyN9) / [Feedback form in English](https://forms.gle/kv7nj2iGi8uHKRW36)
 
-👑 First players to finish the game and leave a review will be rewarded with eternal digital glory in the [TraffiCode Hall of Fame!](https://github.com/yaels818/TraffiCode/wiki/Hall-of-Fame) 🏆  
+👑 First players to finish the game and submit their feedback will be rewarded with eternal digital glory in the [TraffiCode Hall of Fame!](https://github.com/yaels818/TraffiCode/wiki/Hall-of-Fame) 🏆  
 
 
 $${\color{lightgreen}Happy \space Driving!}$$
