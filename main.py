@@ -10,7 +10,6 @@ from LevelTracker import LevelTracker
 from RoadUsers import PlayerCar, OtherCar, Pedestrian
 from utils import *
 from export_scores import export_data_to_file
-from export_scores_csv import export_data_to_csv_file
 
 # Initializations
 pygame.init()
@@ -577,7 +576,7 @@ is_start_screen = True
 is_finish_screen = False
 #-------------------------------------------------------------
 # Game Management Objects
-level_tracker = LevelTracker(10)
+level_tracker = LevelTracker()
 clock = pygame.time.Clock()
 time_counter = 0
 
@@ -766,8 +765,7 @@ while is_game_running:
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    #export_data_to_file(level_tracker.tracking_table)
-                    export_data_to_csv_file(level_tracker.tracking_table)
+                    export_data_to_file(level_tracker.tracking_table)
                     is_finish_screen = False
                     is_game_running = False
                     break
@@ -775,8 +773,7 @@ while is_game_running:
                 # Pressing space restarts the game
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
-                        #export_data_to_file(level_tracker.tracking_table)
-                        export_data_to_csv_file(level_tracker.tracking_table)
+                        export_data_to_file(level_tracker.tracking_table)
 
                         pygame.mixer.music.fadeout(2000)
                         pygame.mixer.music.load(constants.MAIN_SOUND_TRAFFIC)
