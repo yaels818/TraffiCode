@@ -16,7 +16,7 @@ pygame.init()
 pygame.mixer.init()
 
 #-------------------------------------------------------------
-def draw_game(player_car):
+def draw_game(player_car, is_menu_button_pressed):
     """
     Draw the level scene, finish line, player car, dashboard, level status. 
 
@@ -107,7 +107,6 @@ def draw_game(player_car):
         # Draw the dashboard text (how fast the player's car is moving)
         constants.WIN.blit(velocity_text, velocity_text_pos) 
 
-
     draw_scene(level_tracker.level)
 
     draw_finish_line(level_tracker.level)
@@ -124,35 +123,35 @@ def draw_game(player_car):
     # If the player started moving
     # -> Display on the clipboard area
     if level_tracker.level_started:
-        level_tracker.display_score()
+        if is_menu_button_pressed:
+            level_tracker.display_instructions()
+        else:
+            level_tracker.display_score()
     else:
         level_tracker.display_instructions()
-    
-def draw_menu():
-    
-    def check_clicked(btn):
-        if btn.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
-            return True
-        else:
-            return False
 
-    command = -1
-    pygame.draw.rect(constants.WIN, 'black', [100, 100, 300, 300])
-    pygame.draw.rect(constants.WIN, 'green', [100, 100, 300, 300], 5)
-    pygame.draw.rect(constants.WIN, 'white', [120, 120, 260, 40], 0, 5)
-    pygame.draw.rect(constants.WIN, 'gray', [120, 120, 260, 40], 5, 5)
-    text = "MENU"
-    pos = (135, 127)
-    blit_text_in_pos(constants.WIN, constants.MAIN_FONT, constants.WHITE, text, pos)
-    pygame.display.update()
-    # menu exit button
-    exit_menu_btn = pygame.rect.Rect((120, 350), (260, 40))
-    pygame.draw.rect(constants.WIN, 'light gray', exit_menu_btn, 0, 5)
-    pygame.display.update()
+def draw_start_or_end_screen(is_start_screen):
+    if is_start_screen:
+        #Display the menu background
+        """
+        sky = scale_image(pygame.image.load("Assets\Images\Backgrounds\day_sky.jpg"),0.3)
+        scene = scale_image(pygame.image.load("Assets\Images\Scenes\Mishmar HaGvul.png"),constants.SCENE_SCALE)
+        """
+        screen = constants.START_SCREEN
+    else:
+        screen = constants.END_SCREEN
 
-    if check_clicked(exit_menu_btn):
-        command = 0
-    return command
+
+    """
+    level_imgs = [(sky, (0,0)), (scene, (constants.MIRROR_POS[0], constants.SCENE_HEIGHT_START))]
+        
+    # Draw each image in its position
+    for img, pos in level_imgs:
+        constants.WIN.blit(img, pos)  
+    """
+    constants.WIN.blit(screen, (0,0))  
+    pygame.display.flip()
+
 #--------------------------------------------------------------
 def move_player(player_car):
     """
@@ -172,17 +171,17 @@ def move_player(player_car):
     if keys[pygame.K_SPACE]:
         player_car.reduce_speed(emergency_brake = True)
 
-    if keys[pygame.K_w] or keys[pygame.K_UP]:
+    if keys[pygame.K_w]:
         gas_pressed = True 
         reverse_gear = False
         player_car.move_forward()
 
-    if keys[pygame.K_s] or keys[pygame.K_DOWN]:
+    if keys[pygame.K_s]:
         gas_pressed = True 
         reverse_gear = True
         player_car.move_backward() 
 
-    if keys[pygame.K_a] or keys[pygame.K_LEFT]:
+    if keys[pygame.K_a]:
         if not reverse_gear:
             player_car.rotate(left = True)
         else:
@@ -190,7 +189,7 @@ def move_player(player_car):
             # -> lateral direction is reversed
             player_car.rotate(right = True)
 
-    if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
+    if keys[pygame.K_d]:
         if not reverse_gear:
             player_car.rotate(right = True)
         else:
@@ -449,22 +448,7 @@ def handle_driving_against_traffic(player_car):
                 #print("b")
                 if direction < constants.SOUTH or direction > constants.NORTH_EAST:
                     level_tracker.add_driving_against_traffic()
-
-            # entering Yaar from Erez #TODO : DEBUG HERE  
-            elif player_center >= constants.YAAR_ROAD_BORDERS[4].topleft and \
-                player_center <= constants.SOLID_LANE_BORDERS[1].bottomright:
-                
-                if direction < constants.WEST or direction > constants.SOUTH_EAST:
-                    level_tracker.add_driving_against_traffic()
-                    #print("x")
-
-            # entering Erez from Yaar  #TODO : DEBUG HERE  
-            elif player_center >= constants.SOLID_LANE_BORDERS[1].bottomright and \
-                player_center <= constants.YAAR_ROAD_BORDERS[6].topleft :
-                #print("x")
-                if direction > constants.WEST and direction < constants.EAST:
-                    level_tracker.add_driving_against_traffic()   
-        
+            
         # player is at the bottom-right
         #-----------------------------------------
         else:
@@ -526,8 +510,6 @@ def handle_driving_against_traffic(player_car):
             if area_rect.contains(player_car.rect):
                 return
 
-            # entering Yaar from Hadas or Erez
-            
             # entering Ella from Left PL or Eshel
             if player_center >= constants.ELLA_ROAD_BORDERS[1].topleft and \
                 player_center <= constants.ELLA_ROAD_BORDERS[4].bottomright:
@@ -540,10 +522,7 @@ def handle_dash_button_press(btn_index):
     
     buttons_list[btn_index].button_pressed() 
 
-    if btn_index == constants.MENU_BTN_INDEX:
-        if buttons_list[btn_index].pressed:
-            pass
-    elif btn_index == constants.MUSIC_BTN_INDEX:
+    if btn_index == constants.MUSIC_BTN_INDEX:
         if buttons_list[btn_index].pressed:
             pygame.mixer.music.play(-1)
         else:
@@ -561,11 +540,14 @@ def handle_dash_button_press(btn_index):
             pass
 
 #-------------------------------------------------------------
+# Screens Management
+is_start_screen = True
+is_finish_screen = False
+#-------------------------------------------------------------
 # Game Management Objects
-level_tracker = LevelTracker(1)
+level_tracker = LevelTracker()
 clock = pygame.time.Clock()
 time_counter = 0
-is_menu = False
 
 #-------------------------------------------------------------
 # Sprites (moving objects)
@@ -580,31 +562,52 @@ peds_group = pygame.sprite.Group()
 #-------------------------------------------------------------
 # Sounds
 buttons_list[constants.MUSIC_BTN_INDEX].button_pressed()
-pygame.mixer.music.load("Assets\Sounds/city_medium_traffic.mp3")
-pygame.mixer.music.set_volume(0.2)
+pygame.mixer.music.load(constants.MAIN_SOUND_TRAFFIC)
+pygame.mixer.music.set_volume(constants.MAIN_SOUND_VOL)
 pygame.mixer.music.play(-1)
 
-car_blinker_sound = pygame.mixer.Sound("Assets\Sounds/car_blinker.mp3")
-car_blinker_sound.set_volume(0.3)
+crash_ped_sound = pygame.mixer.Sound(constants.SOUND_TIRES_SQUEAL)
+crash_ped_sound.set_volume(constants.SOUND_EFFECT_VOL)
 
-crash_ped_sound = pygame.mixer.Sound("Assets\Sounds/tires_squeal.wav")
-crash_ped_sound.set_volume(0.3)
+crash_car_sound = pygame.mixer.Sound(constants.SOUND_CAR_CRASH)
+crash_car_sound.set_volume(constants.SOUND_EFFECT_VOL)
 
-success_sound = pygame.mixer.Sound("Assets\Sounds/success.wav")
-success_sound.set_volume(0.3)
+car_blinker_sound = pygame.mixer.Sound(constants.SOUND_CAR_BLINKER)
+car_blinker_sound.set_volume(constants.SOUND_EFFECT_VOL)
+
+success_sound = pygame.mixer.Sound(constants.SOUND_SUCCESS)
+success_sound.set_volume(constants.SOUND_EFFECT_VOL)
 
 #-------------------------------------------------------------------------
 # Main Game Loop
 #-------------------------------------------------------------------------
 is_game_running = True
 while is_game_running:
+    
+    # Game Start Screen 
+    # ------------------------------------------------
+    while is_start_screen:
+        
+        draw_start_or_end_screen(is_start_screen)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                is_start_screen = False
+                is_game_running = False
+                break
+            
+            #Pressing space starts the game ( runs main )
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    is_start_screen = False
+    
     # Limit our window to this max speed 
     # (display this amount of Frames Per Second so the game 
     # would run at the same speed on computers with different processing power)
     clock.tick(constants.FPS)   
 
-    # Run a seperate, in-game counter 
-    # ------------------------------------------------
+    # Run a seperate, in-game counter for sprite groups
+    # --------------------------------------------------
     time_counter += 1
     # Check if a full cycle is done (1 sec)
     if time_counter == constants.FPS:
@@ -626,14 +629,7 @@ while is_game_running:
 
     # Draw the game elements, buttons and pedestrians
     # ------------------------------------------------
-    """
-    if is_menu:
-        menu_command = draw_menu()
-        if menu_command != -1:
-            is_menu = False
-    else:
-    """
-    draw_game(player)
+    draw_game(player, buttons_list[constants.MENU_BTN_INDEX].pressed)
     buttons_group.draw(constants.WIN)
     peds_group.draw(constants.WIN)     
 
@@ -709,11 +705,11 @@ while is_game_running:
         pygame.display.update()
         pygame.time.delay(2000) # 3 seconds delay to the game (moment of silence)
         
-
     # Check collision between player and any of the cars. 
     # If there is collision, remove the car and track the violation. 
     for item in pygame.sprite.spritecollide(player,other_cars_group,True):
         level_tracker.add_car_hit()
+        crash_car_sound.play()
 
     # Handle collisions between player and static objects
     # ----------------------------------------------------
@@ -724,23 +720,49 @@ while is_game_running:
     # Update the window with everything we have drawn
     pygame.display.update()
 
-    
     # If player finished the last level
     # ----------------------------------------------------
     if level_tracker.game_finished():
-        text = "THANKS FOR PLAYING, YOU FINISHED THE GAME!"
-        pos = (constants.SCENE_CENTER, (constants.HEIGHT - constants.SCENE_HEIGHT_START)/2)
-        blit_text_in_pos(constants.WIN, constants.MAIN_FONT, constants.ORANGE, text, pos)
-        pygame.display.update()
-        pygame.time.delay(4000)
+        is_finish_screen = True
+        pygame.mixer.music.fadeout(2000)
+        pygame.mixer.music.load(constants.MAIN_SOUND_BOSSA)
+        pygame.mixer.music.set_volume(constants.MAIN_SOUND_VOL)
+        pygame.mixer.music.play(-1)
 
-        # 
-        export_data_to_file(level_tracker.tracking_table)
-        
-        level_tracker.reset()
-        player.reset()
-        peds_group.empty()
-        other_cars_group.empty()
+        # Game Finish Screen 
+        # ------------------------------------------------
+        while is_finish_screen:
+            draw_start_or_end_screen(is_start_screen)
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    export_data_to_file(level_tracker.tracking_table)
+                    is_finish_screen = False
+                    is_game_running = False
+                    break
+                
+                # Pressing space restarts the game
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        export_data_to_file(level_tracker.tracking_table)
+
+                        pygame.mixer.music.fadeout(2000)
+                        pygame.mixer.music.load(constants.MAIN_SOUND_TRAFFIC)
+                        pygame.mixer.music.set_volume(constants.MAIN_SOUND_VOL)
+                        pygame.mixer.music.play(-1)
+
+                        for button in buttons_list:
+                            if button.pressed:
+                                if button != buttons_list[constants.MUSIC_BTN_INDEX]:
+                                    button.button_pressed()
+
+                        level_tracker.reset()
+                        player.reset()
+                        peds_group.empty()
+                        other_cars_group.empty()
+
+                        is_start_screen = True
+                        is_finish_screen = False
 
 #print(other.path_exp)
 
