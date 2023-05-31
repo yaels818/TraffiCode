@@ -133,6 +133,11 @@ BLUE = (0, 0, 255)
 PINK = (255, 174, 201)
 ORANGE = (255,127,39)
 #-------------------------------------------------------------------------
+# Asset Definitions - Screens
+#----------------------------
+START_SCREEN = pygame.image.load(DIR_IMGS + "Screens/" + "start_screen.png")
+END_SCREEN = pygame.image.load(DIR_IMGS + "Screens/" + "end_screen.png")
+#-------------------------------------------------------------------------
 # Asset Definitions - Scene
 #---------------------------
 SCENE_SCALE = 1.4
