@@ -130,40 +130,26 @@ def draw_game(player_car, is_menu_button_pressed):
     else:
         level_tracker.display_instructions()
 
-def draw_popup_menu():
-    def check_clicked(btn):
-        if btn.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
-            return True
-        else:
-            return False
-
-    command = -1
-    pygame.draw.rect(constants.WIN, 'black', [100, 100, 300, 300])
-    pygame.draw.rect(constants.WIN, 'green', [100, 100, 300, 300], 5)
-    pygame.draw.rect(constants.WIN, 'white', [120, 120, 260, 40], 0, 5)
-    pygame.draw.rect(constants.WIN, 'gray', [120, 120, 260, 40], 5, 5)
-    text = "MENU"
-    pos = (135, 127)
-    blit_text_in_pos(constants.WIN, constants.MAIN_FONT, constants.WHITE, text, pos)
-    pygame.display.update()
-    # menu exit button
-    exit_menu_btn = pygame.rect.Rect((120, 350), (260, 40))
-    pygame.draw.rect(constants.WIN, 'light gray', exit_menu_btn, 0, 5)
-    pygame.display.update()
-
-    if check_clicked(exit_menu_btn):
-        command = 0
-    return command    
-
 def draw_start_or_end_screen(is_start_screen):
     if is_start_screen:
         #Display the menu background
-        background = constants.SKY_NIGHT
+        """
+        sky = scale_image(pygame.image.load("Assets\Images\Backgrounds\day_sky.jpg"),0.3)
+        scene = scale_image(pygame.image.load("Assets\Images\Scenes\Mishmar HaGvul.png"),constants.SCENE_SCALE)
+        """
+        screen = constants.START_SCREEN
     else:
-        background = constants.SKY_DAY
+        screen = constants.END_SCREEN
 
-    background = background.convert()
-    constants.WIN.blit(background, (0, 0))
+
+    """
+    level_imgs = [(sky, (0,0)), (scene, (constants.MIRROR_POS[0], constants.SCENE_HEIGHT_START))]
+        
+    # Draw each image in its position
+    for img, pos in level_imgs:
+        constants.WIN.blit(img, pos)  
+    """
+    constants.WIN.blit(screen, (0,0))  
     pygame.display.flip()
 
 #--------------------------------------------------------------
@@ -462,22 +448,7 @@ def handle_driving_against_traffic(player_car):
                 #print("b")
                 if direction < constants.SOUTH or direction > constants.NORTH_EAST:
                     level_tracker.add_driving_against_traffic()
-
-            # entering Yaar from Erez #TODO : DEBUG HERE  
-            elif player_center >= constants.YAAR_ROAD_BORDERS[4].topleft and \
-                player_center <= constants.SOLID_LANE_BORDERS[1].bottomright:
-                
-                if direction < constants.WEST or direction > constants.SOUTH_EAST:
-                    level_tracker.add_driving_against_traffic()
-                    #print("x")
-
-            # entering Erez from Yaar  #TODO : DEBUG HERE  
-            elif player_center >= constants.SOLID_LANE_BORDERS[1].bottomright and \
-                player_center <= constants.YAAR_ROAD_BORDERS[6].topleft :
-                #print("x")
-                if direction > constants.WEST and direction < constants.EAST:
-                    level_tracker.add_driving_against_traffic()   
-        
+            
         # player is at the bottom-right
         #-----------------------------------------
         else:
@@ -539,8 +510,6 @@ def handle_driving_against_traffic(player_car):
             if area_rect.contains(player_car.rect):
                 return
 
-            # entering Yaar from Hadas or Erez
-            
             # entering Ella from Left PL or Eshel
             if player_center >= constants.ELLA_ROAD_BORDERS[1].topleft and \
                 player_center <= constants.ELLA_ROAD_BORDERS[4].bottomright:
@@ -597,11 +566,14 @@ pygame.mixer.music.load(constants.MAIN_SOUND_TRAFFIC)
 pygame.mixer.music.set_volume(constants.MAIN_SOUND_VOL)
 pygame.mixer.music.play(-1)
 
-car_blinker_sound = pygame.mixer.Sound(constants.SOUND_CAR_BLINKER)
-car_blinker_sound.set_volume(constants.SOUND_EFFECT_VOL)
-
 crash_ped_sound = pygame.mixer.Sound(constants.SOUND_TIRES_SQUEAL)
 crash_ped_sound.set_volume(constants.SOUND_EFFECT_VOL)
+
+crash_car_sound = pygame.mixer.Sound(constants.SOUND_CAR_CRASH)
+crash_car_sound.set_volume(constants.SOUND_EFFECT_VOL)
+
+car_blinker_sound = pygame.mixer.Sound(constants.SOUND_CAR_BLINKER)
+car_blinker_sound.set_volume(constants.SOUND_EFFECT_VOL)
 
 success_sound = pygame.mixer.Sound(constants.SOUND_SUCCESS)
 success_sound.set_volume(constants.SOUND_EFFECT_VOL)
@@ -733,11 +705,11 @@ while is_game_running:
         pygame.display.update()
         pygame.time.delay(2000) # 3 seconds delay to the game (moment of silence)
         
-
     # Check collision between player and any of the cars. 
     # If there is collision, remove the car and track the violation. 
     for item in pygame.sprite.spritecollide(player,other_cars_group,True):
         level_tracker.add_car_hit()
+        crash_car_sound.play()
 
     # Handle collisions between player and static objects
     # ----------------------------------------------------
@@ -748,7 +720,6 @@ while is_game_running:
     # Update the window with everything we have drawn
     pygame.display.update()
 
-    
     # If player finished the last level
     # ----------------------------------------------------
     if level_tracker.game_finished():
