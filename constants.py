@@ -111,8 +111,9 @@ SOUND_EFFECT_VOL = 0.3
 MAIN_SOUND_TRAFFIC = DIR_SOUNDS + "city_medium_traffic.mp3"
 MAIN_SOUND_BOSSA = DIR_SOUNDS + "8bit_bossa_nova.mp3"
 
-SOUND_CAR_BLINKER = DIR_SOUNDS + "car_blinker.mp3"
 SOUND_TIRES_SQUEAL = DIR_SOUNDS + "tires_squeal.wav"
+SOUND_CAR_CRASH = DIR_SOUNDS + "car_crash.wav"
+SOUND_CAR_BLINKER = DIR_SOUNDS + "car_blinker.mp3"
 SOUND_SUCCESS = DIR_SOUNDS + "success.wav"
 
 #-------------------------------------------------------------------------
