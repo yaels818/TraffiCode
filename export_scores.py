@@ -12,7 +12,6 @@ import csv
 import pandas as pd
 
 DIR = "player scores"
-CSS_PATH = DIR + "/main.css"
 
 def export_scores_to_csv(data, curr_time):
     
@@ -36,6 +35,8 @@ def export_scores_to_csv(data, curr_time):
 
 def export_csv_to_html(file_path,curr_time):
 
+    CSS_FILE_NAME = "style.css"
+
     df = pd.read_csv(file_path)
 
     path_html = file_path.strip(".csv") + ".html"
@@ -45,7 +46,7 @@ def export_csv_to_html(file_path,curr_time):
     html_string = '''
     <html>
         <head>
-            <link rel="stylesheet" href="main.css">
+            <link rel="stylesheet" href="{file_name}">
             <title>TraffiCode Score</title>
             <h1>Game finished at: {time}</h1>
         </head>
@@ -56,7 +57,7 @@ def export_csv_to_html(file_path,curr_time):
 
     # OUTPUT AN HTML FILE
     with open(path_html, 'w') as html_file:
-        html_file.write(html_string.format(time = date_time, table=df.to_html(index=False,border=False)))
+        html_file.write(html_string.format(file_name=CSS_FILE_NAME, time = date_time, table=df.to_html(index=False,border=False)))
 
 def export_data_to_file(data):
     """
@@ -96,7 +97,7 @@ def export_data_to_file(data):
         #print("Directory " + DIR + " already exists")
         pass
     """
-    
+
     # Get current time and date
     curr_time = datetime.datetime.now()
 
