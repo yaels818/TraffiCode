@@ -315,14 +315,17 @@ def handle_collisions_with_road_borders(player_car):
         
         # Check if the player car is colliding with the given mask
         # (poi = point of intersection)
-        poi = player_car.check_collision_with_mask(mask)
+        SCENE_OFFSET = (0,constants.SCENE_HEIGHT_START)
+        poi = player_car.check_collision_with_mask(mask,*SCENE_OFFSET)
 
         # If there is a collision
         if poi != None:
             # Stop the player's car (like it hit a wall)
             player_car.vel = 0
-            # Draw the point of intersection
-            pygame.draw.circle(constants.WIN, constants.RED, poi, 2)
+
+            # Draw the point of intersection (remove scene offset)
+            pygame.draw.circle(constants.WIN, constants.RED, (poi[0]+SCENE_OFFSET[0],poi[1]+SCENE_OFFSET[1]), 3)
+            
             return True
         
         return False
@@ -342,8 +345,7 @@ def handle_collisions_with_road_borders(player_car):
     # If player is on the LEFT side of the scene
     else:
         area_rect = constants.LEFT_PL_BORDER_RECT
-        #pl_mask = constants.MASKS[0]   # Disabled left pl mask - known issue
-        pl_mask = constants.MASKS[1]
+        pl_mask = constants.MASKS[0]
         rbt_x = constants.RBT_LEFT_CENTER[0]
         rbt_y = constants.RBT_LEFT_CENTER[1]
         rbt_mask = constants.MASKS[1]
@@ -631,7 +633,7 @@ while is_game_running:
     # ------------------------------------------------
     draw_game(player, buttons_list[constants.MENU_BTN_INDEX].pressed)
     buttons_group.draw(constants.WIN)
-    peds_group.draw(constants.WIN)     
+    #peds_group.draw(constants.WIN)     
 
     # Track input events
     # ------------------------------------------------
@@ -689,6 +691,7 @@ while is_game_running:
         car.move_sprite()
 
     for ped in peds_group:
+        ped.draw()
         #ped.draw_points(constants.PINK)
         ped.move_sprite()
     
