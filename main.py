@@ -542,14 +542,16 @@ def handle_dash_button_press(btn_index):
             car_blinker_sound.play()
     
     elif btn_index == constants.LIGHTS_BTN_INDEX:
-        if buttons_list[btn_index].pressed and level_tracker.level > constants.LAST_LEVEL_SKY_RAINY:
-            pass
+        if buttons_list[btn_index].pressed:
+            # If level is night
+            if level_tracker.level > constants.LAST_LEVEL_SKY_RAINY:
+                level_tracker.add_weather_awareness()
     
     elif btn_index == constants.WIPERS_BTN_INDEX:
-        if buttons_list[btn_index].pressed and \
-            level_tracker.level > constants.LAST_LEVEL_SKY_SUNNY and \
-                level_tracker.level <= constants.LAST_LEVEL_SKY_RAINY:
-            pass
+        if buttons_list[btn_index].pressed:
+            # If level is rain
+            if level_tracker.level > constants.LAST_LEVEL_SKY_SUNNY and level_tracker.level <= constants.LAST_LEVEL_SKY_RAINY:
+                level_tracker.add_weather_awareness()
 
 #-------------------------------------------------------------
 # Screens Management
@@ -557,7 +559,7 @@ is_start_screen = True
 is_finish_screen = False
 #-------------------------------------------------------------
 # Game Management Objects
-level_tracker = LevelTracker()
+level_tracker = LevelTracker(5)
 clock = pygame.time.Clock()
 time_counter = 0
 
