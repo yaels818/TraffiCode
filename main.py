@@ -163,11 +163,14 @@ def move_player(player_car,is_parking_button):
         The car the player drives
     """
     
-    if is_parking_button:
-        return
-        
     # Get which keyboard keys are being pressed
     keys = pygame.key.get_pressed()
+    
+    if is_parking_button:
+        if keys[pygame.K_w] or keys[pygame.K_s] or keys[pygame.K_a] or keys[pygame.K_d]:
+            blit_text_in_pos(constants.WIN, constants.DASH_FONT, constants.RED, "Can't move in Parking", (5, constants.SCENE_HEIGHT_START))
+            pygame.display.update()
+            pygame.time.delay(3000)
     
     gas_pressed = False
     reverse_gear = False
@@ -533,12 +536,15 @@ def handle_dash_button_press(btn_index):
             pygame.mixer.music.play(-1)
         else:
             pygame.mixer.music.fadeout(2000)
+
     elif btn_index == constants.LEFT_BLINK_INDEX or btn_index == constants.RIGHT_BLINK_INDEX:
         if buttons_list[btn_index].pressed:
             car_blinker_sound.play()
+    
     elif btn_index == constants.LIGHTS_BTN_INDEX:
         if buttons_list[btn_index].pressed and level_tracker.level > constants.LAST_LEVEL_SKY_RAINY:
             pass
+    
     elif btn_index == constants.WIPERS_BTN_INDEX:
         if buttons_list[btn_index].pressed and \
             level_tracker.level > constants.LAST_LEVEL_SKY_SUNNY and \
@@ -706,11 +712,9 @@ while is_game_running:
     for item in pygame.sprite.spritecollide(player,peds_group,True):
         level_tracker.add_ped_hit()
         crash_ped_sound.play()
-        text = "OH NO, YOU HIT A PEDESTRIAN!"
-        pos = (5, constants.SCENE_HEIGHT_START)
-        blit_text_in_pos(constants.WIN, constants.DASH_FONT, constants.RED, text, pos)
+        blit_text_in_pos(constants.WIN, constants.DASH_FONT, constants.RED, "OH NO, YOU HIT A PEDESTRIAN!", (5, constants.SCENE_HEIGHT_START))
         pygame.display.update()
-        pygame.time.delay(2000) # 3 seconds delay to the game (moment of silence)
+        pygame.time.delay(2000) # 3 seconds delay to the game (moment of silence + so you can see the text)
         
     # Check collision between player and any of the cars. 
     # If there is collision, remove the car and track the violation. 
