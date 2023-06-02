@@ -50,6 +50,7 @@ class LevelTracker():
         self.parking_lot_hits = 0
         
         self.accurate_parking = 0
+        self.weather_awareness = 0
 
         self.tracking_table = []
 
@@ -135,6 +136,9 @@ class LevelTracker():
     def add_accurate_parking(self):
         self.accurate_parking += 1
 
+    def add_weather_awareness(self):
+        self.weather_awareness += 1
+
     def reset(self, start_level = 1, sprites_vel = 0.5, time_bet_peds = 5, time_bet_cars = 6):
         self.level = start_level
         self.level_started = False
@@ -155,7 +159,9 @@ class LevelTracker():
 
         self.roundabout_hits = 0
         self.parking_lot_hits = 0
+
         self.accurate_parking = 0
+        self.weather_awareness = 0
 
         self.tracking_table = []
     
@@ -172,14 +178,15 @@ class LevelTracker():
         peds_hits_text = CLIP_FONT.render(f"Pedestrians hits: {self.peds_hits}", 1, RED)
         cars_hits_text = CLIP_FONT.render(f"Other cars hits: {self.cars_hits}", 1, RED)
 
-        sidewalk_hits_text = CLIP_FONT.render(f"Sidewalk hits: {self.sidewalk_hits}", 1, ORANGE)
-        over_solid_lane_text = CLIP_FONT.render(f"Over solid lanes: {self.over_solid_lane}", 1, ORANGE)
-        against_traffic_text = CLIP_FONT.render(f"Wrong direction: {self.against_traffic}", 1, ORANGE)
+        sidewalk_hits_text = CLIP_FONT.render(f"Sidewalk hits: {self.sidewalk_hits} ms", 1, ORANGE)
+        over_solid_lane_text = CLIP_FONT.render(f"Over solid lanes: {self.over_solid_lane} ms", 1, ORANGE)
+        against_traffic_text = CLIP_FONT.render(f"Wrong direction: {self.against_traffic} ms", 1, ORANGE)
 
-        rbt_hits_text = CLIP_FONT.render(f"Roundabout hits: {self.roundabout_hits}", 1, ORANGE)
-        pl_hits_text = CLIP_FONT.render(f"Parking lot hits: {self.parking_lot_hits}", 1, ORANGE)
+        rbt_hits_text = CLIP_FONT.render(f"Roundabout hits: {self.roundabout_hits} ms", 1, ORANGE)
+        pl_hits_text = CLIP_FONT.render(f"Parking lot hits: {self.parking_lot_hits} ms", 1, ORANGE)
         
         accurate_parking_text = CLIP_FONT.render(f"Accurate parking: {self.accurate_parking}", 1, GREEN)
+        weather_awareness_text = CLIP_FONT.render(f"Weather awareness: {self.weather_awareness}", 1, GREEN)
 
         # define position for each text, center by text rect center
         timer_text_pos = (MIRROR_CENTER-timer_text.get_rect().centerx,MIRROR_POS[1]+timer_text.get_rect().centery)
@@ -194,7 +201,7 @@ class LevelTracker():
                     against_traffic_text,
                     rbt_hits_text, pl_hits_text]
 
-        bonus_texts = [accurate_parking_text]
+        bonus_texts = [accurate_parking_text, weather_awareness_text]
 
         line_space = -4
         for t in accident_texts:
