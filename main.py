@@ -315,8 +315,8 @@ def handle_collisions_with_road_borders(player_car):
         
         # Check if the player car is colliding with the given mask
         # (poi = point of intersection)
-        SCENE_OFFSET = (0,constants.SCENE_HEIGHT_START)
-        poi = player_car.check_collision_with_mask(mask,*SCENE_OFFSET)
+        
+        poi = player_car.check_collision_with_mask(mask,*constants.SCENE_OFFSET)
 
         # If there is a collision
         if poi != None:
@@ -324,7 +324,7 @@ def handle_collisions_with_road_borders(player_car):
             player_car.vel = 0
 
             # Draw the point of intersection (remove scene offset)
-            pygame.draw.circle(constants.WIN, constants.RED, (poi[0]+SCENE_OFFSET[0],poi[1]+SCENE_OFFSET[1]), 3)
+            pygame.draw.circle(constants.WIN, constants.RED, (poi[0]+constants.SCENE_OFFSET[0],poi[1]+constants.SCENE_OFFSET[1]), 3)
             
             return True
         
