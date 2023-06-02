@@ -33,6 +33,10 @@ class RoadUser(pygame.sprite.Sprite):
         Update the bounding rectangle of the car accordingly.
         """
         self.rect = blit_rotate_center(WIN, self.image, (self.x, self.y), self.angle)
+        
+        # Shrink sprite's hit box (to give players a bit more room before collisions)
+        self.rect = self.rect.inflate(-5,-3)
+        
         pygame.draw.rect(WIN, BLUE, self.rect, 1)
     
     def stay_within_scene_borders(self, new_x, new_y):
