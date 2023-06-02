@@ -250,7 +250,7 @@ RIGHT_PL_BORDER_RECT = pygame.Rect((EREZ_ROTEM_SIDEWK_TOP_R[0], SHAKED_SIDEWK_BO
 PLS_RP_BORDERS = [
     # Horizontal
         # Left PL, top left spot (FINISH_LINE_IMGS #4)
-    pygame.Rect((0.35*LANE_W, SHAKED_SIDEWK_BOT_R[1]+2.3*LANE_W), (2*LANE_W, LANE_W)),
+    pygame.Rect((0.35*LANE_W, SHAKED_SIDEWK_BOT_R[1]+4.1*LANE_W), (2*LANE_W, LANE_W)),
     
     # Vertical
         # Right PL, bottom right spot (FINISH_LINE_IMGS #5)
