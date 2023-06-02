@@ -153,7 +153,7 @@ def draw_start_or_end_screen(is_start_screen):
     pygame.display.flip()
 
 #--------------------------------------------------------------
-def move_player(player_car):
+def move_player(player_car,is_parking_button):
     """
     Move the player's car according to the keyboard keys pressed.
 
@@ -162,6 +162,10 @@ def move_player(player_car):
     player_car : PlayerCar
         The car the player drives
     """
+    
+    if is_parking_button:
+        return
+        
     # Get which keyboard keys are being pressed
     keys = pygame.key.get_pressed()
     
@@ -203,7 +207,7 @@ def move_player(player_car):
         player_car.reduce_speed(emergency_brake = False)
 #--------------------------------------------------------------
 
-def handle_collision_with_finish_line(player_car, parking_button):
+def handle_collision_with_finish_line(player_car, is_parking_button):
     """
     Check if player's car reached the current level's finish line.
 
@@ -257,7 +261,7 @@ def handle_collision_with_finish_line(player_car, parking_button):
             level_tracker.increase_level()
         else:
             # If player car is parked
-            if parking_button.pressed:
+            if is_parking_button:
                 for direction, p_spot in constants.FINISH_LINE_PARKINGS:
                     # Identify the current parking spot
                     if finish_line_rect.topleft == p_spot.topleft:
@@ -683,7 +687,7 @@ while is_game_running:
 
     # Move all the sprites (player, other cars, peds)
     # -----------------------------------------------
-    move_player(player)
+    move_player(player,buttons_list[constants.PARKING_BTN_INDEX].pressed)
     
     for car in other_cars_group:
         car.draw()
@@ -716,7 +720,7 @@ while is_game_running:
 
     # Handle collisions between player and static objects
     # ----------------------------------------------------
-    handle_collision_with_finish_line(player, buttons_list[constants.PARKING_BTN_INDEX])
+    handle_collision_with_finish_line(player, buttons_list[constants.PARKING_BTN_INDEX].pressed)
     handle_collisions_with_road_borders(player)
     handle_driving_against_traffic(player)
 
