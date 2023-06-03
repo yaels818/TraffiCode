@@ -1,0 +1,19 @@
+-------------------------------------------------------------
+How to Export Python Project to .exe File (Using PyInstaller)
+-------------------------------------------------------------
+(On Windows computers)
+
+1) Open command prompt from the directory of your game 
+		(stand on your directory path and type cmd)
+
+2) pip install pyinstaller
+
+3) pyinstaller -F -w -i Assets/Images/icon.ico main.py
+		(-F = one exe file, -w = removes terminal window, -i = adds custom icon to exe,
+		(main.py = name of your main python file)
+		takes a while, especially if you have lots of dependencies
+
+4) Your .exe file is inside /dist folder - drag it into the main directory 
+	(into /TraffiCode). You can delete /build, /dist and spec file.
+
+5) Disable the Anti Virus before running the .exe file 
