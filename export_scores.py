@@ -33,7 +33,7 @@ def export_scores_to_csv(data, curr_time):
 
     return cvs_file_path
 
-def export_csv_to_html(file_path,curr_time):
+def export_csv_to_html(file_path,curr_time,score):
 
     CSS_FILE_NAME = "style.css"
 
@@ -49,6 +49,7 @@ def export_csv_to_html(file_path,curr_time):
             <link rel="stylesheet" href="{file_name}">
             <title>TraffiCode Score</title>
             <h1>Game finished at: {time}</h1>
+            <h2>Total score: {total_score} ( /100 without bonus)</h2>
         </head>
         <table>
             {table}
@@ -57,9 +58,9 @@ def export_csv_to_html(file_path,curr_time):
 
     # OUTPUT AN HTML FILE
     with open(path_html, 'w') as html_file:
-        html_file.write(html_string.format(file_name=CSS_FILE_NAME, time = date_time, table=df.to_html(index=False,border=False)))
+        html_file.write(html_string.format(file_name=CSS_FILE_NAME, time = date_time, total_score = score, table=df.to_html(index=False,border=False)))
 
-def export_data_to_file(data):
+def export_data_to_file(data, score):
     """
     Export given data to a text file.
     Here we use it for the data of LevelTracker.tracking_table 
@@ -103,7 +104,7 @@ def export_data_to_file(data):
 
     cvs_file_path = export_scores_to_csv(data,curr_time)
 
-    export_csv_to_html(cvs_file_path,curr_time)
+    export_csv_to_html(cvs_file_path,curr_time, score)
 
     # Delete all index files, then we can delete the directory
     try:
