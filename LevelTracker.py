@@ -58,15 +58,16 @@ class LevelTracker():
 
         if self.tracking_table == []:
             self.tracking_table.append(["Level", 
-                                    "Time (Seconds)",
-                                    "Peds hits", 
+                                    "Time (sec)",
+                                    "Pedestrians hits", 
                                     "Cars hits", 
-                                    "Sidewalk hits", 
-                                    "Over solid lane", 
-                                    "Against traffic",
-                                    "Roundabout hits", 
-                                    "Parking lot hits", 
-                                    "Accurate parking ( /4)"])
+                                    "Time on sidewalk (ms)", 
+                                    "Time over solid lane (ms)", 
+                                    "Time against traffic (ms)",
+                                    "Time touching roundabouts walls (ms)", 
+                                    "Time touching parking lot walls (ms)", 
+                                    "Accurate parking bonus ( /4)",
+                                    "Weather awareness bonus ( /5)"])
 
         self.tracking_table.append([self.level, 
                                     self.get_level_time(),
@@ -77,7 +78,8 @@ class LevelTracker():
                                     self.against_traffic,
                                     self.roundabout_hits, 
                                     self.parking_lot_hits, 
-                                    self.accurate_parking])
+                                    self.accurate_parking,
+                                    self.weather_awareness])
 
         self.level += 1
         self.level_started = False
@@ -165,6 +167,26 @@ class LevelTracker():
 
         self.tracking_table = []
     
+    def calculate_total_score(self):
+        total_score = 100
+        
+        total_score -= self.peds_hits * 10
+        total_score -= self.cars_hits * 5
+
+        total_score -= self.sidewalk_hits * (1/100)
+        total_score -= self.over_solid_lane * (1/100)
+        total_score -= self.against_traffic * (1/100)
+        
+        total_score -= self.roundabout_hits * (1/1000)
+        total_score -= self.parking_lot_hits * (1/1000)
+
+        total_score += self.accurate_parking * 3
+        total_score += self.weather_awareness * 3
+
+        total_score = round(total_score)
+
+        return total_score
+
     def display_score(self):
         """
         This method will be called to display the current score 
