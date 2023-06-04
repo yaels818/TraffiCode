@@ -8,7 +8,8 @@ Notes:
 # Imports
 import time
 from constants import WIN, CLIP_FONT, DASH_FONT, BLACK, RED, ORANGE, GREEN, GRAY, \
-    CLIP_LEFT, CLIP_TOP, CLIP_CENTER, MIRROR_CENTER,MIRROR_POS, RBT_RIGHT_CENTER
+        CLIP_LEFT, CLIP_TOP, CLIP_CENTER, MIRROR_CENTER,MIRROR_POS, RBT_RIGHT_CENTER, \
+        LEVELS_INSTS
 #-------------------------------------------------------------------------
 class LevelTracker():
     
@@ -252,15 +253,6 @@ class LevelTracker():
         This method will be called to display the instructions for the current level
         (on top of the clipboard at the right side of the game window).
         """
-
-        TEXT_LINES = [  "Cross the finish line.", 
-                        "Mind the traffic codes.",
-                        "Try not to drive ",
-                        "against traffic."]
-
-        PARK_LINES = [  "Park in the orange spot.",
-                        "Press P when ",
-                        "you are done."]
         
         # generate texts to display
         timer_text = DASH_FONT.render(f"Time: {self.get_level_time()} sec", 1, BLACK)
@@ -272,27 +264,15 @@ class LevelTracker():
         
         texts_to_display = [(level_text, level_text_pos),
                             (timer_text, timer_text_pos)]
-
-        line_space = -2
-
-        if self.level in [4,7,9,10]:
-            lines = PARK_LINES
-            if self.level == 4:
-                lines.append("")
-                lines.append("No need to park")
-                lines.append("in reverse.")
-            elif self.level == 10:
-                lines.append("")
-                lines.append("Park in reverse.")
-        else:
-            lines = TEXT_LINES
         
+        line_space = -2
+        lines = LEVELS_INSTS[self.level - 1]
+            
         for line in lines:
             t = CLIP_FONT.render(line, 1, GRAY)
             pos = (CLIP_CENTER-t.get_rect().centerx, RBT_RIGHT_CENTER[1]+line_space*t.get_rect().centery)
             line_space += 2.5
             texts_to_display.append((t,pos))
-            
 
         for txt, pos in texts_to_display:
             # Draw this img in this position
