@@ -618,7 +618,117 @@ ROTEM_BLD_POS = (ROTEM_ROAD_BOT_R[0]+1.5*LANE_W, ROTEM_ROAD_BOT_R[1]-0.9*RED_BLD
 SHAKED_BLD_POS = (0, SHAKED_SIDEWK_BOT_R[1]-1.2*BLACK_BLD.get_height())
 YAAR_BLD_TOP_POS = (YAAR_ROAD_MID_R[0]+0.5*LANE_W, EREZ_ROTEM_SIDEWK_TOP_R[1]+0.5*LANE_W)
 YAAR_BLD_BOT_POS = (ESHEL_ROAD_BOT_R[0]-1*LANE_W, ESHEL_ROAD_BOT_R[1]-0.6*BROWN_BLD.get_height())
+#-------------------------------------------------------------------------
+# Levels Instructions Definitions  
+#--------------------------------
+LEVEL_1_INST = [ "You are in the red",
+                "car, driving your mom",
+                "for the first time since",
+                "getting your license.",
+                "(No pressure,right?)",
+                "",
+                "Exit the parking lot.",
+                "Try not to hit a wall",
+                "on your way out!",
+                "If you do get stuck,",
+                "try rotating the car",
+                "while pressing W or S."]
 
+LEVEL_2_INST = [ "Your mom asked you to",
+                "give her a ride to work.",
+                "",
+                "Swing by the purple",
+                "office building",
+                "on HaYaar.",
+                "",
+                "Mind the pedestrians."]
+
+LEVEL_3_INST = [ "Your friends called,",
+                "they want to hang out",
+                "at the mall.",
+                "",
+                "Get to the big mall",
+                "via HaElla.",
+                "",
+                "Try not to drive",
+                "against traffic."]
+
+LEVEL_4_INST = [ "Underground parking",
+                "lot is full.",
+                "You will have to park",
+                "across the street.",
+                "",
+                "Get to the Shaked",
+                "Parking Lot and park.",
+                "",
+                "If you get stuck,",
+                "try rotating the car",
+                "while pressing W or S."]
+
+LEVEL_5_INST = [ "You had a really",
+                "good time!",
+                "But your mom called,",
+                "she forgot her lunch.",
+                "",
+                "Bring her some food",
+                "to the Erez Park.",
+                "",
+                "Drive safely, try not",
+                "to hit anything."]
+
+LEVEL_6_INST = [ "Well done!",
+                "But all of a sudden",
+                "rain started pouring.",
+                "",
+                "You should get going.",
+                "",
+                "Don't forget to turn on",
+                "the wipers!"]
+
+LEVEL_7_INST = [ "Congratulations,",
+                "your first flat tire!",
+                "",
+                "Keep going down Eshel,",
+                "you can stop and",
+                "change your tire there.",
+                "",
+                "Don't forget to park!"]
+
+LEVEL_8_INST = [ "Looking good!",
+                "But you decided to test",
+                "the tires in a roundabout",
+                "just to make sure.",
+                "",
+                "Try not to drive",
+                "into other cars or",
+                "pedestrians."]
+
+LEVEL_9_INST = [ "Tires are fine, but",
+                "your little brother and",
+                "sister called, asking",
+                "you to pick them up",
+                "from the library.",
+                "They stayed late",
+                "working on a project.",
+                "",
+                "Park next to it on Yaar.",
+                "",
+                "Don't forget to turn",
+                "on the lights!"]
+
+LEVEL_10_INST = [ "Wow, has it been a",
+                "whole day already?",
+                "",
+                "Let's drive back home!",
+                "",
+                "You got this, you're a",
+                "pro by now :)"]
+
+LEVELS_INSTS = [LEVEL_1_INST, LEVEL_2_INST, 
+                LEVEL_3_INST, LEVEL_4_INST, 
+                LEVEL_5_INST, LEVEL_6_INST,
+                LEVEL_7_INST, LEVEL_8_INST,
+                LEVEL_9_INST, LEVEL_10_INST]
 #-------------------------------------------------------------------------
 # Functions (called by the main program)
 #---------------------------------------
