@@ -560,7 +560,7 @@ FINISH_LINE_VERT = pygame.transform.rotate(FINISH_LINE_HORI,90)
 
 FINISH_LINE_PARKINGS = [
     # 4 - Left PL top left spot
-    (WEST, PLS_RP_BORDERS[0]),
+    (EAST, PLS_RP_BORDERS[0]),
 
     # 7 - Eshel PP middle spot
     (EAST, ESHEL_PP_BORDERS[1]),
@@ -655,11 +655,10 @@ LEVEL_3_INST = [ "Your friends called,",
 
 LEVEL_4_INST = [ "Underground parking",
                 "lot is full.",
-                "You will have to park",
-                "across the street.",
                 "",
-                "Get to the Shaked",
-                "Parking Lot and park.",
+                "Park across the street.",
+                "You'll get bonus points",
+                "for parking in reverse!",
                 "",
                 "If you get stuck,",
                 "try rotating the car",
