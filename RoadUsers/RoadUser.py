@@ -37,7 +37,7 @@ class RoadUser(pygame.sprite.Sprite):
         # Shrink sprite's hit box (to give players a bit more room before collisions)
         self.rect = self.rect.inflate(-5,-3)
         
-        pygame.draw.rect(WIN, BLUE, self.rect, 1)
+        #pygame.draw.rect(WIN, BLUE, self.rect, 1)
     
     def stay_within_scene_borders(self, new_x, new_y):
         """
