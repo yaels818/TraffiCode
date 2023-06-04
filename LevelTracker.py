@@ -50,6 +50,7 @@ class LevelTracker():
         self.roundabout_hits = 0
         self.parking_lot_hits = 0
         
+        self.blinkers_use = 0
         self.accurate_parking = 0
         self.weather_awareness = 0
 
@@ -67,6 +68,7 @@ class LevelTracker():
                                     "Time against traffic (ms)",
                                     "Time touching roundabouts walls (ms)", 
                                     "Time touching parking lot walls (ms)", 
+                                    "Time using blinkers correctly (ms)", 
                                     "Accurate parking bonus ( /4)",
                                     "Weather awareness bonus ( /5)"])
 
@@ -79,6 +81,7 @@ class LevelTracker():
                                     self.against_traffic,
                                     self.roundabout_hits, 
                                     self.parking_lot_hits, 
+                                    self.blinkers_use,
                                     self.accurate_parking,
                                     self.weather_awareness])
 
@@ -136,6 +139,9 @@ class LevelTracker():
     def add_parking_lot_hit(self):
         self.parking_lot_hits += 1
     
+    def add_blinkers_use(self):
+        self.blinkers_use += 1
+
     def add_accurate_parking(self):
         self.accurate_parking += 1
 
@@ -163,6 +169,7 @@ class LevelTracker():
         self.roundabout_hits = 0
         self.parking_lot_hits = 0
 
+        self.blinkers_use = 0
         self.accurate_parking = 0
         self.weather_awareness = 0
 
@@ -181,6 +188,7 @@ class LevelTracker():
         total_score -= self.roundabout_hits * (1/1000)
         total_score -= self.parking_lot_hits * (1/1000)
 
+        total_score += self.blinkers_use/10 * 0.5
         total_score += self.accurate_parking * 3
         total_score += self.weather_awareness * 3
 
@@ -208,6 +216,7 @@ class LevelTracker():
         rbt_hits_text = CLIP_FONT.render(f"Roundabout hits: {self.roundabout_hits} ms", 1, ORANGE)
         pl_hits_text = CLIP_FONT.render(f"Parking lot hits: {self.parking_lot_hits} ms", 1, ORANGE)
         
+        blinkers_use_text = CLIP_FONT.render(f"Blinkers used: {self.blinkers_use} ms", 1, GREEN)
         accurate_parking_text = CLIP_FONT.render(f"Accurate parking: {self.accurate_parking}", 1, GREEN)
         weather_awareness_text = CLIP_FONT.render(f"Weather awareness: {self.weather_awareness}", 1, GREEN)
 
@@ -224,7 +233,7 @@ class LevelTracker():
                     against_traffic_text,
                     rbt_hits_text, pl_hits_text]
 
-        bonus_texts = [accurate_parking_text, weather_awareness_text]
+        bonus_texts = [blinkers_use_text, accurate_parking_text, weather_awareness_text]
 
         line_space = -4
         for t in accident_texts:
