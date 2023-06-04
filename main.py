@@ -54,6 +54,7 @@ def draw_game(player_car, is_menu_button_pressed):
         for img, pos in level_imgs:
             constants.WIN.blit(img, pos)  
 
+        constants.draw_buildings()
         constants.draw_street_names()
     
     def draw_finish_line(curr_level):
@@ -153,7 +154,7 @@ def draw_start_or_end_screen(is_start_screen):
     pygame.display.flip()
 
 #--------------------------------------------------------------
-def move_player(player_car,is_parking_button):
+def move_player(player_car,is_parking_button,is_left_blinker,is_right_blinker):
     """
     Move the player's car according to the keyboard keys pressed.
 
@@ -163,6 +164,7 @@ def move_player(player_car,is_parking_button):
         The car the player drives
     """
     
+    #,is_left_blinker,is_right_blinker
     # Get which keyboard keys are being pressed
     keys = pygame.key.get_pressed()
     
@@ -191,6 +193,10 @@ def move_player(player_car,is_parking_button):
     if keys[pygame.K_a]:
         if not reverse_gear:
             player_car.rotate(left = True)
+            if is_right_blinker:
+                handle_dash_button_press(constants.RIGHT_BLINK_INDEX)
+            if is_left_blinker:
+                level_tracker.add_blinkers_use()
         else:
             # If player is moving in reverse gear 
             # -> lateral direction is reversed
@@ -199,6 +205,10 @@ def move_player(player_car,is_parking_button):
     if keys[pygame.K_d]:
         if not reverse_gear:
             player_car.rotate(right = True)
+            if is_left_blinker:
+                handle_dash_button_press(constants.LEFT_BLINK_INDEX)
+            if is_right_blinker:
+                level_tracker.add_blinkers_use()
         else:
             # If player is moving in reverse gear 
             # -> lateral direction is reversed
@@ -454,7 +464,7 @@ def handle_driving_against_traffic(player_car):
             elif player_center >= constants.SOLID_LANE_BORDERS[0].topright and \
                 player_center <= constants.EREZ_LANE_BORDERS[1].topleft and \
                 player_center[1] > constants.EREZ_LANE_BORDERS[0].bottom:
-                #print("b")
+
                 if direction < constants.SOUTH or direction > constants.NORTH_EAST:
                     level_tracker.add_driving_against_traffic()
             
@@ -540,6 +550,8 @@ def handle_dash_button_press(btn_index):
     elif btn_index == constants.LEFT_BLINK_INDEX or btn_index == constants.RIGHT_BLINK_INDEX:
         if buttons_list[btn_index].pressed:
             car_blinker_sound.play()
+        else:
+            car_blinker_sound.fadeout(500)
     
     elif btn_index == constants.LIGHTS_BTN_INDEX:
         if buttons_list[btn_index].pressed:
@@ -559,7 +571,7 @@ is_start_screen = True
 is_finish_screen = False
 #-------------------------------------------------------------
 # Game Management Objects
-level_tracker = LevelTracker(5)
+level_tracker = LevelTracker(1)
 clock = pygame.time.Clock()
 time_counter = 0
 
@@ -645,7 +657,7 @@ while is_game_running:
     # ------------------------------------------------
     draw_game(player, buttons_list[constants.MENU_BTN_INDEX].pressed)
     buttons_group.draw(constants.WIN)
-    #peds_group.draw(constants.WIN)     
+    peds_group.draw(constants.WIN)     
 
     # Track input events
     # ------------------------------------------------
@@ -695,7 +707,8 @@ while is_game_running:
 
     # Move all the sprites (player, other cars, peds)
     # -----------------------------------------------
-    move_player(player,buttons_list[constants.PARKING_BTN_INDEX].pressed)
+    move_player(player,buttons_list[constants.PARKING_BTN_INDEX].pressed,\
+         buttons_list[constants.LEFT_BLINK_INDEX].pressed,buttons_list[constants.RIGHT_BLINK_INDEX].pressed)
     
     for car in other_cars_group:
         car.draw()
@@ -703,7 +716,7 @@ while is_game_running:
         car.move_sprite()
 
     for ped in peds_group:
-        ped.draw()
+        #ped.draw()
         #ped.draw_points(constants.PINK)
         ped.move_sprite()
     
@@ -742,6 +755,8 @@ while is_game_running:
         pygame.mixer.music.set_volume(constants.MAIN_SOUND_VOL)
         pygame.mixer.music.play(-1)
 
+        total_score = level_tracker.calculate_total_score()
+
         # Game Finish Screen 
         # ------------------------------------------------
         while is_finish_screen:
@@ -749,7 +764,7 @@ while is_game_running:
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    export_data_to_file(level_tracker.tracking_table)
+                    export_data_to_file(level_tracker.tracking_table, total_score)
                     is_finish_screen = False
                     is_game_running = False
                     break
@@ -757,7 +772,7 @@ while is_game_running:
                 # Pressing space restarts the game
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
-                        export_data_to_file(level_tracker.tracking_table)
+                        export_data_to_file(level_tracker.tracking_table, total_score)
 
                         pygame.mixer.music.fadeout(2000)
                         pygame.mixer.music.load(constants.MAIN_SOUND_TRAFFIC)
