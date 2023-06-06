@@ -8,7 +8,8 @@ Notes:
 # Imports
 import time
 from constants import WIN, CLIP_FONT, DASH_FONT, BLACK, RED, ORANGE, GREEN, GRAY, \
-    CLIP_LEFT, CLIP_TOP, CLIP_CENTER, MIRROR_CENTER,MIRROR_POS, RBT_RIGHT_CENTER
+        CLIP_LEFT, CLIP_TOP, CLIP_CENTER, MIRROR_CENTER,MIRROR_POS, RBT_RIGHT_CENTER, \
+        LEVELS_INSTS
 #-------------------------------------------------------------------------
 class LevelTracker():
     
@@ -49,7 +50,9 @@ class LevelTracker():
         self.roundabout_hits = 0
         self.parking_lot_hits = 0
         
+        self.blinkers_use = 0
         self.accurate_parking = 0
+        self.weather_awareness = 0
 
         self.tracking_table = []
 
@@ -57,15 +60,17 @@ class LevelTracker():
 
         if self.tracking_table == []:
             self.tracking_table.append(["Level", 
-                                    "Time (Seconds)",
-                                    "Peds hits", 
+                                    "Time (sec)",
+                                    "Pedestrians hits", 
                                     "Cars hits", 
-                                    "Sidewalk hits", 
-                                    "Over solid lane", 
-                                    "Against traffic",
-                                    "Roundabout hits", 
-                                    "Parking lot hits", 
-                                    "Accurate parking ( /4)"])
+                                    "Time on sidewalk (ms)", 
+                                    "Time over solid lane (ms)", 
+                                    "Time against traffic (ms)",
+                                    "Time touching roundabouts walls (ms)", 
+                                    "Time touching parking lot walls (ms)", 
+                                    "Time using blinkers correctly (ms)", 
+                                    "Accurate parking bonus ( /4)",
+                                    "Weather awareness bonus ( /5)"])
 
         self.tracking_table.append([self.level, 
                                     self.get_level_time(),
@@ -76,7 +81,9 @@ class LevelTracker():
                                     self.against_traffic,
                                     self.roundabout_hits, 
                                     self.parking_lot_hits, 
-                                    self.accurate_parking])
+                                    self.blinkers_use,
+                                    self.accurate_parking,
+                                    self.weather_awareness])
 
         self.level += 1
         self.level_started = False
@@ -132,8 +139,14 @@ class LevelTracker():
     def add_parking_lot_hit(self):
         self.parking_lot_hits += 1
     
+    def add_blinkers_use(self):
+        self.blinkers_use += 1
+
     def add_accurate_parking(self):
         self.accurate_parking += 1
+
+    def add_weather_awareness(self):
+        self.weather_awareness += 1
 
     def reset(self, start_level = 1, sprites_vel = 0.5, time_bet_peds = 5, time_bet_cars = 6):
         self.level = start_level
@@ -155,10 +168,34 @@ class LevelTracker():
 
         self.roundabout_hits = 0
         self.parking_lot_hits = 0
+
+        self.blinkers_use = 0
         self.accurate_parking = 0
+        self.weather_awareness = 0
 
         self.tracking_table = []
     
+    def calculate_total_score(self):
+        total_score = 100
+        
+        total_score -= self.peds_hits * 10
+        total_score -= self.cars_hits * 5
+
+        total_score -= self.sidewalk_hits * (1/100)
+        total_score -= self.over_solid_lane * (1/100)
+        total_score -= self.against_traffic * (1/100)
+        
+        total_score -= self.roundabout_hits * (1/1000)
+        total_score -= self.parking_lot_hits * (1/1000)
+
+        total_score += self.blinkers_use/10 * 0.5
+        total_score += self.accurate_parking * 3
+        total_score += self.weather_awareness * 3
+
+        total_score = round(total_score)
+
+        return total_score
+
     def display_score(self):
         """
         This method will be called to display the current score 
@@ -172,14 +209,16 @@ class LevelTracker():
         peds_hits_text = CLIP_FONT.render(f"Pedestrians hits: {self.peds_hits}", 1, RED)
         cars_hits_text = CLIP_FONT.render(f"Other cars hits: {self.cars_hits}", 1, RED)
 
-        sidewalk_hits_text = CLIP_FONT.render(f"Sidewalk hits: {self.sidewalk_hits}", 1, ORANGE)
-        over_solid_lane_text = CLIP_FONT.render(f"Over solid lanes: {self.over_solid_lane}", 1, ORANGE)
-        against_traffic_text = CLIP_FONT.render(f"Wrong direction: {self.against_traffic}", 1, ORANGE)
+        sidewalk_hits_text = CLIP_FONT.render(f"Sidewalk hits: {self.sidewalk_hits} ms", 1, ORANGE)
+        over_solid_lane_text = CLIP_FONT.render(f"Over solid lanes: {self.over_solid_lane} ms", 1, ORANGE)
+        against_traffic_text = CLIP_FONT.render(f"Wrong direction: {self.against_traffic} ms", 1, ORANGE)
 
-        rbt_hits_text = CLIP_FONT.render(f"Roundabout hits: {self.roundabout_hits}", 1, ORANGE)
-        pl_hits_text = CLIP_FONT.render(f"Parking lot hits: {self.parking_lot_hits}", 1, ORANGE)
+        rbt_hits_text = CLIP_FONT.render(f"Roundabout hits: {self.roundabout_hits} ms", 1, ORANGE)
+        pl_hits_text = CLIP_FONT.render(f"Parking lot hits: {self.parking_lot_hits} ms", 1, ORANGE)
         
+        blinkers_use_text = CLIP_FONT.render(f"Blinkers used: {self.blinkers_use} ms", 1, GREEN)
         accurate_parking_text = CLIP_FONT.render(f"Accurate parking: {self.accurate_parking}", 1, GREEN)
+        weather_awareness_text = CLIP_FONT.render(f"Weather awareness: {self.weather_awareness}", 1, GREEN)
 
         # define position for each text, center by text rect center
         timer_text_pos = (MIRROR_CENTER-timer_text.get_rect().centerx,MIRROR_POS[1]+timer_text.get_rect().centery)
@@ -194,7 +233,7 @@ class LevelTracker():
                     against_traffic_text,
                     rbt_hits_text, pl_hits_text]
 
-        bonus_texts = [accurate_parking_text]
+        bonus_texts = [blinkers_use_text, accurate_parking_text, weather_awareness_text]
 
         line_space = -4
         for t in accident_texts:
@@ -223,15 +262,6 @@ class LevelTracker():
         This method will be called to display the instructions for the current level
         (on top of the clipboard at the right side of the game window).
         """
-
-        TEXT_LINES = [  "Cross the finish line.", 
-                        "Mind the traffic codes.",
-                        "Try not to drive ",
-                        "against traffic."]
-
-        PARK_LINES = [  "Park in the orange spot.",
-                        "Press P when ",
-                        "you are done."]
         
         # generate texts to display
         timer_text = DASH_FONT.render(f"Time: {self.get_level_time()} sec", 1, BLACK)
@@ -243,27 +273,15 @@ class LevelTracker():
         
         texts_to_display = [(level_text, level_text_pos),
                             (timer_text, timer_text_pos)]
-
-        line_space = -2
-
-        if self.level in [4,7,9,10]:
-            lines = PARK_LINES
-            if self.level == 4:
-                lines.append("")
-                lines.append("No need to park")
-                lines.append("in reverse.")
-            elif self.level == 10:
-                lines.append("")
-                lines.append("Park in reverse.")
-        else:
-            lines = TEXT_LINES
         
+        line_space = -2
+        lines = LEVELS_INSTS[self.level - 1]
+            
         for line in lines:
             t = CLIP_FONT.render(line, 1, GRAY)
             pos = (CLIP_CENTER-t.get_rect().centerx, RBT_RIGHT_CENTER[1]+line_space*t.get_rect().centery)
             line_space += 2.5
             texts_to_display.append((t,pos))
-            
 
         for txt, pos in texts_to_display:
             # Draw this img in this position

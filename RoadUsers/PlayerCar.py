@@ -75,7 +75,7 @@ class PlayerCar(RoadUser):
             self.vel = max(self.vel - self.acceleration/2, 0)
             self.move()
 
-    def check_collision_with_mask(self, mask, x = 0, y = SCENE_HEIGHT_START):
+    def check_collision_with_mask(self, mask, scene_offset_x, scene_offset_y):
         """
         Check if player's car is colliding with mask.
 
@@ -94,11 +94,11 @@ class PlayerCar(RoadUser):
         car_mask = pygame.mask.from_surface(self.image)
 
         # Calculate displacement between the 2 masks
-        offset = (int(self.x - x), int(self.y - y))
+        displacement = (int(self.x - scene_offset_x), int(self.y - scene_offset_y))
 
         # Find poi (= Point of Intersection) 
         # -> if there is a poi, the objects are colliding
-        poi = mask.overlap(car_mask, offset)
+        poi = mask.overlap(car_mask, displacement)
         return poi
 
     def reset(self):

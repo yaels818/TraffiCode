@@ -165,6 +165,8 @@ load_masks()
 SCENE_HEIGHT_START = HEIGHT/12
 SCENE_CENTER = (WIDTH - WIDTH/4.7)/2
 
+SCENE_OFFSET = (0,SCENE_HEIGHT_START)
+
 DASHBOARD_HOR_TOP = HEIGHT-HEIGHT/7
 DASHBOARD_VERT_LEFT = WIDTH - WIDTH/4.5
 
@@ -250,7 +252,7 @@ RIGHT_PL_BORDER_RECT = pygame.Rect((EREZ_ROTEM_SIDEWK_TOP_R[0], SHAKED_SIDEWK_BO
 PLS_RP_BORDERS = [
     # Horizontal
         # Left PL, top left spot (FINISH_LINE_IMGS #4)
-    pygame.Rect((0.35*LANE_W, SHAKED_SIDEWK_BOT_R[1]+2.3*LANE_W), (2*LANE_W, LANE_W)),
+    pygame.Rect((0.35*LANE_W, SHAKED_SIDEWK_BOT_R[1]+4.1*LANE_W), (2*LANE_W, LANE_W)),
     
     # Vertical
         # Right PL, bottom right spot (FINISH_LINE_IMGS #5)
@@ -474,21 +476,21 @@ CAR_PATH_YAAR_TILL_LEFT_PL = [
     # Yaar
     (395, 215), (418, 309), 
     # Eshel
-    (418, 430), (314, 397), (123, 410), 
+    (405, 415), (314, 399), 
     # Left PL
-    (120, 329), (94, 324)] 
+    (110, 399), (110, 300), (160, 300)] 
     
 CAR_PATH_ESHEL_TILL_ROTEM = [
-    # Eshel
-    (62, 443), (175, 425), (452, 422), 
+    # Eshel (left edge)
+    (6, 425), (175, 425), (452, 422), 
     # Yaar
     (450, 270), 
-    # Rotem
+    # Rotem (right edge)
     (774, 270)]
 
-CAR_PATH_ELLA_TILL_RIGHT_PL = [
-    # Ella
-    (180, 128), (180, 282), 
+CAR_PATH_SHAKED_TILL_RIGHT_PL = [
+    # Shaked (left edge)
+    (6, 270), (200, 270), 
     # Left RBT
     (232, 282), (244, 308), (269, 326),
     (310, 314), (333, 295), (341, 271),
@@ -500,11 +502,13 @@ CAR_PATH_ELLA_TILL_RIGHT_PL = [
     (692, 161), (705, 197), (742, 216), 
     # Rotem
     (742, 270), (671, 264),
-    # Right PL 
-    (671, 333), (671, 386), (857, 378), (851, 333)
+    # Right PL (right edge) 
+    (671, 333), (671, 386), (770, 378), (770, 425)
     ]
 
 CAR_PATH_ROTEM_TILL_SHAKED = [
+    # Rotem (right edge)
+    (774, 270),  
     # Right RBT
     (772, 200), (807, 182), (817, 147),
     (800, 102), (753, 83), (710, 100), 
@@ -520,21 +524,21 @@ CAR_PATH_ROTEM_TILL_SHAKED = [
 # Pedestrians Paths (made using draw_points)
 #-------------------------------------------
 PED_PATH_ROTEM_SW_TILL_ELLA = [
-    (496, 209), (500, 164), (470, 130), (425, 128), (395, 128),
+    (500, 164), (470, 130), (425, 128), (395, 128),
     (369, 129), (335, 127), (307, 130), (287, 130), (262, 131),
     (231, 130), (203, 167), (174, 167), (144, 168), (101, 176),
     (47, 173), (22, 174)]
 
 PED_PATH_YAAR_SW_TILL_RBT = [
-    (551, 153), (587, 179), (630, 185), (671, 186), (702, 199),
+    (587, 179), (630, 185), (671, 186), (702, 199),
     (737, 184), (764, 185), (794, 181), (822, 183), (841, 199)] 
 
 PED_PATH_YAAR_SW_TILL_ROTEM_SW = [
-    (552, 425), (523, 297), (516, 238), (535, 202), (550, 151)]
+    (552, 325), (523, 297), (516, 238), (535, 202)]
 
 PED_PATH_ELLA_TILL_ESHEL = [
     (131, 163), (190, 230), (211, 288), (231, 360), (239, 422),
-    (277, 457), (335, 460), (395, 457)]
+    (277, 457), (335, 460), (395, 457), (470,457)]
 #-------------------------------------------------------------------------
 # Car Directions Definitions
 #---------------------------
@@ -556,7 +560,7 @@ FINISH_LINE_VERT = pygame.transform.rotate(FINISH_LINE_HORI,90)
 
 FINISH_LINE_PARKINGS = [
     # 4 - Left PL top left spot
-    (WEST, PLS_RP_BORDERS[0]),
+    (EAST, PLS_RP_BORDERS[0]),
 
     # 7 - Eshel PP middle spot
     (EAST, ESHEL_PP_BORDERS[1]),
@@ -602,10 +606,170 @@ FINISH_LINE_IMGS = [
     # 10 - Right PL bottom right spot
     #(FINISH_LINE_HORI, (ROTEM_ROAD_BOT_R[0]+2*LANE_W, ESHEL_ROAD_BOT_R[1]-1.5*LANE_W)),
     ("PARKING", FINISH_LINE_PARKINGS[3][1])]
+#-------------------------------------------------------------------------
+# Buildings Definitions  
+#------------------------
+RED_BLD = scale_image(pygame.image.load(DIR_IMGS + "Buildings/" + "tall_red_bld.png"), 0.15)
+BLACK_BLD = scale_image(pygame.image.load(DIR_IMGS + "Buildings/" + "tall_black_bld.png"), 0.18)
+PURPLE_BLD = scale_image(pygame.image.load(DIR_IMGS + "Buildings/" + "short_purple_bld.png"), 0.2)
+BROWN_BLD = scale_image(pygame.image.load(DIR_IMGS + "Buildings/" + "short_brown_bld.png"), 0.25)
+
+ROTEM_BLD_POS = (ROTEM_ROAD_BOT_R[0]+1.5*LANE_W, ROTEM_ROAD_BOT_R[1]-0.9*RED_BLD.get_height())
+SHAKED_BLD_POS = (0, SHAKED_SIDEWK_BOT_R[1]-1.2*BLACK_BLD.get_height())
+YAAR_BLD_TOP_POS = (YAAR_ROAD_MID_R[0]+0.5*LANE_W, EREZ_ROTEM_SIDEWK_TOP_R[1]+0.5*LANE_W)
+YAAR_BLD_BOT_POS = (ESHEL_ROAD_BOT_R[0]-1*LANE_W, ESHEL_ROAD_BOT_R[1]-0.6*BROWN_BLD.get_height())
+#-------------------------------------------------------------------------
+# Levels Instructions Definitions  
+#--------------------------------
+LEVEL_1_INST = [ "You are in the red",
+                "car, driving your mom",
+                "for the first time since",
+                "getting your license.",
+                "(No pressure,right?)",
+                "",
+                "Exit the parking lot.",
+                "Try not to hit a wall",
+                "on your way out!",
+                "If you do get stuck,",
+                "try rotating the car",
+                "while pressing W or S."]
+
+LEVEL_2_INST = [ "Your mom asked you to",
+                "give her a ride to work.",
+                "",
+                "Swing by the purple",
+                "office building",
+                "on HaYaar.",
+                "",
+                "Mind the pedestrians."]
+
+LEVEL_3_INST = [ "Your friends called,",
+                "they want to hang out",
+                "at the mall.",
+                "",
+                "Get to the big mall",
+                "via HaElla.",
+                "",
+                "Try not to drive",
+                "against traffic."]
+
+LEVEL_4_INST = [ "Underground parking",
+                "lot is full.",
+                "",
+                "Park across the street.",
+                "You'll get bonus points",
+                "for parking in reverse!",
+                "",
+                "If you get stuck,",
+                "try rotating the car",
+                "while pressing W or S."]
+
+LEVEL_5_INST = [ "You had a really",
+                "good time!",
+                "But your mom called,",
+                "she forgot her lunch.",
+                "",
+                "Bring her some food",
+                "to the Erez Park.",
+                "",
+                "Drive safely, try not",
+                "to hit anything."]
+
+LEVEL_6_INST = [ "Well done!",
+                "But all of a sudden",
+                "rain started pouring.",
+                "",
+                "You should get going.",
+                "",
+                "Don't forget to turn on",
+                "the wipers!"]
+
+LEVEL_7_INST = [ "Congratulations,",
+                "your first flat tire!",
+                "",
+                "Keep going down Eshel,",
+                "you can stop and",
+                "change your tire there.",
+                "",
+                "Don't forget to park!"]
+
+LEVEL_8_INST = [ "Looking good!",
+                "But you decided to test",
+                "the tires in a roundabout",
+                "just to make sure.",
+                "",
+                "Try not to drive",
+                "into other cars or",
+                "pedestrians."]
+
+LEVEL_9_INST = [ "Tires are fine, but",
+                "your little brother and",
+                "sister called, asking",
+                "you to pick them up",
+                "from the library.",
+                "They stayed late",
+                "working on a project.",
+                "",
+                "Park next to it on Yaar.",
+                "",
+                "Don't forget to turn",
+                "on the lights!"]
+
+LEVEL_10_INST = [ "Wow, has it been a",
+                "whole day already?",
+                "",
+                "Let's drive back home!",
+                "",
+                "You got this, you're a",
+                "pro by now :)"]
+
+LEVELS_INSTS = [LEVEL_1_INST, LEVEL_2_INST, 
+                LEVEL_3_INST, LEVEL_4_INST, 
+                LEVEL_5_INST, LEVEL_6_INST,
+                LEVEL_7_INST, LEVEL_8_INST,
+                LEVEL_9_INST, LEVEL_10_INST]
+#-------------------------------------------------------------------------
+# Functions (called by the main program)
+#---------------------------------------
+def draw_buildings():
+    """
+    Draw all the buildings
+    """
+    BUILDINGS = [(RED_BLD, ROTEM_BLD_POS),
+                (BLACK_BLD,SHAKED_BLD_POS),
+                (PURPLE_BLD,YAAR_BLD_TOP_POS),
+                (BROWN_BLD,YAAR_BLD_BOT_POS)]
+
+    for building, pos in BUILDINGS:
+        WIN.blit(building, pos)  
+
+def draw_street_names():
+    """
+    Draw all the street names 
+    """
+    STREETS = [ ("HaErez", (RBT_LEFT_CENTER[0]-2*LANE_W,EREZ_ROTEM_SIDEWK_TOP_R[1]-2*LANE_W)),
+                ("HaErez", (YAAR_ROAD_MID_R[0],EREZ_ROTEM_SIDEWK_TOP_R[1]-LANE_W)),
+                ("HaHadas", (RBT_LEFT_CENTER[0]-2.2*LANE_W,EREZ_ROTEM_SIDEWK_TOP_R[1]+3*LANE_W)), 
+                ("HaRotem", (RBT_RIGHT_CENTER[0]-2.5*LANE_W,EREZ_ROTEM_SIDEWK_TOP_R[1]+3*LANE_W)),
+                ("HaRotem", (EREZ_ROTEM_SIDEWK_TOP_R[0]+1.5*LANE_W,RBT_LEFT_CENTER[1])),
+                ("HaYaar", (YAAR_ROAD_MID_R[0]-4*LANE_W,RBT_LEFT_CENTER[1]-LANE_W)),
+                ("HaElla", (SHAKED_SIDEWK_BOT_R[0],SHAKED_SIDEWK_BOT_R[1]-2.5*LANE_W)),
+                ("HaElla", (SHAKED_SIDEWK_BOT_R[0],SHAKED_SIDEWK_BOT_R[1]+LANE_W)),
+                ("HaShaked",(0,RBT_LEFT_CENTER[1])),
+                ("HaEshel", (SHAKED_SIDEWK_BOT_R[0]-2*LANE_W,DASHBOARD_HOR_TOP-4*LANE_W))]
+    
+    for streetName, pos in STREETS:
+        street_text = STREETS_FONT.render(streetName,1,PINK)
+        if streetName == "HaElla":
+            # rotate the text from horizontal to vertical
+            street_text = pygame.transform.rotate(street_text,90)
+            
+        street_text_pos = (pos[0]+street_text.get_rect().centerx, pos[1]+street_text.get_rect().centery)
+        WIN.blit(street_text, street_text_pos)  
 
 #-------------------------------------------------------------------------
-# Helper Functions (called outside this module)
-#-----------------------------------------------
+# Helper Functions (called by the main program at dev stage only)
+#----------------------------------------------------------------
 def draw_borders():
     """
     Draw the scene borders (roads, lanes, parallel parking spots)
@@ -847,30 +1011,6 @@ def draw_borders():
     draw_road_borders()
     draw_lane_borders()
     draw_parallel_parking_borders()
-
-def draw_street_names():
-    """
-    Draw all the street names 
-    """
-    STREETS = [ ("HaErez", (RBT_LEFT_CENTER[0]-2*LANE_W,EREZ_ROTEM_SIDEWK_TOP_R[1]-2*LANE_W)),
-                ("HaErez", (YAAR_ROAD_MID_R[0],EREZ_ROTEM_SIDEWK_TOP_R[1]-LANE_W)),
-                ("HaHadas", (RBT_LEFT_CENTER[0]-2.2*LANE_W,EREZ_ROTEM_SIDEWK_TOP_R[1]+3*LANE_W)), 
-                ("HaRotem", (RBT_RIGHT_CENTER[0]-2.5*LANE_W,EREZ_ROTEM_SIDEWK_TOP_R[1]+3*LANE_W)),
-                ("HaRotem", (EREZ_ROTEM_SIDEWK_TOP_R[0]+1.5*LANE_W,RBT_LEFT_CENTER[1])),
-                ("HaYaar", (YAAR_ROAD_MID_R[0]-4*LANE_W,RBT_LEFT_CENTER[1]-LANE_W)),
-                ("HaElla", (SHAKED_SIDEWK_BOT_R[0],SHAKED_SIDEWK_BOT_R[1]-2.5*LANE_W)),
-                ("HaElla", (SHAKED_SIDEWK_BOT_R[0],SHAKED_SIDEWK_BOT_R[1]+LANE_W)),
-                ("HaShaked",(0,RBT_LEFT_CENTER[1])),
-                ("HaEshel", (SHAKED_SIDEWK_BOT_R[0]-2*LANE_W,DASHBOARD_HOR_TOP-4*LANE_W))]
-    
-    for streetName, pos in STREETS:
-        street_text = STREETS_FONT.render(streetName,1,PINK)
-        if streetName == "HaElla":
-            # rotate the text from horizontal to vertical
-            street_text = pygame.transform.rotate(street_text,90)
-            
-        street_text_pos = (pos[0]+street_text.get_rect().centerx, pos[1]+street_text.get_rect().centery)
-        WIN.blit(street_text, street_text_pos)  
 
 def draw_finish_lines():
     """

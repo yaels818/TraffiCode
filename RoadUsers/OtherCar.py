@@ -9,7 +9,7 @@ import random
 from RoadUsers import RoadUser
 from constants import YELLOW_CAR, WHITE_TRUCK, BLUE_VAN ,\
     CAR_PATH_YAAR_TILL_LEFT_PL, CAR_PATH_ESHEL_TILL_ROTEM, \
-    CAR_PATH_ELLA_TILL_RIGHT_PL, CAR_PATH_ROTEM_TILL_SHAKED
+    CAR_PATH_SHAKED_TILL_RIGHT_PL, CAR_PATH_ROTEM_TILL_SHAKED
 
 class OtherCar(RoadUser):
 
@@ -18,7 +18,7 @@ class OtherCar(RoadUser):
     def __init__(self, vel):
 
         def randomize_car():
-     
+            
             dice = random.randint(1,3)
                     
             if dice == 1:
@@ -36,7 +36,7 @@ class OtherCar(RoadUser):
             elif dice == 2:
                 path = CAR_PATH_ESHEL_TILL_ROTEM
             elif dice == 3:
-                path = CAR_PATH_ELLA_TILL_RIGHT_PL
+                path = CAR_PATH_SHAKED_TILL_RIGHT_PL
             elif dice == 4:
                 path = CAR_PATH_ROTEM_TILL_SHAKED
             

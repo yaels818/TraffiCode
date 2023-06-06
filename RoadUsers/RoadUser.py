@@ -33,6 +33,10 @@ class RoadUser(pygame.sprite.Sprite):
         Update the bounding rectangle of the car accordingly.
         """
         self.rect = blit_rotate_center(WIN, self.image, (self.x, self.y), self.angle)
+        
+        # Shrink sprite's hit box (to give players a bit more room before collisions)
+        self.rect = self.rect.inflate(-5,-3)
+        
         #pygame.draw.rect(WIN, BLUE, self.rect, 1)
     
     def stay_within_scene_borders(self, new_x, new_y):
@@ -40,22 +44,22 @@ class RoadUser(pygame.sprite.Sprite):
         Check if the new position for player car is colliding with the screen boundaries
         """
 
-        # Check collision with top border of the scene
+        # Check collision with top edge of the scene
         if new_y <= ELLA_ROAD_TOP_L[1] - self.rect.height:
             self.y = ELLA_ROAD_TOP_L[1] - self.rect.height
             self.vel = 0
-        # Check collision with bottom border of the scene
+        # Check collision with bottom edge of the scene
         elif new_y >= DASHBOARD_HOR_TOP - self.rect.height:
             self.y = DASHBOARD_HOR_TOP - self.rect.height
             self.vel = 0
         else:
             self.y = new_y
 
-        # Check collision with left border of the scene
-        if new_x <= 0 + self.rect.height/2:  
-            self.x = 0 + self.rect.height/2
+        # Check collision with left edge of the scene
+        if new_x <= 0 - self.rect.height/2:  
+            self.x = 0 - self.rect.height/2
             self.vel = 0
-        # Check collision with right border of the scene
+        # Check collision with right edge of the scene
         elif new_x >= DASHBOARD_VERT_LEFT - self.rect.height/2:
             self.x = DASHBOARD_VERT_LEFT - self.rect.height/2
             self.vel = 0
