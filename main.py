@@ -756,6 +756,7 @@ while is_game_running:
         pygame.mixer.music.play(-1)
 
         total_score = level_tracker.calculate_total_score()
+        export_data_to_file(level_tracker.tracking_table, total_score)
 
         # Game Finish Screen 
         # ------------------------------------------------
@@ -764,7 +765,7 @@ while is_game_running:
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    export_data_to_file(level_tracker.tracking_table, total_score)
+
                     is_finish_screen = False
                     is_game_running = False
                     break
@@ -772,7 +773,6 @@ while is_game_running:
                 # Pressing space restarts the game
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
-                        export_data_to_file(level_tracker.tracking_table, total_score)
 
                         pygame.mixer.music.fadeout(2000)
                         pygame.mixer.music.load(constants.MAIN_SOUND_TRAFFIC)
