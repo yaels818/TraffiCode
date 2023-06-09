@@ -19,10 +19,10 @@ def load_buttons_images():
     """
     BTNS_DIR_IMGS = "Assets\Images\Dashboard\Buttons/"
 
-    MENU_BTN_IMG = pygame.image.load(BTNS_DIR_IMGS + "menu_btn.png")
+    KEYS_BTN_IMG = pygame.image.load(BTNS_DIR_IMGS + "keys_btn.png")
 
-    BTN_IMGS_OFF.append(MENU_BTN_IMG)
-    BTN_IMGS_ON.append(MENU_BTN_IMG)
+    BTN_IMGS_OFF.append(KEYS_BTN_IMG)
+    BTN_IMGS_ON.append(KEYS_BTN_IMG)
 
     # Go over all the images in the directories,
     # load and add them to their lists
@@ -46,7 +46,7 @@ def load_buttons_blueprints():
     y = DASHBOARD_HOR_TOP
     i = 1
 
-    MENU_BTN_POS = (MIRROR_CENTER/5, y-10)   
+    KEYS_BTN_POS = (MIRROR_CENTER/5, y-10)   
 
     LIGHTS_BTN_POS = (MIRROR_CENTER/2-BTN_IMGS_OFF[i].get_rect().centerx/2, y)
     LEFT_BLINK_POS = (SPEEDOMETER_POS[0]-BTN_IMGS_OFF[i+1].get_rect().centerx ,y-10)
@@ -59,7 +59,7 @@ def load_buttons_blueprints():
     INFO_BTN_POS = (MUSIC_BTN_POS[0]+BTN_IMGS_OFF[i+5].get_rect().centerx, y)
 
     BTNS_POSITIONS = [
-        MENU_BTN_POS, LIGHTS_BTN_POS, LEFT_BLINK_POS, RIGHT_BLINK_POS,
+        KEYS_BTN_POS, LIGHTS_BTN_POS, LEFT_BLINK_POS, RIGHT_BLINK_POS,
         WIPERS_BTN_POS, PARKING_BTN_POS, MUSIC_BTN_POS, INFO_BTN_POS]
 
     for i in range(len(BTNS_POSITIONS)):
@@ -210,7 +210,7 @@ BTN_IMGS_OFF = []
 BTN_IMGS_ON = []
 load_buttons_images()
 
-MENU_BTN_INDEX = 0    
+KEYS_BTN_INDEX = 0    
 LIGHTS_BTN_INDEX = 1
 LEFT_BLINK_INDEX = 2
 RIGHT_BLINK_INDEX = 3
