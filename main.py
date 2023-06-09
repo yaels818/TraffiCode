@@ -16,7 +16,7 @@ pygame.init()
 pygame.mixer.init()
 
 #-------------------------------------------------------------
-def draw_game(player_car, is_menu_button_pressed):
+def draw_game(player_car, is_info_button_pressed):
     """
     Draw the level scene, finish line, player car, dashboard, level status. 
 
@@ -124,7 +124,7 @@ def draw_game(player_car, is_menu_button_pressed):
     # If the player started moving
     # -> Display on the clipboard area
     if level_tracker.level_started:
-        if is_menu_button_pressed:
+        if is_info_button_pressed:
             level_tracker.display_instructions()
         else:
             level_tracker.display_score()
@@ -655,7 +655,7 @@ while is_game_running:
 
     # Draw the game elements, buttons and pedestrians
     # ------------------------------------------------
-    draw_game(player, buttons_list[constants.MENU_BTN_INDEX].pressed)
+    draw_game(player, buttons_list[constants.INFO_BTN_INDEX].pressed)
     buttons_group.draw(constants.WIN)
     peds_group.draw(constants.WIN)     
 
@@ -677,14 +677,26 @@ while is_game_running:
             if keys[pygame.K_w] or keys[pygame.K_s]:
                 if not level_tracker.level_started:
                     level_tracker.start_level()
-            # Activate blinkers by key press
+            
+            # Activate blinker buttons by key press
             if keys[pygame.K_q]:
                 handle_dash_button_press(constants.LEFT_BLINK_INDEX)
             if keys[pygame.K_e]:
                 handle_dash_button_press(constants.RIGHT_BLINK_INDEX)
-            # Activate parking by key press
+            
+            # Activate lights button by key press
+            if keys[pygame.K_l]:
+                handle_dash_button_press(constants.LIGHTS_BTN_INDEX)
+            # Activate wipers button by key press
+            if keys[pygame.K_k]:
+                handle_dash_button_press(constants.WIPERS_BTN_INDEX)
+
+            # Activate parking button by key press
             if keys[pygame.K_p]:
                 handle_dash_button_press(constants.PARKING_BTN_INDEX)
+            # Activate info button by key press
+            if keys[pygame.K_i]:
+                handle_dash_button_press(constants.INFO_BTN_INDEX)
 
         # If player clicked the left mouse button 
         if event.type == pygame.MOUSEBUTTONDOWN:
