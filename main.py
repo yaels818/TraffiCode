@@ -297,7 +297,7 @@ def handle_collision_with_finish_line(player_car, is_parking_button):
                         level_tracker.increase_level()
                         break
 
-def handle_collisions_with_road_borders(player_car):
+def handle_collisions_with_road_borders(player_car, is_keys_button):
     """
     Check if player's car hit any road borders
     (parking lot walls, roundabout borders, sidewalk borders, solid lane borders).
@@ -307,7 +307,8 @@ def handle_collisions_with_road_borders(player_car):
     player_car : PlayerCar
         The car the player drives
     """
-    def check_mask_collisions(player_car, mask):
+
+    def check_mask_collisions(player_car, mask, is_keys_button):
         """
         Check if the player's car is colliding with any of the masks 
         defined for this level (parking lot walls, roundabout borders).
@@ -330,6 +331,9 @@ def handle_collisions_with_road_borders(player_car):
         within their area.         
         """
         
+        if is_keys_button:
+            return False
+
         # Check if the player car is colliding with the given mask
         # (poi = point of intersection)
         
@@ -369,16 +373,28 @@ def handle_collisions_with_road_borders(player_car):
 
     # Track mask collisions
     # ----------------------
+    """
     # Check if player_car is within this side's parking lot
     if area_rect.contains(player_car.rect):
         if check_mask_collisions(player_car, pl_mask):
+            if is_keys_button:
+                player.reset()
+                handle_dash_button_press(constants.KEYS_BTN_INDEX)
+            else:
+                level_tracker.add_parking_lot_hit()
+    """
+    # Check if player_car is within this side's parking lot
+    if area_rect.contains(player_car.rect):
+        if check_mask_collisions(player_car, pl_mask, is_keys_button):
             level_tracker.add_parking_lot_hit()
+
+    # Check if player_car is within this side's roundabout
     else:
         # Calculate the distance between player_car and the center of this side's roundabout
         dist_rbt = math.sqrt((rbt_x-player_car.x)**2 + (rbt_y-player_car.y)**2)
-        # Check if player_car is within this side's roundabout
+        # If player_car is within roundabout
         if dist_rbt < constants.RBT_OUTER_RAD:
-            if check_mask_collisions(player_car, rbt_mask):
+            if check_mask_collisions(player_car, rbt_mask, is_keys_button):
                 level_tracker.add_roundabout_hit()
     
     # Track rect collisions
@@ -638,17 +654,23 @@ while is_game_running:
     # Check if a full cycle is done (1 sec)
     if time_counter == constants.FPS:
         # Track when it's time to add more sprites
-        level_tracker.increase_timer_to_add_sprites()
+        level_tracker.increase_tracker_timer()
 
         # Add a new pedestrian every time_between_peds seconds  
-        if level_tracker.timer_to_add_sprites != 0 and \
-            level_tracker.timer_to_add_sprites % level_tracker.time_between_peds == 0:
+        if level_tracker.tracker_timer != 0 and \
+            level_tracker.tracker_timer % level_tracker.time_between_peds == 0:
             peds_group.add(Pedestrian(level_tracker.peds_vel))
             
         # Add a new passing car every time_between_cars seconds  
-        if level_tracker.timer_to_add_sprites != 0 and \
-            level_tracker.timer_to_add_sprites % level_tracker.time_between_cars == 0:
+        if level_tracker.tracker_timer != 0 and \
+            level_tracker.tracker_timer % level_tracker.time_between_cars == 0:
             other_cars_group.add(OtherCar(level_tracker.cars_vel))
+
+        # Deactivate keys_button every 3 seconds if activated  
+        if buttons_list[constants.KEYS_BTN_INDEX].pressed:
+            if level_tracker.tracker_timer != 0 and \
+                level_tracker.tracker_timer % 3 == 0:
+                handle_dash_button_press(constants.KEYS_BTN_INDEX)
 
         # Reset the counter (for the next second)
         time_counter = 0
@@ -752,7 +774,7 @@ while is_game_running:
     # Handle collisions between player and static objects
     # ----------------------------------------------------
     handle_collision_with_finish_line(player, buttons_list[constants.PARKING_BTN_INDEX].pressed)
-    handle_collisions_with_road_borders(player)
+    handle_collisions_with_road_borders(player, buttons_list[constants.KEYS_BTN_INDEX].pressed)
     handle_driving_against_traffic(player)
 
     # Update the window with everything we have drawn
