@@ -34,7 +34,7 @@ class LevelTracker():
         self.level_started = False
         self.level_start_time = 0
 
-        self.timer_to_add_sprites = 0 
+        self.tracker_timer = 0 
         self.peds_vel = sprites_vel
         self.cars_vel = sprites_vel + 0.2
         self.time_between_peds = time_bet_peds
@@ -115,8 +115,8 @@ class LevelTracker():
     def game_finished(self):
         return self.level > self.LEVELS
 
-    def increase_timer_to_add_sprites(self):
-        self.timer_to_add_sprites += 1
+    def increase_tracker_timer(self):
+        self.tracker_timer += 1
 
     def add_ped_hit(self):
         self.peds_hits += 1
@@ -153,7 +153,7 @@ class LevelTracker():
         self.level_started = False
         self.level_start_time = 0
 
-        self.timer_to_add_sprites = 0 
+        self.tracker_timer = 0 
         self.peds_vel = sprites_vel
         self.cars_vel = sprites_vel + 0.2
         self.time_between_peds = time_bet_peds

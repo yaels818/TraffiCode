@@ -16,7 +16,7 @@ pygame.init()
 pygame.mixer.init()
 
 #-------------------------------------------------------------
-def draw_game(player_car, is_menu_button_pressed):
+def draw_game(player_car, is_info_button_pressed):
     """
     Draw the level scene, finish line, player car, dashboard, level status. 
 
@@ -124,7 +124,7 @@ def draw_game(player_car, is_menu_button_pressed):
     # If the player started moving
     # -> Display on the clipboard area
     if level_tracker.level_started:
-        if is_menu_button_pressed:
+        if is_info_button_pressed:
             level_tracker.display_instructions()
         else:
             level_tracker.display_score()
@@ -297,7 +297,7 @@ def handle_collision_with_finish_line(player_car, is_parking_button):
                         level_tracker.increase_level()
                         break
 
-def handle_collisions_with_road_borders(player_car):
+def handle_collisions_with_road_borders(player_car, is_keys_button):
     """
     Check if player's car hit any road borders
     (parking lot walls, roundabout borders, sidewalk borders, solid lane borders).
@@ -307,7 +307,8 @@ def handle_collisions_with_road_borders(player_car):
     player_car : PlayerCar
         The car the player drives
     """
-    def check_mask_collisions(player_car, mask):
+
+    def check_mask_collisions(player_car, mask, is_keys_button):
         """
         Check if the player's car is colliding with any of the masks 
         defined for this level (parking lot walls, roundabout borders).
@@ -330,6 +331,9 @@ def handle_collisions_with_road_borders(player_car):
         within their area.         
         """
         
+        if is_keys_button:
+            return False
+
         # Check if the player car is colliding with the given mask
         # (poi = point of intersection)
         
@@ -369,16 +373,28 @@ def handle_collisions_with_road_borders(player_car):
 
     # Track mask collisions
     # ----------------------
+    """
     # Check if player_car is within this side's parking lot
     if area_rect.contains(player_car.rect):
         if check_mask_collisions(player_car, pl_mask):
+            if is_keys_button:
+                player.reset()
+                handle_dash_button_press(constants.KEYS_BTN_INDEX)
+            else:
+                level_tracker.add_parking_lot_hit()
+    """
+    # Check if player_car is within this side's parking lot
+    if area_rect.contains(player_car.rect):
+        if check_mask_collisions(player_car, pl_mask, is_keys_button):
             level_tracker.add_parking_lot_hit()
+
+    # Check if player_car is within this side's roundabout
     else:
         # Calculate the distance between player_car and the center of this side's roundabout
         dist_rbt = math.sqrt((rbt_x-player_car.x)**2 + (rbt_y-player_car.y)**2)
-        # Check if player_car is within this side's roundabout
+        # If player_car is within roundabout
         if dist_rbt < constants.RBT_OUTER_RAD:
-            if check_mask_collisions(player_car, rbt_mask):
+            if check_mask_collisions(player_car, rbt_mask, is_keys_button):
                 level_tracker.add_roundabout_hit()
     
     # Track rect collisions
@@ -638,24 +654,30 @@ while is_game_running:
     # Check if a full cycle is done (1 sec)
     if time_counter == constants.FPS:
         # Track when it's time to add more sprites
-        level_tracker.increase_timer_to_add_sprites()
+        level_tracker.increase_tracker_timer()
 
         # Add a new pedestrian every time_between_peds seconds  
-        if level_tracker.timer_to_add_sprites != 0 and \
-            level_tracker.timer_to_add_sprites % level_tracker.time_between_peds == 0:
+        if level_tracker.tracker_timer != 0 and \
+            level_tracker.tracker_timer % level_tracker.time_between_peds == 0:
             peds_group.add(Pedestrian(level_tracker.peds_vel))
             
         # Add a new passing car every time_between_cars seconds  
-        if level_tracker.timer_to_add_sprites != 0 and \
-            level_tracker.timer_to_add_sprites % level_tracker.time_between_cars == 0:
+        if level_tracker.tracker_timer != 0 and \
+            level_tracker.tracker_timer % level_tracker.time_between_cars == 0:
             other_cars_group.add(OtherCar(level_tracker.cars_vel))
+
+        # Deactivate keys_button every 3 seconds if activated  
+        if buttons_list[constants.KEYS_BTN_INDEX].pressed:
+            if level_tracker.tracker_timer != 0 and \
+                level_tracker.tracker_timer % 3 == 0:
+                handle_dash_button_press(constants.KEYS_BTN_INDEX)
 
         # Reset the counter (for the next second)
         time_counter = 0
 
     # Draw the game elements, buttons and pedestrians
     # ------------------------------------------------
-    draw_game(player, buttons_list[constants.MENU_BTN_INDEX].pressed)
+    draw_game(player, buttons_list[constants.INFO_BTN_INDEX].pressed)
     buttons_group.draw(constants.WIN)
     peds_group.draw(constants.WIN)     
 
@@ -677,14 +699,26 @@ while is_game_running:
             if keys[pygame.K_w] or keys[pygame.K_s]:
                 if not level_tracker.level_started:
                     level_tracker.start_level()
-            # Activate blinkers by key press
+            
+            # Activate blinker buttons by key press
             if keys[pygame.K_q]:
                 handle_dash_button_press(constants.LEFT_BLINK_INDEX)
             if keys[pygame.K_e]:
                 handle_dash_button_press(constants.RIGHT_BLINK_INDEX)
-            # Activate parking by key press
+            
+            # Activate lights button by key press
+            if keys[pygame.K_l]:
+                handle_dash_button_press(constants.LIGHTS_BTN_INDEX)
+            # Activate wipers button by key press
+            if keys[pygame.K_k]:
+                handle_dash_button_press(constants.WIPERS_BTN_INDEX)
+
+            # Activate parking button by key press
             if keys[pygame.K_p]:
                 handle_dash_button_press(constants.PARKING_BTN_INDEX)
+            # Activate info button by key press
+            if keys[pygame.K_i]:
+                handle_dash_button_press(constants.INFO_BTN_INDEX)
 
         # If player clicked the left mouse button 
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -740,7 +774,7 @@ while is_game_running:
     # Handle collisions between player and static objects
     # ----------------------------------------------------
     handle_collision_with_finish_line(player, buttons_list[constants.PARKING_BTN_INDEX].pressed)
-    handle_collisions_with_road_borders(player)
+    handle_collisions_with_road_borders(player, buttons_list[constants.KEYS_BTN_INDEX].pressed)
     handle_driving_against_traffic(player)
 
     # Update the window with everything we have drawn
@@ -756,6 +790,7 @@ while is_game_running:
         pygame.mixer.music.play(-1)
 
         total_score = level_tracker.calculate_total_score()
+        export_data_to_file(level_tracker.tracking_table, total_score)
 
         # Game Finish Screen 
         # ------------------------------------------------
@@ -764,7 +799,7 @@ while is_game_running:
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    export_data_to_file(level_tracker.tracking_table, total_score)
+
                     is_finish_screen = False
                     is_game_running = False
                     break
@@ -772,7 +807,6 @@ while is_game_running:
                 # Pressing space restarts the game
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
-                        export_data_to_file(level_tracker.tracking_table, total_score)
 
                         pygame.mixer.music.fadeout(2000)
                         pygame.mixer.music.load(constants.MAIN_SOUND_TRAFFIC)
