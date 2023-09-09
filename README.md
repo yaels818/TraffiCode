@@ -1,53 +1,58 @@
 # What is TraffiCode? 🚗🎮
 
-TraffiCode is a driving game designed to help novice drivers gain a different perspective on driving challenges and deal with them better.
-
-Players can practice the basic concepts of driving in a smaller, simpler and safer environment and get relevant feedback about their performance. 
+TraffiCode is a PC game designed to give players a chance to practice the basic concepts of driving in a smaller, simpler and safer environment, and provide relevant feedback about their performance.
 
 <br>
-Some of the things you will find inside the world of TraffiCode:
+Some of the things TraffiCode aims to do for you:
 <br>
 <br>
 
-- crossing pedestrians 👫
-- oncoming cars 🚘 
-- roundabouts ⭕
-- parallel parking 🅿️
-- good old-fashioned reverse parking ⚓
-- surprises ✨😉
+- Give you a new, less intimidating, top-down perspective about what urban driving looks like 👀
+- Help you get better at dividing your attention between the inside of your car and the outside world 🌎
+- Encourage you to master safely merging into traffic with random cars and crossing pedestrians getting in your way 🚘 👫
+- Challenge you with 10 different levels of increasing difficulty to keep you in driving shape 💪 😉
+- Allow you to give up on rules entirely and just smash into things whenever you feel like it! <br> (Because traffic jams are exhausting and driving GTA-style is definitely more fun and less paperwork when it's all virtual, so why the heck not?) 😎
+- But hopefully, drive you to be a better, safer (smarter!) driver and follow more traffic codes! 🙏 ❤️
 
-The game contains 10 different levels with increasing difficulty to keep things interesting and keep you in driving shape.
-
-Each level the cars and pedestrians will either increase in numbers or in speed, forcing you to adapt and get increasingly better too! <br>
+**Click [here]() for a Sneak Peek (AKA short gameplay video made by one of the beta players)**
 
 --------------------------
 ## How to get the game:
-
-1. Download the code from this repository to your computer (click on the green ``` Code ``` button at the top of this page, then download as ZIP)
-2. Extract the files
-3. Double click on ``` main.exe ```
-
-🚩 Check out [How to Play](https://github.com/yaels818/TraffiCode/wiki/How-to-play) and [Known Issues](https://github.com/yaels818/TraffiCode/wiki/Known-Issues). 
-
-If you 👍 or 👎 the game, please let me know: [Feedback form in Hebrew](https://forms.gle/CdAKHoRpUDxjbPyN9) / [Feedback form in English](https://forms.gle/kv7nj2iGi8uHKRW36)
-
-👑 First players to finish the game and submit their feedback will be rewarded with eternal digital glory in the [TraffiCode Hall of Fame!](https://github.com/yaels818/TraffiCode/wiki/Hall-of-Fame) 🏆  
-
+### Windows users:
+1.	Download the code from this repository to your computer as a ZIP folder [here](https://github.com/yaels818/TraffiCode/archive/refs/heads/main.zip)
+2.	Extract the files
+3.	Double click on ``` main.exe ``` - and the game should open, simple as that, no installations needed.
+   
+### Non-Windows users:
+Since my machine runs Windows, I was not able to generate a one-click, plug-and-play version for you guys. 
+I apologize but in order for you to play, you will have to take the scenic route reserved for those with more technological know-how:
+1.	Make sure you have **Python** and **Pygame** installed (```pip install …```)
+2.	Clone this repository
+3.	Run main.py
 
 $${\color{lightgreen}Happy \space Driving!}$$
-
 --------------------------
+🚩 For any questions, check out [How to Play](https://github.com/yaels818/TraffiCode/wiki/How-to-play) and [Known Issues](https://github.com/yaels818/TraffiCode/wiki/Known-Issues). 
 
-For more details about how to play and the development process of the game, <br>
+For more details about how to play and the process of developing the game, <br>
 check out the game's [Wiki 👇📚](https://github.com/yaels818/TraffiCode/wiki).
 
 <a href="https://github.com/yaels818/TraffiCode/wiki"> 
 <img height="50" src="https://user-images.githubusercontent.com/99403939/235144228-e987b659-cf03-4b52-8cec-413e8da22a43.png" /></a>
 
 --------------------------
+## Thank Yous:
+The first players who have finished the game and provided me with my own relevant feedback shall forever be rewarded with my gratitude, <br>
+as well as eternal digital glory in the [TraffiCode Hall of Fame!](https://github.com/yaels818/TraffiCode/wiki/Hall-of-Fame) 👑🏆  
+
+I am grateful to everyone who drove me to become a better driver myself, as well as a better software engineer. <br>
+
+HUGE thank you to the amazing [#TechWithTim](https://github.com/techwithtim) for the insightful videos introducing and un-complicating Pygame, and for being a true inspiration.
+
+--------------------------
 
 ## Sneak peek 👀
-<p>
+<p>  
   <img width="700" alt="traffiCode screenshot 1" src="https://user-images.githubusercontent.com/99403939/235149514-9154a18d-71fd-43a0-8d52-e8b160f4aaa0.png">
   <img width="700" alt="traffiCode screenshot 2" src="https://user-images.githubusercontent.com/99403939/235149536-c69034f4-3938-448e-b171-e9ce2e3fcb8e.png">
 </p>
