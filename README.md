@@ -16,10 +16,21 @@ Some of the things TraffiCode aims to do for you:
 - But hopefully, drive you to be a better, safer (smarter!) driver and follow more traffic codes! 🙏 ❤️
 
 --------------------------
-## Sneak peek 👀 (an un-edited gameplay video)
-
+## Sneak peek 👀 (unedited gameplay video):
+* Player is the red car, some of the buttons were clicked using the keyboard shortcuts
+  
 https://github.com/yaels818/TraffiCode/assets/99403939/8b4477e2-ab0e-427c-865c-c0e924086fa9
 
+## Players reviews:
+* "Really nice game... I loved that you named the streets, it makes it feel more real... It's nice that you can see your score while you play... It highlights some of the things you have to be careful of when out on the road... very impressive."
+  
+* "Very fun to play even though it was hard."
+  
+* "Cute, light... good job with all the new features and fixes! I liked the houses and the back story."
+  
+* "...A great version... You built an interesting, cute and fun game."
+  
+* "Well done, so much effort! I loved how the game felt intuitive... The sound effects you added really added to the driving experience, and the pedestrians and crossing cars felt very real. Great practice!"
 --------------------------
 ## How to get the game:
 ### Windows users:
@@ -54,6 +65,3 @@ I am grateful to everyone who drove me to become a better driver myself, as well
 HUGE thank you to the amazing [#TechWithTim](https://github.com/techwithtim) for the insightful videos introducing and un-complicating Pygame, and for being such an inspiration! 💡⭐
 
 --------------------------
-
-
-
