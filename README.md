@@ -11,10 +11,14 @@ Some of the things TraffiCode aims to do for you:
 - Help you get better at dividing your attention between the inside of your car and the outside world 🌎
 - Encourage you to master safely merging into traffic with random cars and crossing pedestrians getting in your way 🚘 👫
 - Challenge you with 10 different levels of increasing difficulty to keep you in driving shape 💪 😉
-- Allow you to give up on rules entirely and just smash into things whenever you feel like it! <br> (Because traffic jams are exhausting and driving GTA-style is definitely more fun and less paperwork when it's all virtual, so why the heck not?) 😎
+- Allow you to give up on rules entirely and just smash into things whenever you feel like it!
+  <br> (Because traffic jams are exhausting and driving GTA-style is definitely more fun and less paperwork when it's all virtual, so why the heck not?) 😎
 - But hopefully, drive you to be a better, safer (smarter!) driver and follow more traffic codes! 🙏 ❤️
 
-**Click [here]() for a Sneak Peek (AKA short gameplay video made by one of the beta players)**
+--------------------------
+## Sneak peek 👀 (an un-edited gameplay video)
+
+https://github.com/yaels818/TraffiCode/assets/99403939/8b4477e2-ab0e-427c-865c-c0e924086fa9
 
 --------------------------
 ## How to get the game:
@@ -47,15 +51,9 @@ as well as eternal digital glory in the [TraffiCode Hall of Fame!](https://githu
 
 I am grateful to everyone who drove me to become a better driver myself, as well as a better software engineer. <br>
 
-HUGE thank you to the amazing [#TechWithTim](https://github.com/techwithtim) for the insightful videos introducing and un-complicating Pygame, and for being a true inspiration.
+HUGE thank you to the amazing [#TechWithTim](https://github.com/techwithtim) for the insightful videos introducing and un-complicating Pygame, and for being such an inspiration! 💡⭐
 
 --------------------------
-
-## Sneak peek 👀
-<p>  
-  <img width="700" alt="traffiCode screenshot 1" src="https://user-images.githubusercontent.com/99403939/235149514-9154a18d-71fd-43a0-8d52-e8b160f4aaa0.png">
-  <img width="700" alt="traffiCode screenshot 2" src="https://user-images.githubusercontent.com/99403939/235149536-c69034f4-3938-448e-b171-e9ce2e3fcb8e.png">
-</p>
 
 
 
